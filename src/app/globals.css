@@ -1,0 +1,51 @@
+@import "tailwindcss";
+
+:root {
+  --background: #fffaf3;
+  --foreground: #2b1a12;
+
+  /* FudFactory brand palette — warm bakery tones */
+  --brand-50: #fdf3e7;
+  --brand-100: #fbe3c4;
+  --brand-200: #f6c98c;
+  --brand-300: #efab5a;
+  --brand-400: #e08a33;
+  --brand-500: #cc6a1f;
+  --brand-600: #a8511a;
+  --brand-700: #833e18;
+  --brand-800: #5c2c14;
+  --brand-900: #3b1e10;
+
+  --cocoa-50: #f6f1ee;
+  --cocoa-900: #2b1a12;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+
+  --color-brand-50: var(--brand-50);
+  --color-brand-100: var(--brand-100);
+  --color-brand-200: var(--brand-200);
+  --color-brand-300: var(--brand-300);
+  --color-brand-400: var(--brand-400);
+  --color-brand-500: var(--brand-500);
+  --color-brand-600: var(--brand-600);
+  --color-brand-700: var(--brand-700);
+  --color-brand-800: var(--brand-800);
+  --color-brand-900: var(--brand-900);
+  --color-cocoa-50: var(--cocoa-50);
+  --color-cocoa-900: var(--cocoa-900);
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+}
+
+::selection {
+  background: var(--brand-200);
+  color: var(--cocoa-900);
+}

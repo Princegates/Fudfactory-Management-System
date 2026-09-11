@@ -1,0 +1,591 @@
+// FudFactory Management System — Prisma schema
+// Covers the core data entities from the SRS (Section 32) needed to run
+// Phase 1-3 of the phased development plan (Section 47).
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+// ---------------------------------------------------------------------------
+// Enums
+// ---------------------------------------------------------------------------
+
+enum StaffRole {
+  SUPER_ADMIN
+  OWNER_MANAGER
+  CASHIER
+  INVENTORY_OFFICER
+  PRODUCTION_OFFICER
+  DELIVERY_OFFICER
+}
+
+enum EmploymentStatus {
+  ACTIVE
+  ON_LEAVE
+  TERMINATED
+}
+
+enum CustomerSegment {
+  NEW
+  REGULAR
+  VIP
+  CORPORATE
+  EVENT
+  INACTIVE
+}
+
+enum OrderChannel {
+  ONLINE
+  POS
+}
+
+enum FulfillmentType {
+  PICKUP
+  DELIVERY
+}
+
+enum OrderStatus {
+  NEW
+  CONFIRMED
+  PROCESSING
+  PREPARING
+  READY
+  OUT_FOR_DELIVERY
+  DELIVERED
+  COMPLETED
+  CANCELLED
+  REFUNDED
+  REJECTED
+  PARTIALLY_FULFILLED
+}
+
+enum PaymentMethod {
+  CASH
+  MOBILE_MONEY
+  CARD
+  BANK_TRANSFER
+  ONLINE
+}
+
+enum PaymentStatus {
+  PENDING
+  SUCCESSFUL
+  FAILED
+  REFUNDED
+  PARTIALLY_PAID
+}
+
+enum DeliveryStatus {
+  PENDING
+  ASSIGNED
+  PICKED_UP
+  IN_TRANSIT
+  DELIVERED
+}
+
+enum ItemType {
+  RAW_MATERIAL
+  FINISHED_PRODUCT
+}
+
+enum StockMovementType {
+  RECEIPT
+  ISSUE
+  ADJUSTMENT
+  TRANSFER
+  PRODUCTION_CONSUMPTION
+  PRODUCTION_OUTPUT
+  SALE_DEDUCTION
+  SALE_REVERSAL
+  COUNT
+}
+
+enum ProductionStatus {
+  PLANNED
+  IN_PROGRESS
+  COMPLETED
+  CANCELLED
+}
+
+enum PromotionType {
+  PERCENTAGE
+  FIXED_AMOUNT
+  BOGO
+  COMBO
+}
+
+enum LoyaltyTxnType {
+  EARN
+  REDEEM
+  ADJUSTMENT
+}
+
+enum NotificationChannel {
+  SMS
+  EMAIL
+  WHATSAPP
+}
+
+enum NotificationStatus {
+  PENDING
+  SENT
+  FAILED
+}
+
+enum QuotationStatus {
+  DRAFT
+  SENT
+  ACCEPTED
+  REJECTED
+  EXPIRED
+}
+
+// ---------------------------------------------------------------------------
+// Users, Roles & Access (Sections 4, 25, 26, 27)
+// ---------------------------------------------------------------------------
+
+// Staff / internal users. "Employee" HR fields (department, employmentStatus)
+// live on this model rather than a separate Employee table, since every
+// employee in this system also needs a login.
+model User {
+  id               String           @id @default(cuid())
+  name             String
+  email            String           @unique
+  phone            String?
+  passwordHash     String
+  role             StaffRole
+  department       String?
+  employmentStatus EmploymentStatus @default(ACTIVE)
+  isActive         Boolean          @default(true)
+  createdAt        DateTime         @default(now())
+  updatedAt        DateTime         @updatedAt
+
+  inventoryTransactions InventoryTransaction[]
+  productionOrders      ProductionOrder[]
+  deliveriesAsRider     Delivery[]
+  expensesRecorded      Expense[]
+  auditLogs             AuditLog[]
+  posSales              Order[]                @relation("PosCashier")
+}
+
+// ---------------------------------------------------------------------------
+// Customers / CRM (Sections 13, 14, 15, 22)
+// ---------------------------------------------------------------------------
+
+model Customer {
+  id                 String          @id @default(cuid())
+  name               String
+  phone              String          @unique
+  email              String?
+  passwordHash       String?
+  address            String?
+  birthday           DateTime?
+  segment            CustomerSegment @default(NEW)
+  loyaltyPoints      Int             @default(0)
+  totalPurchases     Float           @default(0)
+  outstandingBalance Float           @default(0)
+  createdAt          DateTime        @default(now())
+  updatedAt          DateTime        @updatedAt
+
+  orders              Order[]
+  payments            Payment[]
+  loyaltyTransactions LoyaltyTransaction[]
+  reviews             Review[]
+  notifications       Notification[]
+  quotations          Quotation[]
+}
+
+// ---------------------------------------------------------------------------
+// Catalogue (Sections 5.3, 5.4)
+// ---------------------------------------------------------------------------
+
+model Category {
+  id        String   @id @default(cuid())
+  name      String   @unique
+  slug      String   @unique
+  imageUrl  String?
+  sortOrder Int      @default(0)
+  createdAt DateTime @default(now())
+
+  products Product[]
+}
+
+model Product {
+  id          String   @id @default(cuid())
+  name        String
+  slug        String   @unique
+  description String?
+  price       Float
+  imageUrl    String?
+  categoryId  String
+  isAvailable Boolean  @default(true)
+  isFeatured  Boolean  @default(false)
+  allergens   String?
+  sizeOptions String? // JSON string, e.g. [{"label":"Small","priceDelta":0}]
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  category        Category         @relation(fields: [categoryId], references: [id])
+  orderItems      OrderItem[]
+  recipes         Recipe[]
+  inventoryItem   InventoryItem?
+  reviews         Review[]
+  productionItems ProductionItem[]
+
+  @@index([categoryId])
+}
+
+// ---------------------------------------------------------------------------
+// Inventory: raw materials & finished products (Sections 8, 9, 32)
+// ---------------------------------------------------------------------------
+
+model Supplier {
+  id            String   @id @default(cuid())
+  name          String
+  phone         String?
+  email         String?
+  address       String?
+  itemsSupplied String?
+  createdAt     DateTime @default(now())
+
+  inventoryItems InventoryItem[]
+}
+
+model InventoryItem {
+  id           String    @id @default(cuid())
+  sku          String    @unique
+  name         String
+  itemType     ItemType
+  unit         String // e.g. g, kg, ml, l, pcs
+  costPerUnit  Float     @default(0)
+  currentStock Float     @default(0)
+  minStock     Float     @default(0)
+  maxStock     Float?
+  batchNumber  String?
+  expiryDate   DateTime?
+  supplierId   String?
+  productId    String?   @unique // set for FINISHED_PRODUCT items linked to a sellable Product
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+
+  supplier     Supplier?              @relation(fields: [supplierId], references: [id])
+  product      Product?               @relation(fields: [productId], references: [id])
+  transactions InventoryTransaction[]
+  recipeUses   RecipeItem[]
+
+  @@index([itemType])
+}
+
+model InventoryTransaction {
+  id        String            @id @default(cuid())
+  itemId    String
+  type      StockMovementType
+  quantity  Float // positive = stock in, negative = stock out
+  reference String? // e.g. order number, production code
+  note      String?
+  userId    String?
+  createdAt DateTime          @default(now())
+
+  item InventoryItem @relation(fields: [itemId], references: [id])
+  user User?         @relation(fields: [userId], references: [id])
+
+  @@index([itemId])
+}
+
+// ---------------------------------------------------------------------------
+// Recipes / BOM & Production (Sections 10, 11, 12)
+// ---------------------------------------------------------------------------
+
+model Recipe {
+  id            String   @id @default(cuid())
+  productId     String
+  name          String
+  yieldQuantity Float    @default(1)
+  laborCost     Float    @default(0)
+  packagingCost Float    @default(0)
+  overheadCost  Float    @default(0)
+  notes         String?
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  product         Product          @relation(fields: [productId], references: [id])
+  items           RecipeItem[]
+  productionItems ProductionItem[]
+
+  @@index([productId])
+}
+
+model RecipeItem {
+  id               String @id @default(cuid())
+  recipeId         String
+  ingredientId     String
+  quantityPerYield Float
+
+  recipe     Recipe        @relation(fields: [recipeId], references: [id], onDelete: Cascade)
+  ingredient InventoryItem @relation(fields: [ingredientId], references: [id])
+
+  @@index([recipeId])
+  @@index([ingredientId])
+}
+
+model ProductionOrder {
+  id          String           @id @default(cuid())
+  code        String           @unique
+  status      ProductionStatus @default(PLANNED)
+  plannedDate DateTime         @default(now())
+  completedAt DateTime?
+  notes       String?
+  createdById String?
+  createdAt   DateTime         @default(now())
+
+  createdBy User?            @relation(fields: [createdById], references: [id])
+  items     ProductionItem[]
+}
+
+model ProductionItem {
+  id                String  @id @default(cuid())
+  productionOrderId String
+  productId         String
+  recipeId          String?
+  quantityPlanned   Float
+  quantityProduced  Float   @default(0)
+  estimatedCost     Float   @default(0)
+
+  productionOrder ProductionOrder @relation(fields: [productionOrderId], references: [id], onDelete: Cascade)
+  product         Product         @relation(fields: [productId], references: [id])
+  recipe          Recipe?         @relation(fields: [recipeId], references: [id])
+
+  @@index([productionOrderId])
+}
+
+// ---------------------------------------------------------------------------
+// Orders, Payments, Deliveries (Sections 6, 7, 16, 17)
+// ---------------------------------------------------------------------------
+
+model Order {
+  id              String          @id @default(cuid())
+  orderNumber     String          @unique
+  channel         OrderChannel
+  customerId      String?
+  cashierId       String?
+  status          OrderStatus     @default(NEW)
+  fulfillmentType FulfillmentType @default(PICKUP)
+  deliveryAddress String?
+  scheduledFor    DateTime?
+  subtotal        Float           @default(0)
+  discountAmount  Float           @default(0)
+  deliveryFee     Float           @default(0)
+  totalAmount     Float           @default(0)
+  paymentStatus   PaymentStatus   @default(PENDING)
+  promotionCode   String?
+  notes           String?
+  createdAt       DateTime        @default(now())
+  updatedAt       DateTime        @updatedAt
+
+  customer            Customer?            @relation(fields: [customerId], references: [id])
+  cashier             User?                @relation("PosCashier", fields: [cashierId], references: [id])
+  items               OrderItem[]
+  payments            Payment[]
+  delivery            Delivery?
+  reviews             Review[]
+  loyaltyTransactions LoyaltyTransaction[]
+
+  @@index([customerId])
+  @@index([status])
+}
+
+model OrderItem {
+  id          String  @id @default(cuid())
+  orderId     String
+  productId   String
+  productName String
+  unitPrice   Float
+  quantity    Float
+  subtotal    Float
+  addOns      String?
+
+  order   Order   @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  product Product @relation(fields: [productId], references: [id])
+
+  @@index([orderId])
+}
+
+model Payment {
+  id             String        @id @default(cuid())
+  orderId        String
+  customerId     String?
+  amount         Float
+  method         PaymentMethod
+  transactionRef String?
+  status         PaymentStatus @default(PENDING)
+  paidAt         DateTime?
+  createdAt      DateTime      @default(now())
+
+  order    Order     @relation(fields: [orderId], references: [id])
+  customer Customer? @relation(fields: [customerId], references: [id])
+
+  @@index([orderId])
+}
+
+model Delivery {
+  id               String         @id @default(cuid())
+  orderId          String         @unique
+  riderId          String?
+  pickupLocation   String?
+  deliveryLocation String
+  deliveryFee      Float          @default(0)
+  status           DeliveryStatus @default(PENDING)
+  scheduledAt      DateTime?
+  deliveredAt      DateTime?
+  notes            String?
+  createdAt        DateTime       @default(now())
+
+  order Order @relation(fields: [orderId], references: [id])
+  rider User? @relation(fields: [riderId], references: [id])
+}
+
+// ---------------------------------------------------------------------------
+// Expenses & Finance (Sections 18, 19)
+// ---------------------------------------------------------------------------
+
+model Expense {
+  id           String   @id @default(cuid())
+  category     String
+  description  String?
+  amount       Float
+  expenseDate  DateTime @default(now())
+  recordedById String?
+  createdAt    DateTime @default(now())
+
+  recordedBy User? @relation(fields: [recordedById], references: [id])
+
+  @@index([category])
+}
+
+// ---------------------------------------------------------------------------
+// Marketing: Promotions, Loyalty, Reviews, Notifications (Sections 22-24, 37)
+// ---------------------------------------------------------------------------
+
+model Promotion {
+  id          String        @id @default(cuid())
+  name        String
+  code        String?       @unique
+  type        PromotionType
+  value       Float
+  minSpend    Float?
+  startDate   DateTime
+  endDate     DateTime?
+  isActive    Boolean       @default(true)
+  usageLimit  Int?
+  usedCount   Int           @default(0)
+  description String?
+  createdAt   DateTime      @default(now())
+}
+
+model LoyaltyTransaction {
+  id          String         @id @default(cuid())
+  customerId  String
+  orderId     String?
+  points      Int
+  type        LoyaltyTxnType
+  description String?
+  createdAt   DateTime       @default(now())
+
+  customer Customer @relation(fields: [customerId], references: [id])
+  order    Order?   @relation(fields: [orderId], references: [id])
+
+  @@index([customerId])
+}
+
+model Notification {
+  id         String              @id @default(cuid())
+  customerId String?
+  event      String
+  channel    NotificationChannel
+  message    String
+  status     NotificationStatus  @default(PENDING)
+  sentAt     DateTime?
+  createdAt  DateTime            @default(now())
+
+  customer Customer? @relation(fields: [customerId], references: [id])
+}
+
+model Review {
+  id         String   @id @default(cuid())
+  customerId String
+  orderId    String
+  productId  String?
+  rating     Int
+  comment    String?
+  isApproved Boolean  @default(false)
+  createdAt  DateTime @default(now())
+
+  customer Customer @relation(fields: [customerId], references: [id])
+  order    Order    @relation(fields: [orderId], references: [id])
+  product  Product? @relation(fields: [productId], references: [id])
+}
+
+// ---------------------------------------------------------------------------
+// Custom / Event orders & Quotations (Sections 38, 39)
+// ---------------------------------------------------------------------------
+
+model Quotation {
+  id           String          @id @default(cuid())
+  code         String          @unique
+  customerId   String?
+  customerName String
+  phone        String
+  email        String?
+  eventType    String
+  eventDate    DateTime?
+  guestCount   Int?
+  requirements String?
+  items        String // JSON array of {description, quantity, unitPrice}
+  deliveryFee  Float           @default(0)
+  totalAmount  Float           @default(0)
+  status       QuotationStatus @default(DRAFT)
+  createdAt    DateTime        @default(now())
+  updatedAt    DateTime        @updatedAt
+
+  customer Customer? @relation(fields: [customerId], references: [id])
+}
+
+// ---------------------------------------------------------------------------
+// Business settings & Audit (Sections 27, 41)
+// ---------------------------------------------------------------------------
+
+model BusinessProfile {
+  id              String   @id @default("default")
+  businessName    String   @default("FudFactory")
+  tagline         String   @default("Fresh Bakes, Delivered Daily")
+  phone           String?
+  whatsapp        String?
+  email           String?
+  address         String?
+  instagramHandle String   @default("fudfactory.gh")
+  facebookUrl     String?
+  businessHours   String? // JSON string
+  aboutText       String?
+  heroImageUrl    String?
+  updatedAt       DateTime @updatedAt
+}
+
+model AuditLog {
+  id         String   @id @default(cuid())
+  userId     String?
+  action     String
+  entityType String
+  entityId   String?
+  details    String?
+  createdAt  DateTime @default(now())
+
+  user User? @relation(fields: [userId], references: [id])
+
+  @@index([entityType, entityId])
+  @@index([userId])
+}
