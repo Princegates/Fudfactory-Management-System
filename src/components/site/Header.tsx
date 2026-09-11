@@ -5,6 +5,7 @@ import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import { useCart } from "./CartContext";
 import { ModeToggle } from "./ModeToggle";
+import { Logo } from "@/components/Logo";
 
 const NAV_LINKS = [
   { href: "/", label: "Home" },
@@ -36,16 +37,8 @@ export function Header({ mode }: { mode: "dark" | "light" }) {
       }`}
     >
       <div className="mx-auto flex max-w-6xl items-center justify-between gap-4 px-4 py-3.5 sm:px-6">
-        <Link href="/" className="group flex shrink-0 items-center gap-2.5">
-          <span
-            className="relative grid h-9 w-9 rotate-[-4deg] place-items-center rounded-lg text-sm font-bold transition-transform group-hover:rotate-0"
-            style={{ background: "var(--glow-amber)", color: "#fdf8ef" }}
-          >
-            FF
-          </span>
-          <span className="font-display text-lg font-bold tracking-tight" style={{ color: "var(--text-hi)" }}>
-            FudFactory
-          </span>
+        <Link href="/" className="group flex shrink-0 items-center">
+          <Logo className="text-xl tracking-tight" />
         </Link>
 
         <nav className="hidden items-center gap-1 text-sm font-medium md:flex">

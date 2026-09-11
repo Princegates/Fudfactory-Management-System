@@ -2,6 +2,7 @@
 
 import { useState, FormEvent } from "react";
 import { useRouter } from "next/navigation";
+import { Logo } from "@/components/Logo";
 
 export default function StaffLoginPage() {
   const router = useRouter();
@@ -32,11 +33,9 @@ export default function StaffLoginPage() {
   return (
     <div className="flex min-h-screen items-center justify-center bg-brand-900 px-4">
       <div className="w-full max-w-sm rounded-2xl bg-white p-8 shadow-lg">
-        <div className="flex items-center gap-2">
-          <span className="grid h-9 w-9 place-items-center rounded-full bg-brand-500 text-sm font-bold text-white">
-            FF
-          </span>
-          <span className="text-lg font-bold text-cocoa-900">FudFactory Portal</span>
+        <div className="flex items-center gap-2 text-cocoa-900">
+          <Logo className="text-xl" accentColor="var(--brand-500)" />
+          <span className="text-lg font-bold">Portal</span>
         </div>
         <h1 className="mt-6 text-xl font-bold text-cocoa-900">Staff Login</h1>
         <form onSubmit={handleSubmit} className="mt-4 flex flex-col gap-3">

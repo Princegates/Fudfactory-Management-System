@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { getBusinessProfile } from "@/lib/business";
+import { Logo } from "@/components/Logo";
 
 export async function Footer() {
   const business = await getBusinessProfile();
@@ -8,17 +9,7 @@ export async function Footer() {
       <div className="divider-glow absolute top-0 left-0 right-0" />
       <div className="mx-auto grid max-w-6xl gap-10 px-4 py-16 sm:px-6 md:grid-cols-4">
         <div>
-          <div className="flex items-center gap-2.5">
-            <span
-              className="grid h-9 w-9 rotate-[-4deg] place-items-center rounded-lg text-sm font-bold"
-              style={{ background: "var(--glow-amber)", color: "#fdf8ef" }}
-            >
-              FF
-            </span>
-            <span className="font-display text-lg font-bold" style={{ color: "var(--text-hi)" }}>
-              {business.businessName}
-            </span>
-          </div>
+          <Logo className="text-lg" />
           <p className="mt-4 text-sm leading-relaxed" style={{ color: "var(--text-mid)" }}>
             {business.tagline}
           </p>

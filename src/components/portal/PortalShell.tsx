@@ -4,6 +4,7 @@ import { useState, ReactNode } from "react";
 import { NavItem } from "@/lib/permissions";
 import { PortalNav } from "./PortalNav";
 import { StaffLogoutButton } from "./StaffLogoutButton";
+import { Logo } from "@/components/Logo";
 
 export function PortalShell({
   items,
@@ -66,11 +67,8 @@ export function PortalShell({
 
 function SidebarHeader() {
   return (
-    <div className="flex items-center gap-2">
-      <span className="grid h-8 w-8 place-items-center rounded-full bg-brand-500 text-sm font-bold text-white">
-        FF
-      </span>
-      <span className="font-bold text-cocoa-900">FudFactory</span>
+    <div className="text-cocoa-900">
+      <Logo className="text-lg" accentColor="var(--brand-500)" />
     </div>
   );
 }

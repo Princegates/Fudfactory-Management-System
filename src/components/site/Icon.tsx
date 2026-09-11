@@ -25,7 +25,8 @@ export type IconName =
   | "sun"
   | "moon"
   | "arrow-right"
-  | "external";
+  | "external"
+  | "basket";
 
 const PATHS: Record<IconName, ReactNode> = {
   cake: (
@@ -130,6 +131,15 @@ const PATHS: Record<IconName, ReactNode> = {
   moon: <path d="M20 14.5A8.5 8.5 0 1 1 9.5 4a6.8 6.8 0 0 0 10.5 10.5z" />,
   "arrow-right": <path d="M4 12h15M13 6l6 6-6 6" />,
   external: <path d="M8 16 16 8M9.5 8H16v6.5" />,
+  basket: (
+    <>
+      <path d="M4.5 12.5 6 20.5a1.3 1.3 0 0 0 1.3 1h9.4a1.3 1.3 0 0 0 1.3-1l1.5-8" />
+      <path d="M6.3 15.3q5.7 1.6 11.4 0" />
+      <path d="M7 18q5 1.3 10 0" />
+      <path d="M6.5 12c0-2.8 2.3-4.5 5.5-4.5s5.5 1.7 5.5 4.5" />
+      <path d="M8.7 11.3c0-1.7 1.4-3 3.3-3s3.3 1.3 3.3 3" />
+    </>
+  ),
 };
 
 export function Icon({

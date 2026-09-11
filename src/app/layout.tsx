@@ -30,13 +30,12 @@ export const metadata: Metadata = {
     siteName: "FudFactory",
     type: "website",
   },
-  icons: { icon: "/favicon.ico" },
 };
 
 export const viewport = {
   width: "device-width",
   initialScale: 1,
-  themeColor: "#050608",
+  themeColor: "#1c130c",
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
