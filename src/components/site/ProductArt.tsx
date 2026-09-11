@@ -1,14 +1,14 @@
 import { Icon, type IconName } from "./Icon";
 
 export const CATEGORY_ICON: Record<string, IconName> = {
-  Cakes: "cake",
-  Pastries: "pastry",
-  Snacks: "donut",
-  "Main Meals": "bowl",
-  Drinks: "cup",
+  "Food Hampers": "gift",
   Breakfast: "egg",
-  "Event Packages": "event",
-  "Special Orders": "sparkle",
+  "Starters & Finger Foods": "donut",
+  "Soups & Stews": "bowl",
+  Lunch: "chef",
+  Pastries: "pastry",
+  Events: "event",
+  Drinks: "cup",
 };
 
 function hashString(str: string) {

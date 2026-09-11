@@ -9,13 +9,14 @@ export const metadata: Metadata = {
 };
 
 const OFFERINGS: { icon: IconName; label: string }[] = [
-  { icon: "cake", label: "Cakes & celebration bakes" },
-  { icon: "pastry", label: "Pastries & pies" },
-  { icon: "donut", label: "Snacks & breakfast items" },
-  { icon: "bowl", label: "Rice & spaghetti cuisine" },
-  { icon: "box", label: "Yam & plantain dishes" },
-  { icon: "gift", label: "Corporate & bulk catering" },
+  { icon: "gift", label: "Food hampers" },
+  { icon: "egg", label: "Breakfast for groups" },
+  { icon: "donut", label: "Starters & finger foods" },
+  { icon: "bowl", label: "Soups & stews" },
+  { icon: "chef", label: "Lunch for groups" },
+  { icon: "pastry", label: "Pastries" },
   { icon: "event", label: "Full event planning services" },
+  { icon: "cup", label: "Drinks" },
 ];
 
 export default async function AboutPage() {

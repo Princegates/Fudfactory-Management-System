@@ -35,6 +35,7 @@ async function resetDemoData() {
     prisma.inventoryTransaction.deleteMany(),
     prisma.inventoryItem.deleteMany(),
     prisma.product.deleteMany(),
+    prisma.category.deleteMany(),
     prisma.supplier.deleteMany(),
     prisma.customer.deleteMany(),
     prisma.promotion.deleteMany(),
@@ -66,7 +67,16 @@ async function main() {
   console.log(`Created ${staffAccounts.length} staff accounts (password: Password123!)`);
 
   // --- Categories ---------------------------------------------------------
-  const categoryNames = ["Cakes", "Pastries", "Snacks", "Main Meals", "Drinks", "Breakfast"];
+  const categoryNames = [
+    "Food Hampers",
+    "Breakfast",
+    "Starters & Finger Foods",
+    "Soups & Stews",
+    "Lunch",
+    "Pastries",
+    "Events",
+    "Drinks",
+  ];
   const categories: Record<string, string> = {};
   for (const [idx, name] of categoryNames.entries()) {
     const category = await prisma.category.upsert({
@@ -120,15 +130,17 @@ async function main() {
 
   // --- Products --------------------------------------------------------------
   const productDefs = [
-    { name: "Meat Pie", category: "Pastries", price: 8, featured: true },
-    { name: "Chicken Pie", category: "Pastries", price: 9, featured: true },
-    { name: "Doughnut", category: "Snacks", price: 4, featured: true },
-    { name: "Chocolate Cake (Slice)", category: "Cakes", price: 15, featured: true },
-    { name: "Vanilla Birthday Cake", category: "Cakes", price: 180, featured: false },
-    { name: "Jollof Rice & Chicken", category: "Main Meals", price: 35, featured: true },
-    { name: "Waakye Special", category: "Main Meals", price: 30, featured: false },
-    { name: "Sobolo (Hibiscus Drink)", category: "Drinks", price: 6, featured: false },
+    { name: "Family Food Hamper", category: "Food Hampers", price: 250, featured: true },
     { name: "Tea & Bread Breakfast Pack", category: "Breakfast", price: 12, featured: false },
+    { name: "Meat Pie", category: "Starters & Finger Foods", price: 8, featured: true },
+    { name: "Chicken Pie", category: "Starters & Finger Foods", price: 9, featured: true },
+    { name: "Groundnut Soup with Fufu", category: "Soups & Stews", price: 45, featured: false },
+    { name: "Jollof Rice & Chicken", category: "Lunch", price: 35, featured: true },
+    { name: "Waakye Special", category: "Lunch", price: 30, featured: false },
+    { name: "Doughnut", category: "Pastries", price: 4, featured: true },
+    { name: "Chocolate Cake (Slice)", category: "Pastries", price: 15, featured: true },
+    { name: "Vanilla Birthday Cake", category: "Events", price: 180, featured: false },
+    { name: "Sobolo (Hibiscus Drink)", category: "Drinks", price: 6, featured: false },
   ];
   const productIds: Record<string, string> = {};
   for (const def of productDefs) {
