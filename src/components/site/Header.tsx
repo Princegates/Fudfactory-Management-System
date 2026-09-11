@@ -73,8 +73,15 @@ export function Header({ mode }: { mode: "dark" | "light" }) {
         <div className="flex items-center gap-2.5">
           <ModeToggle mode={mode} />
           <Link
+            href="/portal/login"
+            className="hidden rounded-md px-3.5 py-2 text-sm font-medium transition-colors hover:text-[var(--glow-amber)] lg:block"
+            style={{ color: "var(--text-lo)" }}
+          >
+            Staff Login
+          </Link>
+          <Link
             href="/account"
-            className="hidden rounded-full px-3.5 py-2 text-sm font-medium transition-colors hover:text-[var(--glow-amber)] sm:block"
+            className="hidden rounded-md px-3.5 py-2 text-sm font-medium transition-colors hover:text-[var(--glow-amber)] sm:block"
             style={{ color: "var(--text-mid)" }}
           >
             Account
@@ -123,6 +130,16 @@ export function Header({ mode }: { mode: "dark" | "light" }) {
                 style={{ color: "var(--text-hi)" }}
               >
                 Account
+              </Link>
+            </li>
+            <li>
+              <Link
+                href="/portal/login"
+                onClick={() => setOpen(false)}
+                className="block rounded-lg px-3 py-2.5 text-sm font-medium transition hover:bg-white/5"
+                style={{ color: "var(--text-mid)" }}
+              >
+                Staff Login
               </Link>
             </li>
           </ul>
