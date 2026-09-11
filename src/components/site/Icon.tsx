@@ -26,7 +26,7 @@ export type IconName =
   | "moon"
   | "arrow-right"
   | "external"
-  | "basket";
+  | "cloche";
 
 const PATHS: Record<IconName, ReactNode> = {
   cake: (
@@ -131,13 +131,18 @@ const PATHS: Record<IconName, ReactNode> = {
   moon: <path d="M20 14.5A8.5 8.5 0 1 1 9.5 4a6.8 6.8 0 0 0 10.5 10.5z" />,
   "arrow-right": <path d="M4 12h15M13 6l6 6-6 6" />,
   external: <path d="M8 16 16 8M9.5 8H16v6.5" />,
-  basket: (
+  cloche: (
     <>
-      <path d="M4.5 12.5 6 20.5a1.3 1.3 0 0 0 1.3 1h9.4a1.3 1.3 0 0 0 1.3-1l1.5-8" />
-      <path d="M6.3 15.3q5.7 1.6 11.4 0" />
-      <path d="M7 18q5 1.3 10 0" />
-      <path d="M6.5 12c0-2.8 2.3-4.5 5.5-4.5s5.5 1.7 5.5 4.5" />
-      <path d="M8.7 11.3c0-1.7 1.4-3 3.3-3s3.3 1.3 3.3 3" />
+      <circle cx="12" cy="3.4" r="0.9" fill="currentColor" stroke="none" />
+      <path d="M12 4.3v1" />
+      <path d="M5 14C5 9 8 5.3 12 5.3S19 9 19 14" />
+      <path d="M6.6 10.2H16" />
+      <path d="M6.1 11.9h10.6" />
+      <path d="M3.8 14h16.4" />
+      <path d="M13.2 13.6v2.2M14 13.4v2.4M14.8 13.6v2.2" />
+      <path d="M14.4 15.7 17.6 19" />
+      <path d="M17 16.2h2.6v3.4H17z" />
+      <path d="M17 18h2.6" />
     </>
   ),
 };

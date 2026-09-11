@@ -114,11 +114,12 @@ body {
    --------------------------------------------------------------------- */
 
 .site-theme[data-site-theme="amber-glow"] {
-  --ink-950: #1c130c; --ink-900: #241a11; --ink-800: #2f2417; --ink-700: #3b301f; --ink-600: #493c29;
-  --glow-amber: #c1440e; --glow-amber-strong: #8f320a; --glow-cyan: #4b5d3a;
+  --ink-950: #1a1013; --ink-900: #221419; --ink-800: #2c1b21; --ink-700: #38242b; --ink-600: #452e36;
+  --glow-amber: #8c1f3a; --glow-amber-strong: #6b1228; --glow-cyan: #c98a3d;
 }
 .site-theme[data-site-theme="amber-glow"][data-mode="light"] {
-  --ink-950: #f8f1e4; --ink-900: #f1e6d2; --ink-800: #e8d8bc; --ink-700: #dcc79f; --ink-600: #ccb27f;
+  --ink-950: #f9f1f2; --ink-900: #f2e4e6; --ink-800: #e8d0d4; --ink-700: #dab7bd; --ink-600: #c99aa2;
+  --glow-amber: #5c1024; --glow-amber-strong: #430b1a;
 }
 
 .site-theme[data-site-theme="neon-sunset"] {
