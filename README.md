@@ -24,6 +24,8 @@ npm run db:seed                # loads demo data (see accounts below)
 npm run dev
 ```
 
+`db:migrate` (Prisma's `migrate dev`) already runs the seed script itself the first time it creates `dev.db`, so running `db:seed` right after is often a no-op re-run — that's expected and safe. `npm run db:seed` clears and reloads all demo data every time it runs, so re-run it any time you want to reset the database back to the demo dataset below.
+
 Visit `http://localhost:3000` for the public site and `http://localhost:3000/portal/login` for the staff portal.
 
 ### Demo accounts (from `npm run db:seed`)

@@ -11,8 +11,40 @@ function slugify(text: string) {
   return text.toLowerCase().trim().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "");
 }
 
+// `prisma migrate dev` auto-runs this seed script the first time it creates
+// the database, so running `npm run db:seed` again afterward (or at any
+// later point, to reset the demo data) re-runs it against a non-empty
+// database. Everything below this point uses upsert(), but transactional
+// records (orders, inventory, recipes, etc.) don't have a natural unique
+// key to upsert on — so clear them first to keep this script safely
+// re-runnable instead of failing on unique-constraint collisions.
+async function resetDemoData() {
+  await prisma.$transaction([
+    prisma.notification.deleteMany(),
+    prisma.quotation.deleteMany(),
+    prisma.productionItem.deleteMany(),
+    prisma.productionOrder.deleteMany(),
+    prisma.review.deleteMany(),
+    prisma.loyaltyTransaction.deleteMany(),
+    prisma.payment.deleteMany(),
+    prisma.delivery.deleteMany(),
+    prisma.orderItem.deleteMany(),
+    prisma.order.deleteMany(),
+    prisma.recipeItem.deleteMany(),
+    prisma.recipe.deleteMany(),
+    prisma.inventoryTransaction.deleteMany(),
+    prisma.inventoryItem.deleteMany(),
+    prisma.product.deleteMany(),
+    prisma.supplier.deleteMany(),
+    prisma.customer.deleteMany(),
+    prisma.promotion.deleteMany(),
+    prisma.expense.deleteMany(),
+  ]);
+}
+
 async function main() {
   console.log("Seeding FudFactory demo data...");
+  await resetDemoData();
 
   // --- Staff users (one per role) ---------------------------------------
   const staffPassword = await hash("Password123!");
