@@ -31,29 +31,22 @@ export function ProductDetailPurchase({
   const unitPrice = useMemo(() => basePrice + (size?.priceDelta ?? 0), [basePrice, size]);
 
   if (!isAvailable) {
-    return (
-      <span className="inline-block rounded-full bg-cocoa-50 px-4 py-2 text-sm font-semibold text-cocoa-900">
-        Currently unavailable
-      </span>
-    );
+    return <span className="chip inline-block rounded-full px-4 py-2 text-sm font-semibold">Currently unavailable</span>;
   }
 
   return (
-    <div className="flex flex-col gap-4">
+    <div className="flex flex-col gap-5">
       {sizeOptions.length > 0 && (
         <div>
-          <p className="text-sm font-semibold text-cocoa-900">Size</p>
+          <p className="text-sm font-semibold" style={{ color: "var(--text-hi)" }}>Size</p>
           <div className="mt-2 flex flex-wrap gap-2">
             {sizeOptions.map((option) => (
               <button
                 key={option.label}
                 type="button"
                 onClick={() => setSize(option)}
-                className={`rounded-full border px-4 py-1.5 text-sm font-medium ${
-                  size?.label === option.label
-                    ? "border-brand-500 bg-brand-500 text-white"
-                    : "border-brand-200 text-cocoa-900 hover:bg-brand-50"
-                }`}
+                data-active={size?.label === option.label}
+                className="chip rounded-full px-4 py-1.5 text-sm font-medium"
               >
                 {option.label}
               </button>
@@ -63,27 +56,29 @@ export function ProductDetailPurchase({
       )}
 
       <div className="flex items-center gap-3">
-        <p className="text-sm font-semibold text-cocoa-900">Quantity</p>
-        <div className="flex items-center rounded-full border border-brand-200">
+        <p className="text-sm font-semibold" style={{ color: "var(--text-hi)" }}>Quantity</p>
+        <div className="glass flex items-center rounded-full">
           <button
             type="button"
             onClick={() => setQuantity((q) => Math.max(1, q - 1))}
-            className="px-3 py-1 text-lg text-brand-600"
+            className="px-3 py-1.5 text-lg transition-colors hover:text-glow-amber"
+            style={{ color: "var(--text-mid)" }}
           >
             −
           </button>
-          <span className="w-8 text-center text-sm font-semibold">{quantity}</span>
+          <span className="w-8 text-center text-sm font-semibold" style={{ color: "var(--text-hi)" }}>{quantity}</span>
           <button
             type="button"
             onClick={() => setQuantity((q) => q + 1)}
-            className="px-3 py-1 text-lg text-brand-600"
+            className="px-3 py-1.5 text-lg transition-colors hover:text-glow-amber"
+            style={{ color: "var(--text-mid)" }}
           >
             +
           </button>
         </div>
       </div>
 
-      <p className="text-2xl font-bold text-brand-700">{formatCurrency(unitPrice * quantity)}</p>
+      <p className="font-display text-3xl font-bold text-gradient">{formatCurrency(unitPrice * quantity)}</p>
 
       <div className="flex flex-wrap gap-3">
         <button
@@ -100,7 +95,7 @@ export function ProductDetailPurchase({
             setAdded(true);
             setTimeout(() => setAdded(false), 1200);
           }}
-          className="rounded-full bg-brand-500 px-6 py-3 text-sm font-semibold text-white hover:bg-brand-600"
+          className="btn-glow rounded-full px-6 py-3 text-sm font-semibold"
         >
           {added ? "Added to cart ✓" : "Add to Cart"}
         </button>
@@ -117,7 +112,7 @@ export function ProductDetailPurchase({
             });
             router.push("/cart");
           }}
-          className="rounded-full border border-brand-300 px-6 py-3 text-sm font-semibold text-brand-700 hover:bg-brand-50"
+          className="btn-ghost rounded-full px-6 py-3 text-sm font-semibold"
         >
           Buy Now
         </button>

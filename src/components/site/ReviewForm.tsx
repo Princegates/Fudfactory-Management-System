@@ -29,11 +29,11 @@ export function ReviewForm({ orderId }: { orderId: string }) {
     router.refresh();
   }
 
-  if (done) return <p className="text-sm text-green-600">Thanks for your review!</p>;
+  if (done) return <p className="text-sm text-green-400">Thanks for your review!</p>;
 
   return (
-    <div className="mt-2 rounded-lg bg-brand-50 p-3">
-      <div className="flex gap-1">
+    <div className="glass mt-2 rounded-lg p-3">
+      <div className="flex gap-1" style={{ color: "var(--glow-amber)" }}>
         {[1, 2, 3, 4, 5].map((n) => (
           <button key={n} type="button" onClick={() => setRating(n)} className="text-lg">
             {n <= rating ? "★" : "☆"}
@@ -45,14 +45,14 @@ export function ReviewForm({ orderId }: { orderId: string }) {
         onChange={(e) => setComment(e.target.value)}
         placeholder="Tell us about your experience..."
         rows={2}
-        className="mt-2 w-full rounded-lg border border-brand-200 px-3 py-2 text-sm"
+        className="input-dark mt-2 w-full rounded-lg px-3 py-2 text-sm"
       />
-      {error && <p className="mt-1 text-xs text-red-600">{error}</p>}
+      {error && <p className="mt-1 text-xs text-red-400">{error}</p>}
       <button
         type="button"
         onClick={submit}
         disabled={submitting}
-        className="mt-2 rounded-full bg-brand-500 px-4 py-1.5 text-xs font-semibold text-white hover:bg-brand-600 disabled:opacity-60"
+        className="btn-glow mt-2 rounded-full px-4 py-1.5 text-xs font-semibold disabled:opacity-60"
       >
         {submitting ? "Submitting..." : "Submit Review"}
       </button>

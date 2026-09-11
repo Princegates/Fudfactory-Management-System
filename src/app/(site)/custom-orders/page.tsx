@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { QuotationRequestForm } from "@/components/site/QuotationRequestForm";
+import { Reveal } from "@/components/site/Reveal";
 
 export const metadata: Metadata = {
   title: "Custom & Event Orders",
@@ -8,14 +9,23 @@ export const metadata: Metadata = {
 
 export default function CustomOrdersPage() {
   return (
-    <div className="mx-auto max-w-3xl px-4 py-12 sm:px-6">
-      <h1 className="text-3xl font-extrabold text-cocoa-900">Custom &amp; Event Orders</h1>
-      <p className="mt-2 text-cocoa-900/70">
-        Planning a birthday, wedding, graduation or corporate event? Tell us what you need and
-        we&apos;ll send you a quotation.
-      </p>
-      <div className="mt-8 rounded-2xl border border-brand-100 bg-white p-6 shadow-sm">
-        <QuotationRequestForm />
+    <div className="relative">
+      <div className="aurora-bg opacity-30" />
+      <div className="relative mx-auto max-w-3xl px-4 py-20 sm:px-6">
+        <Reveal>
+          <h1 className="font-display text-4xl font-bold" style={{ color: "var(--text-hi)" }}>
+            Custom &amp; <span className="text-gradient">Event Orders</span>
+          </h1>
+          <p className="mt-3" style={{ color: "var(--text-mid)" }}>
+            Planning a birthday, wedding, graduation or corporate event? Tell us what you need and
+            we&apos;ll send you a quotation.
+          </p>
+        </Reveal>
+        <Reveal delay={0.1}>
+          <div className="glass-strong mt-8 rounded-2xl p-6">
+            <QuotationRequestForm />
+          </div>
+        </Reveal>
       </div>
     </div>
   );

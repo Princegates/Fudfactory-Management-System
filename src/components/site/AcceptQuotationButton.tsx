@@ -23,15 +23,10 @@ export function AcceptQuotationButton({ code }: { code: string }) {
 
   return (
     <div>
-      <button
-        type="button"
-        onClick={accept}
-        disabled={loading}
-        className="rounded-full bg-brand-500 px-6 py-3 text-sm font-semibold text-white hover:bg-brand-600 disabled:opacity-60"
-      >
+      <button type="button" onClick={accept} disabled={loading} className="btn-glow rounded-full px-6 py-3 text-sm font-semibold disabled:opacity-60">
         {loading ? "Accepting..." : "Accept Quotation"}
       </button>
-      {error && <p className="mt-2 text-sm text-red-600">{error}</p>}
+      {error && <p className="mt-2 text-sm text-red-400">{error}</p>}
     </div>
   );
 }

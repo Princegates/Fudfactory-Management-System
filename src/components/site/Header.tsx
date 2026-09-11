@@ -1,7 +1,8 @@
 "use client";
 
 import Link from "next/link";
-import { useState } from "react";
+import { usePathname } from "next/navigation";
+import { useEffect, useState } from "react";
 import { useCart } from "./CartContext";
 
 const NAV_LINKS = [
@@ -16,40 +17,63 @@ const NAV_LINKS = [
 
 export function Header() {
   const [open, setOpen] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
   const { count } = useCart();
+  const pathname = usePathname();
+
+  useEffect(() => {
+    const onScroll = () => setScrolled(window.scrollY > 8);
+    onScroll();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
 
   return (
-    <header className="sticky top-0 z-40 border-b border-brand-100 bg-[var(--background)]/95 backdrop-blur supports-[backdrop-filter]:bg-[var(--background)]/80">
-      <div className="mx-auto flex max-w-6xl items-center justify-between gap-4 px-4 py-3 sm:px-6">
-        <Link href="/" className="flex items-center gap-2 shrink-0">
-          <span className="grid h-9 w-9 place-items-center rounded-full bg-brand-500 text-sm font-bold text-white">
+    <header
+      className={`sticky top-0 z-40 transition-all duration-300 ${
+        scrolled ? "glass-strong shadow-[0_8px_32px_-16px_rgba(0,0,0,0.6)]" : "bg-transparent"
+      }`}
+    >
+      <div className="mx-auto flex max-w-6xl items-center justify-between gap-4 px-4 py-3.5 sm:px-6">
+        <Link href="/" className="group flex shrink-0 items-center gap-2.5">
+          <span className="relative grid h-9 w-9 place-items-center rounded-xl bg-gradient-to-br from-glow-amber to-glow-amber-strong text-sm font-bold text-ink-950 shadow-[0_0_20px_-2px_rgba(255,138,61,0.7)] transition-transform group-hover:scale-105">
             FF
           </span>
-          <span className="text-lg font-bold tracking-tight text-brand-800">FudFactory</span>
+          <span className="font-display text-lg font-bold tracking-tight text-text-hi" style={{ color: "var(--text-hi)" }}>
+            FudFactory
+          </span>
         </Link>
 
-        <nav className="hidden items-center gap-6 text-sm font-medium text-cocoa-900 md:flex">
-          {NAV_LINKS.map((link) => (
-            <Link key={link.href} href={link.href} className="transition hover:text-brand-600">
-              {link.label}
-            </Link>
-          ))}
+        <nav className="hidden items-center gap-1 text-sm font-medium md:flex">
+          {NAV_LINKS.map((link) => {
+            const active = pathname === link.href;
+            return (
+              <Link
+                key={link.href}
+                href={link.href}
+                className={`relative rounded-full px-3.5 py-2 transition-colors ${
+                  active ? "text-glow-amber" : "hover:text-glow-amber"
+                }`}
+                style={{ color: active ? "var(--glow-amber)" : "var(--text-mid)" }}
+              >
+                {link.label}
+              </Link>
+            );
+          })}
         </nav>
 
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-2.5">
           <Link
             href="/account"
-            className="hidden text-sm font-medium text-cocoa-900 transition hover:text-brand-600 sm:block"
+            className="hidden rounded-full px-3.5 py-2 text-sm font-medium transition-colors hover:text-glow-amber sm:block"
+            style={{ color: "var(--text-mid)" }}
           >
             Account
           </Link>
-          <Link
-            href="/cart"
-            className="relative inline-flex items-center gap-2 rounded-full bg-brand-500 px-4 py-2 text-sm font-semibold text-white shadow-sm transition hover:bg-brand-600"
-          >
+          <Link href="/cart" className="btn-glow relative inline-flex items-center gap-2 rounded-full px-4 py-2 text-sm font-semibold">
             Cart
             {count > 0 && (
-              <span className="grid h-5 w-5 place-items-center rounded-full bg-white text-xs font-bold text-brand-700">
+              <span className="grid h-5 w-5 place-items-center rounded-full bg-ink-950 text-xs font-bold text-glow-amber">
                 {count}
               </span>
             )}
@@ -57,7 +81,8 @@ export function Header() {
           <button
             type="button"
             onClick={() => setOpen((v) => !v)}
-            className="grid h-9 w-9 place-items-center rounded-md border border-brand-200 text-brand-700 md:hidden"
+            className="glass grid h-10 w-10 place-items-center rounded-xl text-lg md:hidden"
+            style={{ color: "var(--text-hi)" }}
             aria-label="Toggle menu"
             aria-expanded={open}
           >
@@ -67,14 +92,15 @@ export function Header() {
       </div>
 
       {open && (
-        <nav className="border-t border-brand-100 bg-[var(--background)] px-4 py-3 md:hidden">
+        <nav className="glass-strong border-t px-4 py-3 md:hidden" style={{ borderColor: "var(--ink-border)" }}>
           <ul className="flex flex-col gap-1">
             {NAV_LINKS.map((link) => (
               <li key={link.href}>
                 <Link
                   href={link.href}
                   onClick={() => setOpen(false)}
-                  className="block rounded-md px-2 py-2 text-sm font-medium text-cocoa-900 hover:bg-brand-50"
+                  className="block rounded-lg px-3 py-2.5 text-sm font-medium transition hover:bg-white/5"
+                  style={{ color: "var(--text-hi)" }}
                 >
                   {link.label}
                 </Link>
@@ -84,7 +110,8 @@ export function Header() {
               <Link
                 href="/account"
                 onClick={() => setOpen(false)}
-                className="block rounded-md px-2 py-2 text-sm font-medium text-cocoa-900 hover:bg-brand-50"
+                className="block rounded-lg px-3 py-2.5 text-sm font-medium transition hover:bg-white/5"
+                style={{ color: "var(--text-hi)" }}
               >
                 Account
               </Link>

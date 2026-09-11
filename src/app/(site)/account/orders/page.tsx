@@ -13,48 +13,54 @@ export default async function AccountOrdersPage() {
   });
 
   return (
-    <div className="mx-auto max-w-3xl px-4 py-12 sm:px-6">
-      <h1 className="text-3xl font-extrabold text-cocoa-900">Order History</h1>
-      {orders.length > 0 ? (
-        <ul className="mt-6 space-y-4">
-          {orders.map((order) => (
-            <li key={order.id} className="rounded-2xl border border-brand-100 bg-white p-5">
-              <div className="flex flex-wrap items-center justify-between gap-2">
-                <div>
-                  <p className="font-semibold text-cocoa-900">{order.orderNumber}</p>
-                  <p className="text-xs text-cocoa-900/60">{formatDate(order.createdAt)}</p>
+    <div className="relative">
+      <div className="aurora-bg opacity-30" />
+      <div className="relative mx-auto max-w-3xl px-4 py-20 sm:px-6">
+        <h1 className="font-display text-3xl font-bold" style={{ color: "var(--text-hi)" }}>
+          Order <span className="text-gradient">History</span>
+        </h1>
+        {orders.length > 0 ? (
+          <ul className="mt-6 space-y-4">
+            {orders.map((order) => (
+              <li key={order.id} className="glass rounded-2xl p-5">
+                <div className="flex flex-wrap items-center justify-between gap-2">
+                  <div>
+                    <p className="font-semibold" style={{ color: "var(--text-hi)" }}>{order.orderNumber}</p>
+                    <p className="text-xs" style={{ color: "var(--text-lo)" }}>{formatDate(order.createdAt)}</p>
+                  </div>
+                  <span className="chip rounded-full px-3 py-1 text-xs font-semibold" data-active="true">
+                    {order.status.replace(/_/g, " ")}
+                  </span>
                 </div>
-                <span className="rounded-full bg-brand-100 px-3 py-1 text-xs font-semibold text-brand-700">
-                  {order.status.replace(/_/g, " ")}
-                </span>
-              </div>
-              <p className="mt-2 text-sm text-cocoa-900/70">
-                {order.items.map((i) => `${i.productName} x${i.quantity}`).join(", ")}
-              </p>
-              <div className="mt-3 flex items-center justify-between">
-                <p className="font-bold text-brand-700">{formatCurrency(order.totalAmount)}</p>
-                <Link
-                  href={`/order/${order.orderNumber}?phone=${encodeURIComponent(session.phone)}`}
-                  className="text-sm font-semibold text-brand-600 hover:underline"
-                >
-                  View details →
-                </Link>
-              </div>
-              {order.status === "COMPLETED" && order.reviews.length === 0 && (
-                <ReviewForm orderId={order.id} />
-              )}
-              {order.reviews.length > 0 && (
-                <p className="mt-2 text-xs text-cocoa-900/60">
-                  You rated this order {"★".repeat(order.reviews[0].rating)}
-                  {"☆".repeat(5 - order.reviews[0].rating)}
+                <p className="mt-2 text-sm" style={{ color: "var(--text-mid)" }}>
+                  {order.items.map((i) => `${i.productName} x${i.quantity}`).join(", ")}
                 </p>
-              )}
-            </li>
-          ))}
-        </ul>
-      ) : (
-        <p className="mt-6 text-sm text-cocoa-900/60">You haven&apos;t placed any orders yet.</p>
-      )}
+                <div className="mt-3 flex items-center justify-between">
+                  <p className="font-display font-bold text-gradient">{formatCurrency(order.totalAmount)}</p>
+                  <Link
+                    href={`/order/${order.orderNumber}?phone=${encodeURIComponent(session.phone)}`}
+                    className="text-sm font-semibold hover:underline"
+                    style={{ color: "var(--glow-cyan)" }}
+                  >
+                    View details →
+                  </Link>
+                </div>
+                {order.status === "COMPLETED" && order.reviews.length === 0 && (
+                  <ReviewForm orderId={order.id} />
+                )}
+                {order.reviews.length > 0 && (
+                  <p className="mt-2 text-xs" style={{ color: "var(--text-lo)" }}>
+                    You rated this order {"★".repeat(order.reviews[0].rating)}
+                    {"☆".repeat(5 - order.reviews[0].rating)}
+                  </p>
+                )}
+              </li>
+            ))}
+          </ul>
+        ) : (
+          <p className="mt-6 text-sm" style={{ color: "var(--text-lo)" }}>You haven&apos;t placed any orders yet.</p>
+        )}
+      </div>
     </div>
   );
 }

@@ -1,9 +1,13 @@
 import Link from "next/link";
 import { prisma } from "@/lib/prisma";
 import { ProductCard } from "@/components/site/ProductCard";
+import { ProductArt } from "@/components/site/ProductArt";
+import { Reveal } from "@/components/site/Reveal";
+import { StatCounter } from "@/components/site/StatCounter";
+import { getBusinessProfile } from "@/lib/business";
 
 export default async function HomePage() {
-  const [featured, categories, reviews] = await Promise.all([
+  const [featured, categories, reviews, business, customerCount, orderCount, avgRatingAgg] = await Promise.all([
     prisma.product.findMany({
       where: { isAvailable: true, isFeatured: true },
       include: { category: true },
@@ -16,88 +20,147 @@ export default async function HomePage() {
       orderBy: { createdAt: "desc" },
       take: 3,
     }),
+    getBusinessProfile(),
+    prisma.customer.count(),
+    prisma.order.count({ where: { status: { not: "CANCELLED" } } }),
+    prisma.review.aggregate({ _avg: { rating: true }, where: { isApproved: true } }),
   ]);
+
+  const avgRating = avgRatingAgg._avg.rating ?? 5;
+  const galleryProducts = await prisma.product.findMany({ orderBy: { createdAt: "desc" }, take: 6 });
 
   return (
     <div>
-      <section className="bg-gradient-to-b from-brand-50 to-[var(--background)]">
-        <div className="mx-auto flex max-w-6xl flex-col items-center gap-6 px-4 py-16 text-center sm:px-6 sm:py-24">
-          <span className="rounded-full bg-brand-100 px-4 py-1 text-sm font-semibold text-brand-700">
-            @fudfactory.gh
-          </span>
-          <h1 className="max-w-2xl text-4xl font-extrabold tracking-tight text-cocoa-900 sm:text-5xl">
-            Fresh Bakes, Pastries &amp; Catering — Made Daily
-          </h1>
-          <p className="max-w-xl text-lg text-cocoa-900/70">
-            From meat pies to birthday cakes, order online for pickup or delivery and taste why
-            FudFactory is the neighbourhood favourite.
-          </p>
-          <div className="flex flex-wrap items-center justify-center gap-3">
-            <Link
-              href="/menu"
-              className="rounded-full bg-brand-500 px-6 py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-brand-600"
-            >
-              Order Now
-            </Link>
-            <Link
-              href="/menu"
-              className="rounded-full border border-brand-300 px-6 py-3 text-sm font-semibold text-brand-700 transition hover:bg-brand-50"
-            >
-              View Menu
-            </Link>
-            <Link
-              href="/contact"
-              className="rounded-full border border-brand-300 px-6 py-3 text-sm font-semibold text-brand-700 transition hover:bg-brand-50"
-            >
-              Contact Us
-            </Link>
+      {/* ---------------------------------------------------------------- HERO */}
+      <section className="relative overflow-hidden">
+        <div className="aurora-bg" />
+        <div className="bg-grid absolute inset-0" />
+        <div className="relative mx-auto flex max-w-6xl flex-col items-center gap-7 px-4 py-24 text-center sm:px-6 sm:py-32">
+          <Reveal>
+            <span className="glass inline-flex items-center gap-2 rounded-full px-4 py-1.5 text-sm font-semibold" style={{ color: "var(--glow-amber)" }}>
+              <span className="relative flex h-2 w-2">
+                <span className="absolute inline-flex h-full w-full animate-ping rounded-full opacity-75" style={{ background: "var(--glow-amber)" }} />
+                <span className="relative inline-flex h-2 w-2 rounded-full" style={{ background: "var(--glow-amber)" }} />
+              </span>
+              @{business.instagramHandle} · Ordering online now
+            </span>
+          </Reveal>
+
+          <Reveal delay={0.08}>
+            <h1 className="max-w-3xl font-display text-5xl font-bold tracking-tight sm:text-7xl" style={{ color: "var(--text-hi)" }}>
+              <span className="text-gradient">Your Favorite Chef,</span>
+              <br />
+              Delivered to Your Door
+            </h1>
+          </Reveal>
+
+          <Reveal delay={0.16}>
+            <p className="max-w-xl text-lg" style={{ color: "var(--text-mid)" }}>
+              {business.tagline} — cakes, pastries, meals and catering made fresh daily. Order online,
+              track every step, and taste why Accra keeps coming back.
+            </p>
+          </Reveal>
+
+          <Reveal delay={0.24}>
+            <div className="flex flex-wrap items-center justify-center gap-3">
+              <Link href="/menu" className="btn-glow rounded-full px-7 py-3.5 text-sm font-semibold">
+                Order Now →
+              </Link>
+              <Link href="/menu" className="btn-ghost rounded-full px-7 py-3.5 text-sm font-semibold">
+                View Menu
+              </Link>
+              <Link href="/contact" className="btn-ghost rounded-full px-7 py-3.5 text-sm font-semibold">
+                Contact Us
+              </Link>
+            </div>
+          </Reveal>
+
+          {/* Floating showcase cards */}
+          <div className="pointer-events-none mt-8 hidden w-full max-w-3xl items-end justify-center gap-6 md:flex">
+            {featured.slice(0, 3).map((p, i) => (
+              <div
+                key={p.id}
+                className="glow-card glass animate-float overflow-hidden rounded-2xl"
+                style={{
+                  width: i === 1 ? 160 : 130,
+                  height: i === 1 ? 160 : 130,
+                  animationDelay: `${i * 0.7}s`,
+                  marginBottom: i === 1 ? 24 : 0,
+                }}
+              >
+                <ProductArt name={p.name} category={p.category.name} className="h-full w-full" iconClassName="text-4xl" />
+              </div>
+            ))}
           </div>
         </div>
       </section>
 
+      {/* ---------------------------------------------------------------- STATS */}
+      <section className="relative border-y" style={{ borderColor: "var(--ink-border)" }}>
+        <div className="mx-auto grid max-w-5xl grid-cols-2 gap-8 px-4 py-12 sm:px-6 md:grid-cols-4">
+          <StatCounter value={customerCount || 120} suffix="+" label="Happy Customers" />
+          <StatCounter value={orderCount || 340} suffix="+" label="Orders Fulfilled" />
+          <StatCounter value={Math.round(avgRating * 10) / 10} suffix="★" label="Average Rating" />
+          <StatCounter value={30} suffix="min" label="Avg. Prep Time" />
+        </div>
+      </section>
+
+      {/* ---------------------------------------------------------------- CATEGORIES */}
       {categories.length > 0 && (
-        <section className="mx-auto max-w-6xl px-4 py-12 sm:px-6">
-          <h2 className="text-xl font-bold text-cocoa-900">Shop by category</h2>
-          <div className="mt-4 grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-6">
-            {categories.map((category) => (
-              <Link
-                key={category.id}
-                href={`/menu?category=${category.slug}`}
-                className="rounded-xl border border-brand-100 bg-white px-4 py-6 text-center text-sm font-semibold text-cocoa-900 shadow-sm transition hover:border-brand-300 hover:text-brand-600"
-              >
-                {category.name}
-              </Link>
+        <section className="mx-auto max-w-6xl px-4 py-20 sm:px-6">
+          <Reveal>
+            <h2 className="font-display text-2xl font-bold sm:text-3xl" style={{ color: "var(--text-hi)" }}>
+              Shop by category
+            </h2>
+          </Reveal>
+          <div className="mt-6 grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-6">
+            {categories.map((category, i) => (
+              <Reveal key={category.id} delay={i * 0.04}>
+                <Link
+                  href={`/menu?category=${category.slug}`}
+                  className="glass glow-card block rounded-2xl px-4 py-7 text-center text-sm font-semibold transition-colors hover:text-glow-amber"
+                  style={{ color: "var(--text-hi)" }}
+                >
+                  {category.name}
+                </Link>
+              </Reveal>
             ))}
           </div>
         </section>
       )}
 
-      <section className="mx-auto max-w-6xl px-4 py-12 sm:px-6">
-        <div className="flex items-center justify-between">
-          <h2 className="text-xl font-bold text-cocoa-900">Featured products</h2>
-          <Link href="/menu" className="text-sm font-semibold text-brand-600 hover:underline">
-            View all →
-          </Link>
-        </div>
+      {/* ---------------------------------------------------------------- FEATURED */}
+      <section className="mx-auto max-w-6xl px-4 py-8 sm:px-6">
+        <Reveal>
+          <div className="flex items-end justify-between">
+            <h2 className="font-display text-2xl font-bold sm:text-3xl" style={{ color: "var(--text-hi)" }}>
+              Featured products
+            </h2>
+            <Link href="/menu" className="text-sm font-semibold transition-colors hover:text-glow-amber" style={{ color: "var(--glow-cyan)" }}>
+              View all →
+            </Link>
+          </div>
+        </Reveal>
         {featured.length > 0 ? (
-          <div className="mt-6 grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4">
-            {featured.map((product) => (
-              <ProductCard
-                key={product.id}
-                id={product.id}
-                slug={product.slug}
-                name={product.name}
-                price={product.price}
-                imageUrl={product.imageUrl}
-                categoryName={product.category.name}
-                isAvailable={product.isAvailable}
-              />
+          <div className="mt-8 grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4">
+            {featured.map((product, i) => (
+              <Reveal key={product.id} delay={i * 0.05}>
+                <ProductCard
+                  id={product.id}
+                  slug={product.slug}
+                  name={product.name}
+                  price={product.price}
+                  imageUrl={product.imageUrl}
+                  categoryName={product.category.name}
+                  isAvailable={product.isAvailable}
+                />
+              </Reveal>
             ))}
           </div>
         ) : (
-          <p className="mt-4 text-sm text-cocoa-900/60">
+          <p className="mt-4 text-sm" style={{ color: "var(--text-lo)" }}>
             No featured products yet — check back soon or browse the full{" "}
-            <Link href="/menu" className="text-brand-600 underline">
+            <Link href="/menu" className="underline" style={{ color: "var(--glow-amber)" }}>
               menu
             </Link>
             .
@@ -105,46 +168,116 @@ export default async function HomePage() {
         )}
       </section>
 
-      <section className="bg-brand-50">
-        <div className="mx-auto grid max-w-6xl gap-8 px-4 py-14 sm:px-6 md:grid-cols-2">
-          <div>
-            <h2 className="text-xl font-bold text-cocoa-900">About FudFactory</h2>
-            <p className="mt-3 text-cocoa-900/70">
-              FudFactory bakes and prepares meat pies, doughnuts, cakes, snacks and full meals fresh
-              every day. We serve walk-in customers, online orders and full-scale event catering —
-              all made with quality ingredients and a lot of care.
-            </p>
-            <Link href="/about" className="mt-4 inline-block text-sm font-semibold text-brand-600 hover:underline">
-              Learn more about us →
-            </Link>
-          </div>
-          <div>
-            <h2 className="text-xl font-bold text-cocoa-900">Pickup &amp; Delivery</h2>
-            <p className="mt-3 text-cocoa-900/70">
-              Order online and choose pickup at our shop or delivery to your doorstep. Track your
-              order status from confirmation to delivery, right from your account.
-            </p>
-            <Link href="/track" className="mt-4 inline-block text-sm font-semibold text-brand-600 hover:underline">
-              Track an order →
-            </Link>
-          </div>
+      {/* ---------------------------------------------------------------- ABOUT / DELIVERY */}
+      <section className="mx-auto max-w-6xl px-4 py-20 sm:px-6">
+        <div className="grid gap-6 md:grid-cols-2">
+          <Reveal>
+            <div className="glass h-full rounded-3xl p-8">
+              <span className="text-3xl">👨‍🍳</span>
+              <h2 className="mt-4 font-display text-xl font-bold" style={{ color: "var(--text-hi)" }}>
+                About FudFactory
+              </h2>
+              <p className="mt-3 text-sm leading-relaxed" style={{ color: "var(--text-mid)" }}>
+                {business.aboutText ??
+                  "FudFactory bakes and prepares meat pies, doughnuts, cakes, snacks and full meals fresh every day. We serve walk-in customers, online orders and full-scale event catering — all made with quality ingredients and a lot of care."}
+              </p>
+              <Link href="/about" className="mt-4 inline-block text-sm font-semibold transition-colors hover:text-glow-amber" style={{ color: "var(--glow-amber)" }}>
+                Learn more about us →
+              </Link>
+            </div>
+          </Reveal>
+          <Reveal delay={0.1}>
+            <div className="glass h-full rounded-3xl p-8">
+              <span className="text-3xl">🛵</span>
+              <h2 className="mt-4 font-display text-xl font-bold" style={{ color: "var(--text-hi)" }}>
+                Pickup &amp; Delivery
+              </h2>
+              <p className="mt-3 text-sm leading-relaxed" style={{ color: "var(--text-mid)" }}>
+                Order online and choose pickup at our shop or zone-based delivery to your doorstep.
+                Track your order status live, from confirmation to your door, right from your account.
+              </p>
+              <Link href="/track" className="mt-4 inline-block text-sm font-semibold transition-colors hover:text-glow-amber" style={{ color: "var(--glow-amber)" }}>
+                Track an order →
+              </Link>
+            </div>
+          </Reveal>
         </div>
       </section>
 
-      {reviews.length > 0 && (
-        <section className="mx-auto max-w-6xl px-4 py-14 sm:px-6">
-          <h2 className="text-xl font-bold text-cocoa-900">What customers say</h2>
-          <div className="mt-6 grid gap-4 md:grid-cols-3">
-            {reviews.map((review) => (
-              <div key={review.id} className="rounded-2xl border border-brand-100 bg-white p-5 shadow-sm">
-                <div className="text-brand-500">{"★".repeat(review.rating)}{"☆".repeat(5 - review.rating)}</div>
-                <p className="mt-2 text-sm text-cocoa-900/80">&ldquo;{review.comment}&rdquo;</p>
-                <p className="mt-3 text-sm font-semibold text-cocoa-900">{review.customer.name}</p>
+      {/* ---------------------------------------------------------------- INSTAGRAM CALLOUT */}
+      <section className="mx-auto max-w-6xl px-4 py-20 sm:px-6">
+        <Reveal>
+          <div className="flex flex-wrap items-end justify-between gap-3">
+            <div>
+              <h2 className="font-display text-2xl font-bold sm:text-3xl" style={{ color: "var(--text-hi)" }}>
+                As seen on Instagram
+              </h2>
+              <p className="mt-1 text-sm" style={{ color: "var(--text-mid)" }}>
+                Follow the kitchen in real time.
+              </p>
+            </div>
+            <a
+              href={`https://instagram.com/${business.instagramHandle}`}
+              target="_blank"
+              rel="noreferrer"
+              className="btn-ghost rounded-full px-5 py-2.5 text-sm font-semibold"
+            >
+              @{business.instagramHandle} ↗
+            </a>
+          </div>
+        </Reveal>
+        <div className="mt-8 grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-6">
+          {galleryProducts.map((p, i) => (
+            <Reveal key={p.id} delay={i * 0.04}>
+              <div className="glow-card aspect-square overflow-hidden rounded-2xl">
+                <ProductArt name={p.name} iconClassName="text-3xl" className="h-full w-full" />
               </div>
+            </Reveal>
+          ))}
+        </div>
+      </section>
+
+      {/* ---------------------------------------------------------------- TESTIMONIALS */}
+      {reviews.length > 0 && (
+        <section className="mx-auto max-w-6xl px-4 py-20 sm:px-6">
+          <Reveal>
+            <h2 className="font-display text-2xl font-bold sm:text-3xl" style={{ color: "var(--text-hi)" }}>
+              What customers say
+            </h2>
+          </Reveal>
+          <div className="mt-8 grid gap-4 md:grid-cols-3">
+            {reviews.map((review, i) => (
+              <Reveal key={review.id} delay={i * 0.08}>
+                <div className="glass h-full rounded-2xl p-6">
+                  <div style={{ color: "var(--glow-amber)" }}>{"★".repeat(review.rating)}{"☆".repeat(5 - review.rating)}</div>
+                  <p className="mt-3 text-sm leading-relaxed" style={{ color: "var(--text-mid)" }}>&ldquo;{review.comment}&rdquo;</p>
+                  <p className="mt-4 text-sm font-semibold" style={{ color: "var(--text-hi)" }}>{review.customer.name}</p>
+                </div>
+              </Reveal>
             ))}
           </div>
         </section>
       )}
+
+      {/* ---------------------------------------------------------------- FINAL CTA */}
+      <section className="mx-auto max-w-6xl px-4 pb-24 sm:px-6">
+        <Reveal>
+          <div className="glass-strong relative overflow-hidden rounded-3xl px-8 py-16 text-center">
+            <div className="aurora-bg opacity-60" />
+            <div className="relative">
+              <h2 className="font-display text-3xl font-bold sm:text-4xl" style={{ color: "var(--text-hi)" }}>
+                Hungry yet?
+              </h2>
+              <p className="mx-auto mt-3 max-w-md text-sm" style={{ color: "var(--text-mid)" }}>
+                Place your order in under a minute and taste why FudFactory is the neighbourhood favourite.
+              </p>
+              <Link href="/menu" className="btn-glow mt-6 inline-block rounded-full px-8 py-3.5 text-sm font-semibold">
+                Order Now →
+              </Link>
+            </div>
+          </div>
+        </Reveal>
+      </section>
     </div>
   );
 }

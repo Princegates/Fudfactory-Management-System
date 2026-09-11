@@ -13,58 +13,68 @@ export default async function AccountDashboardPage() {
   if (!customer) return null;
 
   return (
-    <div className="mx-auto max-w-3xl px-4 py-12 sm:px-6">
-      <div className="flex items-center justify-between">
-        <h1 className="text-3xl font-extrabold text-cocoa-900">Hi, {customer.name.split(" ")[0]}</h1>
-        <CustomerLogoutButton />
-      </div>
+    <div className="relative">
+      <div className="aurora-bg opacity-30" />
+      <div className="relative mx-auto max-w-3xl px-4 py-20 sm:px-6">
+        <div className="flex items-center justify-between">
+          <h1 className="font-display text-3xl font-bold" style={{ color: "var(--text-hi)" }}>
+            Hi, <span className="text-gradient">{customer.name.split(" ")[0]}</span>
+          </h1>
+          <CustomerLogoutButton />
+        </div>
 
-      <div className="mt-8 grid gap-4 sm:grid-cols-3">
-        <div className="rounded-2xl border border-brand-100 bg-white p-5 text-center">
-          <p className="text-2xl font-bold text-brand-700">{customer.loyaltyPoints}</p>
-          <p className="text-sm text-cocoa-900/60">Loyalty points</p>
+        <div className="mt-8 grid gap-4 sm:grid-cols-3">
+          <div className="glass rounded-2xl p-5 text-center">
+            <p className="font-display text-2xl font-bold text-gradient">{customer.loyaltyPoints}</p>
+            <p className="text-sm" style={{ color: "var(--text-lo)" }}>Loyalty points</p>
+          </div>
+          <div className="glass rounded-2xl p-5 text-center">
+            <p className="font-display text-2xl font-bold text-gradient">{formatCurrency(customer.totalPurchases)}</p>
+            <p className="text-sm" style={{ color: "var(--text-lo)" }}>Total spent</p>
+          </div>
+          <div className="glass rounded-2xl p-5 text-center">
+            <p className="font-display text-2xl font-bold text-gradient">{customer.segment}</p>
+            <p className="text-sm" style={{ color: "var(--text-lo)" }}>Customer tier</p>
+          </div>
         </div>
-        <div className="rounded-2xl border border-brand-100 bg-white p-5 text-center">
-          <p className="text-2xl font-bold text-brand-700">{formatCurrency(customer.totalPurchases)}</p>
-          <p className="text-sm text-cocoa-900/60">Total spent</p>
-        </div>
-        <div className="rounded-2xl border border-brand-100 bg-white p-5 text-center">
-          <p className="text-2xl font-bold text-brand-700">{customer.segment}</p>
-          <p className="text-sm text-cocoa-900/60">Customer tier</p>
-        </div>
-      </div>
 
-      <div className="mt-10 flex items-center justify-between">
-        <h2 className="text-xl font-bold text-cocoa-900">Recent orders</h2>
-        <Link href="/account/orders" className="text-sm font-semibold text-brand-600 hover:underline">
-          View all →
-        </Link>
+        <div className="mt-12 flex items-center justify-between">
+          <h2 className="font-display text-xl font-bold" style={{ color: "var(--text-hi)" }}>Recent orders</h2>
+          <Link href="/account/orders" className="text-sm font-semibold hover:underline" style={{ color: "var(--glow-cyan)" }}>
+            View all →
+          </Link>
+        </div>
+        {customer.orders.length > 0 ? (
+          <ul className="glass mt-4 divide-y rounded-2xl" style={{ borderColor: "var(--ink-border)" }}>
+            {customer.orders.map((order) => (
+              <li key={order.id} className="flex items-center justify-between p-4" style={{ borderColor: "var(--ink-border)" }}>
+                <div>
+                  <p className="font-semibold" style={{ color: "var(--text-hi)" }}>{order.orderNumber}</p>
+                  <p className="text-sm" style={{ color: "var(--text-lo)" }}>{order.status.replace(/_/g, " ")}</p>
+                </div>
+                <div className="text-right">
+                  <p className="font-semibold" style={{ color: "var(--text-hi)" }}>{formatCurrency(order.totalAmount)}</p>
+                  <Link
+                    href={`/order/${order.orderNumber}?phone=${encodeURIComponent(customer.phone)}`}
+                    className="text-sm hover:underline"
+                    style={{ color: "var(--glow-cyan)" }}
+                  >
+                    Track
+                  </Link>
+                </div>
+              </li>
+            ))}
+          </ul>
+        ) : (
+          <p className="mt-4 text-sm" style={{ color: "var(--text-lo)" }}>
+            No orders yet —{" "}
+            <Link href="/menu" className="hover:underline" style={{ color: "var(--glow-amber)" }}>
+              browse the menu
+            </Link>
+            .
+          </p>
+        )}
       </div>
-      {customer.orders.length > 0 ? (
-        <ul className="mt-4 divide-y divide-brand-100 rounded-2xl border border-brand-100 bg-white">
-          {customer.orders.map((order) => (
-            <li key={order.id} className="flex items-center justify-between p-4">
-              <div>
-                <p className="font-semibold text-cocoa-900">{order.orderNumber}</p>
-                <p className="text-sm text-cocoa-900/60">{order.status.replace(/_/g, " ")}</p>
-              </div>
-              <div className="text-right">
-                <p className="font-semibold text-cocoa-900">{formatCurrency(order.totalAmount)}</p>
-                <Link
-                  href={`/order/${order.orderNumber}?phone=${encodeURIComponent(customer.phone)}`}
-                  className="text-sm text-brand-600 hover:underline"
-                >
-                  Track
-                </Link>
-              </div>
-            </li>
-          ))}
-        </ul>
-      ) : (
-        <p className="mt-4 text-sm text-cocoa-900/60">
-          No orders yet — <Link href="/menu" className="text-brand-600 hover:underline">browse the menu</Link>.
-        </p>
-      )}
     </div>
   );
 }

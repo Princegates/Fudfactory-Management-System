@@ -36,57 +36,65 @@ export default async function OrderTrackingPage({
   const isTerminalIssue = ["CANCELLED", "REFUNDED", "REJECTED", "PARTIALLY_FULFILLED"].includes(order.status);
 
   return (
-    <div className="mx-auto max-w-3xl px-4 py-12 sm:px-6">
-      <div className="rounded-2xl border border-brand-100 bg-white p-6 shadow-sm">
-        <div className="flex flex-wrap items-center justify-between gap-2">
-          <h1 className="text-2xl font-extrabold text-cocoa-900">Order {order.orderNumber}</h1>
-          <span className="rounded-full bg-brand-100 px-3 py-1 text-xs font-semibold text-brand-700">
-            {order.status.replace(/_/g, " ")}
-          </span>
-        </div>
-        <p className="mt-1 text-sm text-cocoa-900/60">Placed {formatDate(order.createdAt)}</p>
-
-        {!isTerminalIssue && (
-          <ol className="mt-6 flex flex-wrap gap-2 text-xs">
-            {STATUS_STEPS.map((step, idx) => (
-              <li
-                key={step}
-                className={`rounded-full px-3 py-1 font-semibold ${
-                  idx <= currentIndex ? "bg-brand-500 text-white" : "bg-brand-50 text-cocoa-900/50"
-                }`}
-              >
-                {step.replace(/_/g, " ")}
-              </li>
-            ))}
-          </ol>
-        )}
-
-        <table className="mt-6 w-full text-sm">
-          <tbody>
-            {order.items.map((item) => (
-              <tr key={item.id} className="border-b border-brand-50">
-                <td className="py-2">{item.productName} × {item.quantity}</td>
-                <td className="py-2 text-right">{formatCurrency(item.subtotal)}</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-
-        <dl className="mt-4 space-y-1 text-sm text-cocoa-900/80">
-          <div className="flex justify-between"><dt>Subtotal</dt><dd>{formatCurrency(order.subtotal)}</dd></div>
-          {order.discountAmount > 0 && (
-            <div className="flex justify-between text-green-600"><dt>Discount</dt><dd>-{formatCurrency(order.discountAmount)}</dd></div>
-          )}
-          <div className="flex justify-between"><dt>Delivery</dt><dd>{formatCurrency(order.deliveryFee)}</dd></div>
-          <div className="flex justify-between border-t border-brand-100 pt-2 text-base font-bold text-cocoa-900">
-            <dt>Total</dt><dd>{formatCurrency(order.totalAmount)}</dd>
+    <div className="relative">
+      <div className="aurora-bg opacity-30" />
+      <div className="relative mx-auto max-w-3xl px-4 py-20 sm:px-6">
+        <div className="glass-strong rounded-2xl p-6">
+          <div className="flex flex-wrap items-center justify-between gap-2">
+            <h1 className="font-display text-2xl font-bold" style={{ color: "var(--text-hi)" }}>
+              Order {order.orderNumber}
+            </h1>
+            <span className="chip rounded-full px-3 py-1 text-xs font-semibold" data-active="true">
+              {order.status.replace(/_/g, " ")}
+            </span>
           </div>
-        </dl>
+          <p className="mt-1 text-sm" style={{ color: "var(--text-lo)" }}>Placed {formatDate(order.createdAt)}</p>
 
-        <div className="mt-4 text-sm text-cocoa-900/70">
-          <p><span className="font-semibold">Fulfillment:</span> {order.fulfillmentType}</p>
-          {order.deliveryAddress && <p><span className="font-semibold">Address:</span> {order.deliveryAddress}</p>}
-          <p><span className="font-semibold">Payment status:</span> {order.paymentStatus}</p>
+          {!isTerminalIssue && (
+            <ol className="mt-6 flex flex-wrap gap-2 text-xs">
+              {STATUS_STEPS.map((step, idx) => (
+                <li
+                  key={step}
+                  className="rounded-full px-3 py-1 font-semibold"
+                  style={
+                    idx <= currentIndex
+                      ? { background: "linear-gradient(135deg, var(--glow-amber), var(--glow-amber-strong))", color: "#1a0f04" }
+                      : { background: "rgba(255,255,255,0.04)", color: "var(--text-lo)" }
+                  }
+                >
+                  {step.replace(/_/g, " ")}
+                </li>
+              ))}
+            </ol>
+          )}
+
+          <table className="mt-6 w-full text-sm">
+            <tbody>
+              {order.items.map((item) => (
+                <tr key={item.id} className="border-b" style={{ borderColor: "var(--ink-border)", color: "var(--text-mid)" }}>
+                  <td className="py-2">{item.productName} × {item.quantity}</td>
+                  <td className="py-2 text-right">{formatCurrency(item.subtotal)}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+
+          <dl className="mt-4 space-y-1 text-sm" style={{ color: "var(--text-mid)" }}>
+            <div className="flex justify-between"><dt>Subtotal</dt><dd>{formatCurrency(order.subtotal)}</dd></div>
+            {order.discountAmount > 0 && (
+              <div className="flex justify-between text-green-400"><dt>Discount</dt><dd>-{formatCurrency(order.discountAmount)}</dd></div>
+            )}
+            <div className="flex justify-between"><dt>Delivery</dt><dd>{formatCurrency(order.deliveryFee)}</dd></div>
+            <div className="flex justify-between border-t pt-2 text-base font-bold" style={{ borderColor: "var(--ink-border)", color: "var(--text-hi)" }}>
+              <dt>Total</dt><dd>{formatCurrency(order.totalAmount)}</dd>
+            </div>
+          </dl>
+
+          <div className="mt-4 text-sm" style={{ color: "var(--text-mid)" }}>
+            <p><span className="font-semibold" style={{ color: "var(--text-hi)" }}>Fulfillment:</span> {order.fulfillmentType}</p>
+            {order.deliveryAddress && <p><span className="font-semibold" style={{ color: "var(--text-hi)" }}>Address:</span> {order.deliveryAddress}</p>}
+            <p><span className="font-semibold" style={{ color: "var(--text-hi)" }}>Payment status:</span> {order.paymentStatus}</p>
+          </div>
         </div>
       </div>
     </div>

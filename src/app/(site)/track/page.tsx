@@ -14,28 +14,33 @@ export default function TrackOrderPage() {
   }
 
   return (
-    <div className="mx-auto max-w-md px-4 py-16 sm:px-6">
-      <h1 className="text-3xl font-extrabold text-cocoa-900">Track Your Order</h1>
-      <p className="mt-2 text-cocoa-900/70">Enter your order number and the phone number used to place it.</p>
-      <form onSubmit={handleSubmit} className="mt-6 flex flex-col gap-3">
-        <input
-          required
-          value={orderNumber}
-          onChange={(e) => setOrderNumber(e.target.value)}
-          placeholder="Order number (e.g. ORD-2026-000145)"
-          className="rounded-lg border border-brand-200 px-4 py-2 text-sm"
-        />
-        <input
-          required
-          value={phone}
-          onChange={(e) => setPhone(e.target.value)}
-          placeholder="Phone number"
-          className="rounded-lg border border-brand-200 px-4 py-2 text-sm"
-        />
-        <button type="submit" className="rounded-full bg-brand-500 py-3 text-sm font-semibold text-white hover:bg-brand-600">
-          Track Order
-        </button>
-      </form>
+    <div className="relative">
+      <div className="aurora-bg opacity-30" />
+      <div className="relative mx-auto max-w-md px-4 py-24 sm:px-6">
+        <h1 className="font-display text-3xl font-bold" style={{ color: "var(--text-hi)" }}>
+          Track Your <span className="text-gradient">Order</span>
+        </h1>
+        <p className="mt-2" style={{ color: "var(--text-mid)" }}>Enter your order number and the phone number used to place it.</p>
+        <form onSubmit={handleSubmit} className="glass mt-6 flex flex-col gap-3 rounded-2xl p-6">
+          <input
+            required
+            value={orderNumber}
+            onChange={(e) => setOrderNumber(e.target.value)}
+            placeholder="Order number (e.g. ORD-2026-000145)"
+            className="input-dark rounded-lg px-4 py-2.5 text-sm"
+          />
+          <input
+            required
+            value={phone}
+            onChange={(e) => setPhone(e.target.value)}
+            placeholder="Phone number"
+            className="input-dark rounded-lg px-4 py-2.5 text-sm"
+          />
+          <button type="submit" className="btn-glow rounded-full py-3 text-sm font-semibold">
+            Track Order
+          </button>
+        </form>
+      </div>
     </div>
   );
 }

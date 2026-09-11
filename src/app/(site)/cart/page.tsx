@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useCart } from "@/components/site/CartContext";
+import { ProductArt } from "@/components/site/ProductArt";
 import { formatCurrency } from "@/lib/format";
 
 const DELIVERY_FEE = 15;
@@ -97,163 +98,181 @@ export default function CartPage() {
 
   if (items.length === 0) {
     return (
-      <div className="mx-auto max-w-2xl px-4 py-20 text-center sm:px-6">
-        <h1 className="text-2xl font-bold text-cocoa-900">Your cart is empty</h1>
-        <p className="mt-2 text-cocoa-900/60">Add something delicious from the menu to get started.</p>
-        <Link href="/menu" className="mt-6 inline-block rounded-full bg-brand-500 px-6 py-3 text-sm font-semibold text-white hover:bg-brand-600">
-          Browse Menu
-        </Link>
+      <div className="relative">
+        <div className="aurora-bg opacity-30" />
+        <div className="relative mx-auto max-w-2xl px-4 py-24 text-center sm:px-6">
+          <h1 className="font-display text-2xl font-bold" style={{ color: "var(--text-hi)" }}>
+            Your cart is empty
+          </h1>
+          <p className="mt-2" style={{ color: "var(--text-mid)" }}>Add something delicious from the menu to get started.</p>
+          <Link href="/menu" className="btn-glow mt-6 inline-block rounded-full px-6 py-3 text-sm font-semibold">
+            Browse Menu
+          </Link>
+        </div>
       </div>
     );
   }
 
   return (
-    <div className="mx-auto max-w-5xl px-4 py-12 sm:px-6">
-      <h1 className="text-3xl font-extrabold text-cocoa-900">Your Cart</h1>
+    <div className="relative">
+      <div className="aurora-bg opacity-30" />
+      <div className="relative mx-auto max-w-5xl px-4 py-16 sm:px-6">
+        <h1 className="font-display text-4xl font-bold" style={{ color: "var(--text-hi)" }}>
+          Your <span className="text-gradient">Cart</span>
+        </h1>
 
-      <div className="mt-8 grid gap-10 lg:grid-cols-3">
-        <div className="lg:col-span-2">
-          <ul className="divide-y divide-brand-100 rounded-2xl border border-brand-100 bg-white">
-            {items.map((item) => (
-              <li key={`${item.productId}-${item.sizeLabel ?? ""}`} className="flex items-center gap-4 p-4">
-                <div className="h-16 w-16 shrink-0 overflow-hidden rounded-xl bg-brand-50">
-                  {item.imageUrl ? (
-                    // eslint-disable-next-line @next/next/no-img-element
-                    <img src={item.imageUrl} alt={item.name} className="h-full w-full object-cover" />
-                  ) : (
-                    <div className="flex h-full w-full items-center justify-center text-2xl">🧁</div>
-                  )}
-                </div>
-                <div className="flex-1">
-                  <p className="font-semibold text-cocoa-900">{item.name}</p>
-                  <p className="text-sm text-cocoa-900/60">{formatCurrency(item.price)} each</p>
-                </div>
-                <div className="flex items-center rounded-full border border-brand-200">
+        <div className="mt-8 grid gap-8 lg:grid-cols-3">
+          <div className="lg:col-span-2">
+            <ul className="glass divide-y rounded-2xl" style={{ borderColor: "var(--ink-border)" }}>
+              {items.map((item) => (
+                <li
+                  key={`${item.productId}-${item.sizeLabel ?? ""}`}
+                  className="flex items-center gap-4 p-4"
+                  style={{ borderColor: "var(--ink-border)" }}
+                >
+                  <div className="h-16 w-16 shrink-0 overflow-hidden rounded-xl">
+                    {item.imageUrl ? (
+                      // eslint-disable-next-line @next/next/no-img-element
+                      <img src={item.imageUrl} alt={item.name} className="h-full w-full object-cover" />
+                    ) : (
+                      <ProductArt name={item.name} className="h-full w-full" iconClassName="text-2xl" />
+                    )}
+                  </div>
+                  <div className="flex-1">
+                    <p className="font-semibold" style={{ color: "var(--text-hi)" }}>{item.name}</p>
+                    <p className="text-sm" style={{ color: "var(--text-lo)" }}>{formatCurrency(item.price)} each</p>
+                  </div>
+                  <div className="glass flex items-center rounded-full">
+                    <button
+                      type="button"
+                      onClick={() => updateQuantity(item.productId, item.quantity - 1)}
+                      className="px-3 py-1 transition-colors hover:text-glow-amber"
+                      style={{ color: "var(--text-mid)" }}
+                    >
+                      −
+                    </button>
+                    <span className="w-8 text-center text-sm font-semibold" style={{ color: "var(--text-hi)" }}>{item.quantity}</span>
+                    <button
+                      type="button"
+                      onClick={() => updateQuantity(item.productId, item.quantity + 1)}
+                      className="px-3 py-1 transition-colors hover:text-glow-amber"
+                      style={{ color: "var(--text-mid)" }}
+                    >
+                      +
+                    </button>
+                  </div>
+                  <p className="w-24 text-right font-semibold" style={{ color: "var(--text-hi)" }}>
+                    {formatCurrency(item.price * item.quantity)}
+                  </p>
                   <button
                     type="button"
-                    onClick={() => updateQuantity(item.productId, item.quantity - 1)}
-                    className="px-3 py-1 text-brand-600"
+                    onClick={() => removeItem(item.productId)}
+                    className="text-sm text-red-400 hover:underline"
                   >
-                    −
+                    Remove
                   </button>
-                  <span className="w-8 text-center text-sm font-semibold">{item.quantity}</span>
-                  <button
-                    type="button"
-                    onClick={() => updateQuantity(item.productId, item.quantity + 1)}
-                    className="px-3 py-1 text-brand-600"
-                  >
-                    +
-                  </button>
-                </div>
-                <p className="w-24 text-right font-semibold text-cocoa-900">
-                  {formatCurrency(item.price * item.quantity)}
-                </p>
+                </li>
+              ))}
+            </ul>
+
+            <div className="glass mt-8 rounded-2xl p-6">
+              <h2 className="font-display font-bold" style={{ color: "var(--text-hi)" }}>Your details</h2>
+              <div className="mt-4 grid gap-4 sm:grid-cols-2">
+                <input value={name} onChange={(e) => setName(e.target.value)} placeholder="Full name" className="input-dark rounded-lg px-3 py-2 text-sm" />
+                <input value={phone} onChange={(e) => setPhone(e.target.value)} placeholder="Phone number" className="input-dark rounded-lg px-3 py-2 text-sm" />
+                <input value={email} onChange={(e) => setEmail(e.target.value)} placeholder="Email (optional)" className="input-dark rounded-lg px-3 py-2 text-sm sm:col-span-2" />
+              </div>
+
+              <h2 className="mt-6 font-display font-bold" style={{ color: "var(--text-hi)" }}>Fulfillment</h2>
+              <div className="mt-3 flex gap-3">
                 <button
                   type="button"
-                  onClick={() => removeItem(item.productId)}
-                  className="text-sm text-red-500 hover:underline"
+                  onClick={() => setFulfillmentType("PICKUP")}
+                  data-active={fulfillmentType === "PICKUP"}
+                  className="chip rounded-full px-4 py-1.5 text-sm font-medium"
                 >
-                  Remove
+                  Pickup
                 </button>
-              </li>
-            ))}
-          </ul>
+                <button
+                  type="button"
+                  onClick={() => setFulfillmentType("DELIVERY")}
+                  data-active={fulfillmentType === "DELIVERY"}
+                  className="chip rounded-full px-4 py-1.5 text-sm font-medium"
+                >
+                  Delivery (+{formatCurrency(DELIVERY_FEE)})
+                </button>
+              </div>
+              {fulfillmentType === "DELIVERY" && (
+                <input
+                  value={deliveryAddress}
+                  onChange={(e) => setDeliveryAddress(e.target.value)}
+                  placeholder="Delivery address"
+                  className="input-dark mt-3 w-full rounded-lg px-3 py-2 text-sm"
+                />
+              )}
+              <label className="mt-4 block text-sm font-medium" style={{ color: "var(--text-hi)" }}>
+                Preferred date/time (optional)
+                <input
+                  type="datetime-local"
+                  value={scheduledFor}
+                  onChange={(e) => setScheduledFor(e.target.value)}
+                  className="input-dark mt-1 w-full rounded-lg px-3 py-2 text-sm"
+                />
+              </label>
 
-          <div className="mt-8 rounded-2xl border border-brand-100 bg-white p-6">
-            <h2 className="font-bold text-cocoa-900">Your details</h2>
-            <div className="mt-4 grid gap-4 sm:grid-cols-2">
-              <input value={name} onChange={(e) => setName(e.target.value)} placeholder="Full name" className="rounded-lg border border-brand-200 px-3 py-2 text-sm" />
-              <input value={phone} onChange={(e) => setPhone(e.target.value)} placeholder="Phone number" className="rounded-lg border border-brand-200 px-3 py-2 text-sm" />
-              <input value={email} onChange={(e) => setEmail(e.target.value)} placeholder="Email (optional)" className="rounded-lg border border-brand-200 px-3 py-2 text-sm sm:col-span-2" />
-            </div>
-
-            <h2 className="mt-6 font-bold text-cocoa-900">Fulfillment</h2>
-            <div className="mt-3 flex gap-3">
-              <button
-                type="button"
-                onClick={() => setFulfillmentType("PICKUP")}
-                className={`rounded-full border px-4 py-1.5 text-sm font-medium ${fulfillmentType === "PICKUP" ? "border-brand-500 bg-brand-500 text-white" : "border-brand-200 text-cocoa-900"}`}
+              <h2 className="mt-6 font-display font-bold" style={{ color: "var(--text-hi)" }}>Payment method</h2>
+              <select
+                value={paymentMethod}
+                onChange={(e) => setPaymentMethod(e.target.value)}
+                className="input-dark mt-2 w-full rounded-lg px-3 py-2 text-sm"
               >
-                Pickup
-              </button>
-              <button
-                type="button"
-                onClick={() => setFulfillmentType("DELIVERY")}
-                className={`rounded-full border px-4 py-1.5 text-sm font-medium ${fulfillmentType === "DELIVERY" ? "border-brand-500 bg-brand-500 text-white" : "border-brand-200 text-cocoa-900"}`}
-              >
-                Delivery (+{formatCurrency(DELIVERY_FEE)})
-              </button>
+                <option value="CASH" className="bg-ink-900">Cash on pickup/delivery</option>
+                <option value="MOBILE_MONEY" className="bg-ink-900">Mobile Money</option>
+                <option value="CARD" className="bg-ink-900">Card</option>
+                <option value="BANK_TRANSFER" className="bg-ink-900">Bank Transfer</option>
+                <option value="ONLINE" className="bg-ink-900">Online Payment</option>
+              </select>
             </div>
-            {fulfillmentType === "DELIVERY" && (
-              <input
-                value={deliveryAddress}
-                onChange={(e) => setDeliveryAddress(e.target.value)}
-                placeholder="Delivery address"
-                className="mt-3 w-full rounded-lg border border-brand-200 px-3 py-2 text-sm"
-              />
-            )}
-            <label className="mt-4 block text-sm font-medium text-cocoa-900">
-              Preferred date/time (optional)
-              <input
-                type="datetime-local"
-                value={scheduledFor}
-                onChange={(e) => setScheduledFor(e.target.value)}
-                className="mt-1 w-full rounded-lg border border-brand-200 px-3 py-2 text-sm"
-              />
-            </label>
-
-            <h2 className="mt-6 font-bold text-cocoa-900">Payment method</h2>
-            <select
-              value={paymentMethod}
-              onChange={(e) => setPaymentMethod(e.target.value)}
-              className="mt-2 w-full rounded-lg border border-brand-200 px-3 py-2 text-sm"
-            >
-              <option value="CASH">Cash on pickup/delivery</option>
-              <option value="MOBILE_MONEY">Mobile Money</option>
-              <option value="CARD">Card</option>
-              <option value="BANK_TRANSFER">Bank Transfer</option>
-              <option value="ONLINE">Online Payment</option>
-            </select>
           </div>
-        </div>
 
-        <div className="h-fit rounded-2xl border border-brand-100 bg-white p-6">
-          <h2 className="font-bold text-cocoa-900">Order Summary</h2>
-          <div className="mt-4 flex gap-2">
-            <input
-              value={promoCode}
-              onChange={(e) => setPromoCode(e.target.value.toUpperCase())}
-              placeholder="Promo code"
-              className="flex-1 rounded-lg border border-brand-200 px-3 py-2 text-sm"
-            />
-            <button type="button" onClick={applyPromo} className="rounded-lg border border-brand-300 px-3 py-2 text-sm font-semibold text-brand-700 hover:bg-brand-50">
-              Apply
+          <div className="glass-strong h-fit rounded-2xl p-6">
+            <h2 className="font-display font-bold" style={{ color: "var(--text-hi)" }}>Order Summary</h2>
+            <div className="mt-4 flex gap-2">
+              <input
+                value={promoCode}
+                onChange={(e) => setPromoCode(e.target.value.toUpperCase())}
+                placeholder="Promo code"
+                className="input-dark flex-1 rounded-lg px-3 py-2 text-sm"
+              />
+              <button type="button" onClick={applyPromo} className="btn-ghost rounded-lg px-3 py-2 text-sm font-semibold">
+                Apply
+              </button>
+            </div>
+            {promoError && <p className="mt-1 text-xs text-red-400">{promoError}</p>}
+            {promoResult && <p className="mt-1 text-xs text-green-400">{promoResult.name} applied!</p>}
+
+            <dl className="mt-4 space-y-2 text-sm" style={{ color: "var(--text-mid)" }}>
+              <div className="flex justify-between"><dt>Subtotal</dt><dd>{formatCurrency(subtotal)}</dd></div>
+              {discount > 0 && (
+                <div className="flex justify-between text-green-400"><dt>Discount</dt><dd>-{formatCurrency(discount)}</dd></div>
+              )}
+              <div className="flex justify-between"><dt>Delivery</dt><dd>{formatCurrency(deliveryFee)}</dd></div>
+              <div className="flex justify-between border-t pt-2 text-base font-bold" style={{ borderColor: "var(--ink-border)", color: "var(--text-hi)" }}>
+                <dt>Total</dt><dd>{formatCurrency(total)}</dd>
+              </div>
+            </dl>
+
+            {error && <p className="mt-4 text-sm text-red-400">{error}</p>}
+
+            <button
+              type="button"
+              onClick={submitOrder}
+              disabled={submitting}
+              className="btn-glow mt-6 w-full rounded-full py-3 text-sm font-semibold disabled:opacity-60"
+            >
+              {submitting ? "Placing order..." : "Place Order"}
             </button>
           </div>
-          {promoError && <p className="mt-1 text-xs text-red-600">{promoError}</p>}
-          {promoResult && <p className="mt-1 text-xs text-green-600">{promoResult.name} applied!</p>}
-
-          <dl className="mt-4 space-y-2 text-sm text-cocoa-900/80">
-            <div className="flex justify-between"><dt>Subtotal</dt><dd>{formatCurrency(subtotal)}</dd></div>
-            {discount > 0 && (
-              <div className="flex justify-between text-green-600"><dt>Discount</dt><dd>-{formatCurrency(discount)}</dd></div>
-            )}
-            <div className="flex justify-between"><dt>Delivery</dt><dd>{formatCurrency(deliveryFee)}</dd></div>
-            <div className="flex justify-between border-t border-brand-100 pt-2 text-base font-bold text-cocoa-900">
-              <dt>Total</dt><dd>{formatCurrency(total)}</dd>
-            </div>
-          </dl>
-
-          {error && <p className="mt-4 text-sm text-red-600">{error}</p>}
-
-          <button
-            type="button"
-            onClick={submitOrder}
-            disabled={submitting}
-            className="mt-6 w-full rounded-full bg-brand-500 py-3 text-sm font-semibold text-white hover:bg-brand-600 disabled:opacity-60"
-          >
-            {submitting ? "Placing order..." : "Place Order"}
-          </button>
         </div>
       </div>
     </div>

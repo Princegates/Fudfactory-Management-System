@@ -1,27 +1,28 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Space_Grotesk, Inter } from "next/font/google";
 import "./globals.css";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
+const spaceGrotesk = Space_Grotesk({
+  variable: "--font-display",
   subsets: ["latin"],
+  weight: ["500", "600", "700"],
 });
 
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
+const inter = Inter({
+  variable: "--font-body",
   subsets: ["latin"],
 });
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://fudfactory.gh"),
   title: {
-    default: "FudFactory | Fresh Bakes, Pastries & Catering",
+    default: "FudFactory | Your Favorite Chef, Delivered",
     template: "%s | FudFactory",
   },
   description:
-    "FudFactory is a food, pastry and catering business — order cakes, pastries, snacks and meals online for pickup or delivery.",
+    "FudFactory — Ghana's favorite chef, bringing you cakes, pastries, meals and catering. Order online for pickup or delivery, tracked in real time.",
   openGraph: {
-    title: "FudFactory | Fresh Bakes, Pastries & Catering",
+    title: "FudFactory | Your Favorite Chef, Delivered",
     description:
       "Order cakes, pastries, snacks and meals online for pickup or delivery from FudFactory.",
     siteName: "FudFactory",
@@ -33,14 +34,14 @@ export const metadata: Metadata = {
 export const viewport = {
   width: "device-width",
   initialScale: 1,
-  themeColor: "#cc6a1f",
+  themeColor: "#050608",
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html
       lang="en"
-      className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
+      className={`${spaceGrotesk.variable} ${inter.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col bg-[var(--background)] text-[var(--foreground)]">
         {children}

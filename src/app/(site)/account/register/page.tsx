@@ -34,22 +34,30 @@ export default function CustomerRegisterPage() {
   }
 
   return (
-    <div className="mx-auto max-w-md px-4 py-16 sm:px-6">
-      <h1 className="text-3xl font-extrabold text-cocoa-900">Create an Account</h1>
-      <form onSubmit={handleSubmit} className="mt-6 flex flex-col gap-3">
-        <input required value={name} onChange={(e) => setName(e.target.value)} placeholder="Full name" className="rounded-lg border border-brand-200 px-4 py-2 text-sm" />
-        <input required value={phone} onChange={(e) => setPhone(e.target.value)} placeholder="Phone number" className="rounded-lg border border-brand-200 px-4 py-2 text-sm" />
-        <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="Email (optional)" className="rounded-lg border border-brand-200 px-4 py-2 text-sm" />
-        <input value={address} onChange={(e) => setAddress(e.target.value)} placeholder="Default address (optional)" className="rounded-lg border border-brand-200 px-4 py-2 text-sm" />
-        <input required type="password" minLength={6} value={password} onChange={(e) => setPassword(e.target.value)} placeholder="Password (min 6 characters)" className="rounded-lg border border-brand-200 px-4 py-2 text-sm" />
-        {error && <p className="text-sm text-red-600">{error}</p>}
-        <button type="submit" disabled={submitting} className="rounded-full bg-brand-500 py-3 text-sm font-semibold text-white hover:bg-brand-600 disabled:opacity-60">
-          {submitting ? "Creating account..." : "Create Account"}
-        </button>
-      </form>
-      <p className="mt-4 text-sm text-cocoa-900/70">
-        Already have an account? <Link href="/account/login" className="text-brand-600 hover:underline">Log in</Link>
-      </p>
+    <div className="relative">
+      <div className="aurora-bg opacity-30" />
+      <div className="relative mx-auto max-w-md px-4 py-24 sm:px-6">
+        <h1 className="font-display text-3xl font-bold" style={{ color: "var(--text-hi)" }}>
+          Create an <span className="text-gradient">Account</span>
+        </h1>
+        <form onSubmit={handleSubmit} className="glass mt-6 flex flex-col gap-3 rounded-2xl p-6">
+          <input required value={name} onChange={(e) => setName(e.target.value)} placeholder="Full name" className="input-dark rounded-lg px-4 py-2.5 text-sm" />
+          <input required value={phone} onChange={(e) => setPhone(e.target.value)} placeholder="Phone number" className="input-dark rounded-lg px-4 py-2.5 text-sm" />
+          <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="Email (optional)" className="input-dark rounded-lg px-4 py-2.5 text-sm" />
+          <input value={address} onChange={(e) => setAddress(e.target.value)} placeholder="Default address (optional)" className="input-dark rounded-lg px-4 py-2.5 text-sm" />
+          <input required type="password" minLength={6} value={password} onChange={(e) => setPassword(e.target.value)} placeholder="Password (min 6 characters)" className="input-dark rounded-lg px-4 py-2.5 text-sm" />
+          {error && <p className="text-sm text-red-400">{error}</p>}
+          <button type="submit" disabled={submitting} className="btn-glow rounded-full py-3 text-sm font-semibold disabled:opacity-60">
+            {submitting ? "Creating account..." : "Create Account"}
+          </button>
+        </form>
+        <p className="mt-4 text-sm" style={{ color: "var(--text-mid)" }}>
+          Already have an account?{" "}
+          <Link href="/account/login" className="font-semibold hover:underline" style={{ color: "var(--glow-cyan)" }}>
+            Log in
+          </Link>
+        </p>
+      </div>
     </div>
   );
 }

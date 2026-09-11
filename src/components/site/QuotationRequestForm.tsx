@@ -52,49 +52,35 @@ export function QuotationRequestForm() {
 
   return (
     <form onSubmit={handleSubmit} className="grid gap-4 sm:grid-cols-2">
-      <input name="customerName" required placeholder="Full name" className="input" />
-      <input name="phone" required placeholder="Phone number" className="input" />
-      <input name="email" type="email" placeholder="Email (optional)" className="input" />
-      <select name="eventType" required className="input" defaultValue="">
-        <option value="" disabled>
+      <input name="customerName" required placeholder="Full name" className="input-dark rounded-xl px-4 py-2.5 text-sm" />
+      <input name="phone" required placeholder="Phone number" className="input-dark rounded-xl px-4 py-2.5 text-sm" />
+      <input name="email" type="email" placeholder="Email (optional)" className="input-dark rounded-xl px-4 py-2.5 text-sm" />
+      <select name="eventType" required className="input-dark rounded-xl px-4 py-2.5 text-sm" defaultValue="">
+        <option value="" disabled className="bg-ink-900">
           Select event type
         </option>
         {EVENT_TYPES.map((t) => (
-          <option key={t} value={t}>
+          <option key={t} value={t} className="bg-ink-900">
             {t}
           </option>
         ))}
       </select>
-      <input name="eventDate" type="date" className="input" />
-      <input name="guestCount" type="number" min={1} placeholder="Guest count (optional)" className="input" />
+      <input name="eventDate" type="date" className="input-dark rounded-xl px-4 py-2.5 text-sm" />
+      <input name="guestCount" type="number" min={1} placeholder="Guest count (optional)" className="input-dark rounded-xl px-4 py-2.5 text-sm" />
       <textarea
         name="requirements"
         rows={4}
         placeholder="Design preferences, flavours, special instructions..."
-        className="input sm:col-span-2"
+        className="input-dark rounded-xl px-4 py-2.5 text-sm sm:col-span-2"
       />
-      {error && <p className="text-sm text-red-600 sm:col-span-2">{error}</p>}
+      {error && <p className="text-sm text-red-400 sm:col-span-2">{error}</p>}
       <button
         type="submit"
         disabled={submitting}
-        className="rounded-full bg-brand-500 px-6 py-3 text-sm font-semibold text-white hover:bg-brand-600 disabled:opacity-60 sm:col-span-2 sm:w-fit"
+        className="btn-glow rounded-full px-6 py-3 text-sm font-semibold disabled:opacity-60 sm:col-span-2 sm:w-fit"
       >
         {submitting ? "Submitting..." : "Request a Quotation"}
       </button>
-
-      <style jsx>{`
-        .input {
-          border: 1px solid var(--brand-200, #f6c98c);
-          border-radius: 0.75rem;
-          padding: 0.625rem 1rem;
-          font-size: 0.875rem;
-          background: white;
-        }
-        .input:focus {
-          outline: none;
-          border-color: var(--brand-400, #e08a33);
-        }
-      `}</style>
     </form>
   );
 }

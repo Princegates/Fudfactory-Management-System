@@ -21,7 +21,7 @@ export function WhatsAppContactForm() {
         value={name}
         onChange={(e) => setName(e.target.value)}
         placeholder="Your name"
-        className="rounded-lg border border-brand-200 px-4 py-2 text-sm focus:border-brand-400 focus:outline-none"
+        className="input-dark rounded-lg px-4 py-2 text-sm"
       />
       <textarea
         required
@@ -29,12 +29,9 @@ export function WhatsAppContactForm() {
         onChange={(e) => setMessage(e.target.value)}
         placeholder="How can we help?"
         rows={4}
-        className="rounded-lg border border-brand-200 px-4 py-2 text-sm focus:border-brand-400 focus:outline-none"
+        className="input-dark rounded-lg px-4 py-2 text-sm"
       />
-      <button
-        type="submit"
-        className="self-start rounded-full bg-brand-500 px-6 py-2.5 text-sm font-semibold text-white hover:bg-brand-600"
-      >
+      <button type="submit" className="btn-glow self-start rounded-full px-6 py-2.5 text-sm font-semibold">
         Send via WhatsApp
       </button>
     </form>
