@@ -464,3 +464,20 @@ body {
 .site-theme[data-mode="light"] .mode-toggle__thumb {
   transform: translateX(26px);
 }
+
+/* Real logo asset — the maroon "day" print shows everywhere by default
+   (including the always-light staff portal); the flat cream "night"
+   silhouette swaps in only where the public site is in dark mode, so
+   the wordmark stays legible against the dark surface. */
+.brand-logo-day {
+  display: inline-block;
+}
+.brand-logo-night {
+  display: none;
+}
+.site-theme[data-mode="dark"] .brand-logo-day {
+  display: none;
+}
+.site-theme[data-mode="dark"] .brand-logo-night {
+  display: inline-block;
+}

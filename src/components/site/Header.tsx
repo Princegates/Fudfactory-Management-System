@@ -38,7 +38,7 @@ export function Header({ mode }: { mode: "dark" | "light" }) {
     >
       <div className="mx-auto flex max-w-6xl items-center justify-between gap-4 px-4 py-3.5 sm:px-6">
         <Link href="/" className="group flex shrink-0 items-center">
-          <Logo className="text-xl tracking-tight" />
+          <Logo className="h-8" />
         </Link>
 
         <nav className="hidden items-center gap-1 text-sm font-medium md:flex">

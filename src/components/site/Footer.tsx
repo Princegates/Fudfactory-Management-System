@@ -9,7 +9,7 @@ export async function Footer() {
       <div className="divider-glow absolute top-0 left-0 right-0" />
       <div className="mx-auto grid max-w-6xl gap-10 px-4 py-16 sm:px-6 md:grid-cols-4">
         <div>
-          <Logo className="text-lg" />
+          <Logo className="h-7" />
           <p className="mt-4 text-sm leading-relaxed" style={{ color: "var(--text-mid)" }}>
             {business.tagline}
           </p>

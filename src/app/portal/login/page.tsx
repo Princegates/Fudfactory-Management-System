@@ -34,7 +34,7 @@ export default function StaffLoginPage() {
     <div className="flex min-h-screen items-center justify-center bg-brand-900 px-4">
       <div className="w-full max-w-sm rounded-2xl bg-white p-8 shadow-lg">
         <div className="flex items-center gap-2 text-cocoa-900">
-          <Logo className="text-xl" accentColor="var(--brand-500)" />
+          <Logo className="h-8" />
           <span className="text-lg font-bold">Portal</span>
         </div>
         <h1 className="mt-6 text-xl font-bold text-cocoa-900">Staff Login</h1>

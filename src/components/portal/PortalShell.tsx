@@ -66,9 +66,5 @@ export function PortalShell({
 }
 
 function SidebarHeader() {
-  return (
-    <div className="text-cocoa-900">
-      <Logo className="text-lg" accentColor="var(--brand-500)" />
-    </div>
-  );
+  return <Logo className="h-7" />;
 }

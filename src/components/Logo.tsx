@@ -1,41 +1,23 @@
-import { Icon } from "./site/Icon";
-
 /**
- * Recreates FudFactory's real wordmark — "Fud" + a covered-dish (cloche)
- * mark + "Factory" set inline — as scalable vector/text instead of a
- * bitmap, so it stays crisp and theme-reactive (accent-colored mark,
- * ink-colored text) across every color theme and both night/day modes.
+ * FudFactory's real logo, cropped from the artwork the business supplied
+ * (public/logo-wordmark.png / public/logo-icon.png) — fixed brand colors,
+ * shown as-is rather than recolored per site theme or night/day mode.
  */
-export function Logo({
-  className = "",
-  accentColor = "var(--glow-amber)",
-}: {
-  className?: string;
-  accentColor?: string;
-}) {
+export function Logo({ className = "h-8" }: { className?: string }) {
   return (
-    <span className={`inline-flex items-center font-display font-bold ${className}`}>
-      <span>Fud</span>
-      <Icon name="cloche" className="mx-0.5 h-[0.9em] w-[0.9em] shrink-0 translate-y-[0.05em]" style={{ color: accentColor }} />
-      <span>Factory</span>
+    <span className={`inline-flex items-center ${className}`}>
+      {/* eslint-disable-next-line @next/next/no-img-element */}
+      <img src="/logo-wordmark.png" alt="FudFactory" className="brand-logo-day h-full w-auto" />
+      {/* eslint-disable-next-line @next/next/no-img-element */}
+      <img src="/logo-wordmark-night.png" alt="FudFactory" className="brand-logo-night h-full w-auto" />
     </span>
   );
 }
 
 /** Compact icon-only mark for tight spaces (mobile badges, avatars). */
-export function LogoMark({
-  className = "h-9 w-9",
-  accentColor = "var(--glow-amber)",
-}: {
-  className?: string;
-  accentColor?: string;
-}) {
+export function LogoMark({ className = "h-9 w-9" }: { className?: string }) {
   return (
-    <span
-      className={`grid shrink-0 place-items-center rounded-lg ${className}`}
-      style={{ background: accentColor }}
-    >
-      <Icon name="cloche" className="h-[55%] w-[55%]" style={{ color: "#fdf8ef" }} />
-    </span>
+    // eslint-disable-next-line @next/next/no-img-element
+    <img src="/logo-icon.png" alt="FudFactory" className={`rounded-lg object-contain ${className}`} />
   );
 }
