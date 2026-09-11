@@ -26,7 +26,8 @@ export type IconName =
   | "moon"
   | "arrow-right"
   | "external"
-  | "cloche";
+  | "cloche"
+  | "download";
 
 const PATHS: Record<IconName, ReactNode> = {
   cake: (
@@ -143,6 +144,12 @@ const PATHS: Record<IconName, ReactNode> = {
       <path d="M14.4 15.7 17.6 19" />
       <path d="M17 16.2h2.6v3.4H17z" />
       <path d="M17 18h2.6" />
+    </>
+  ),
+  download: (
+    <>
+      <path d="M12 3.5v11M8 11l4 4 4-4" />
+      <path d="M4.5 16.5v2a2 2 0 0 0 2 2h11a2 2 0 0 0 2-2v-2" />
     </>
   ),
 };

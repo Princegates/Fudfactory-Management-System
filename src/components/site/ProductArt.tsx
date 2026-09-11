@@ -1,6 +1,6 @@
 import { Icon, type IconName } from "./Icon";
 
-const CATEGORY_ICON: Record<string, IconName> = {
+export const CATEGORY_ICON: Record<string, IconName> = {
   Cakes: "cake",
   Pastries: "pastry",
   Snacks: "donut",

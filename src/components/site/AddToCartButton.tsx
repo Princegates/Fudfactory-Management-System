@@ -29,7 +29,7 @@ export function AddToCartButton({
         setAdded(true);
         setTimeout(() => setAdded(false), 1200);
       }}
-      className={`btn-glow ${full ? "w-full" : ""} rounded-full px-4 py-2 text-sm font-semibold ${className}`}
+      className={`btn-glow ${full ? "w-full" : ""} rounded-md px-4 py-2 text-sm font-semibold ${className}`}
     >
       {added ? "Added ✓" : "Add to Cart"}
     </button>
