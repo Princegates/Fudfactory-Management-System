@@ -6,7 +6,7 @@ A full-stack web platform for **FudFactory** (Instagram: [@fudfactory.gh](https:
 
 - **Framework**: Next.js 16 (App Router, TypeScript, Route Handlers as the API layer)
 - **Styling**: Tailwind CSS v4 — the public site uses a warm, flat editorial design system (Fraunces display serif + Inter body, hairline-bordered surfaces, a hand-drawn line-icon set instead of stock photography or emoji, one confident accent color per theme) with a night/day mode toggle and 12 selectable color themes; the staff portal keeps a calm, functional light UI
-- **Database/ORM**: Prisma 6 + SQLite for local development (swap the `datasource` provider to `postgresql`/`mysql` for production — the schema is written to be provider-agnostic)
+- **Database/ORM**: Prisma 6 + PostgreSQL (developed against [Supabase](https://supabase.com)'s hosted Postgres; the schema is provider-agnostic, so any Postgres/MySQL host works)
 - **Auth**: Custom JWT sessions in httpOnly cookies — separate sessions for staff (`/portal`) and customers (`/account`)
 - **Payments**: Real Paystack and Hubtel gateway integrations, plus a manual "pay to our own Mobile Money number" flow verified by transaction ID
 - **Animation**: `motion` for scroll-reveal and micro-interactions
@@ -18,13 +18,22 @@ This matches the stack recommended in the SRS (§43): React/Next.js + Tailwind, 
 
 ```bash
 npm install
-cp .env.example .env          # then edit JWT_SECRET for anything beyond local dev
-npm run db:migrate             # applies the Prisma schema (creates dev.db)
+cp .env.example .env          # set DATABASE_URL to your Postgres connection string, and JWT_SECRET
+npm run db:migrate             # applies the Prisma schema
 npm run db:seed                # loads demo data (see accounts below)
 npm run dev
 ```
 
-`db:migrate` (Prisma's `migrate dev`) already runs the seed script itself the first time it creates `dev.db`, so running `db:seed` right after is often a no-op re-run — that's expected and safe. `npm run db:seed` clears and reloads all demo data every time it runs, so re-run it any time you want to reset the database back to the demo dataset below.
+`DATABASE_URL` needs a real Postgres connection string — a free [Supabase](https://supabase.com) project's connection string works well for this (Project Settings → Database → Connection string). `db:migrate` (Prisma's `migrate dev`) already runs the seed script itself the first time it creates the tables, so running `db:seed` right after is often a no-op re-run — that's expected and safe. `npm run db:seed` clears and reloads all demo data every time it runs, so re-run it any time you want to reset the database back to the demo dataset below.
+
+### Deploying (e.g. to Netlify)
+
+This repo includes a `netlify.toml` with the `@netlify/plugin-nextjs` build plugin already configured. To deploy:
+
+1. Create a Postgres database (e.g. a free [Supabase](https://supabase.com) project) and copy its connection string.
+2. In Netlify, import this repository/branch as a new site.
+3. Add `DATABASE_URL` (your Postgres connection string) and `JWT_SECRET` (a long random value — `openssl rand -base64 48`) as site environment variables.
+4. Before or after the first deploy, run `npx prisma migrate deploy` and `npm run db:seed` against that `DATABASE_URL` (from your machine, or a Netlify build hook) to create the tables and load demo data.
 
 Visit `http://localhost:3000` for the public site and `http://localhost:3000/portal/login` for the staff portal.
 
@@ -47,7 +56,7 @@ Demo customer: phone `+233501234567`, password `Password123!`.
 
 ```
 Public Website  ─┐
-                  ├─► Next.js Route Handlers (API) ─► Prisma ─► SQLite/Postgres
+                  ├─► Next.js Route Handlers (API) ─► Prisma ─► Postgres
 Business Portal ─┘
 ```
 
