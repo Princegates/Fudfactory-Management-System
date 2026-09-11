@@ -5,6 +5,7 @@ import { ProductArt } from "@/components/site/ProductArt";
 import { Reveal } from "@/components/site/Reveal";
 import { StatCounter } from "@/components/site/StatCounter";
 import { Icon, type IconName } from "@/components/site/Icon";
+import { Logo } from "@/components/Logo";
 import { getBusinessProfile } from "@/lib/business";
 
 const FEATURES: { icon: IconName; title: string; body: string }[] = [
@@ -64,14 +65,12 @@ export default async function HomePage() {
 
   const avgRating = avgRatingAgg._avg.rating ?? 5;
   const galleryProducts = await prisma.product.findMany({ orderBy: { createdAt: "desc" }, take: 6 });
-  const collage = featured.slice(0, 3);
 
   return (
     <div>
       {/* ---------------------------------------------------------------- HERO */}
       <section className="relative overflow-hidden pt-6 sm:pt-10">
         <div className="aurora-bg" />
-        <div className="bg-grid absolute inset-0" />
         <div className="relative mx-auto grid max-w-6xl gap-12 px-4 py-14 sm:px-6 sm:py-20 lg:grid-cols-[1.05fr_0.95fr] lg:items-center lg:gap-8">
           <div className="relative z-10 text-center lg:text-left">
             <Reveal>
@@ -111,33 +110,10 @@ export default async function HomePage() {
             </Reveal>
           </div>
 
-          {/* Asymmetrical collage */}
-          <div className="relative mx-auto hidden aspect-square w-full max-w-md lg:block">
-            {collage[0] && (
-              <div
-                className="glow-card glass absolute left-0 top-2 h-36 w-36 overflow-hidden rounded-lg"
-                style={{ transform: "rotate(-6deg)" }}
-              >
-                <ProductArt name={collage[0].name} category={collage[0].category.name} className="h-full w-full" iconClassName="h-10 w-10" />
-              </div>
-            )}
-            {collage[1] && (
-              <div
-                className="glow-card glass animate-float absolute right-2 top-20 h-52 w-52 overflow-hidden rounded-lg"
-                style={{ ["--float-rot" as string]: "3deg", transform: "rotate(3deg)" }}
-              >
-                <ProductArt name={collage[1].name} category={collage[1].category.name} className="h-full w-full" iconClassName="h-16 w-16" />
-              </div>
-            )}
-            {collage[2] && (
-              <div
-                className="glow-card glass absolute bottom-2 left-12 h-32 w-32 overflow-hidden rounded-lg"
-                style={{ transform: "rotate(8deg)" }}
-              >
-                <ProductArt name={collage[2].name} category={collage[2].category.name} className="h-full w-full" iconClassName="h-8 w-8" />
-              </div>
-            )}
-            <div className="glass-strong absolute -bottom-4 right-0 flex items-center gap-3 rounded-lg px-4 py-3">
+          {/* Big animated brand mark */}
+          <div className="relative mx-auto flex aspect-square w-full max-w-md items-center justify-center">
+            <Logo className="animate-float h-40 sm:h-52 lg:h-64" />
+            <div className="glass-strong absolute bottom-6 right-0 flex items-center gap-3 rounded-lg px-4 py-3 sm:bottom-10">
               <Icon name="sparkle" className="h-6 w-6" style={{ color: "var(--glow-amber)" }} />
               <div className="text-left">
                 <p className="text-sm font-bold" style={{ color: "var(--text-hi)" }}>

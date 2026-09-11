@@ -39,7 +39,6 @@ export function ProductArt({
       className={`relative flex items-center justify-center overflow-hidden border ${className}`}
       style={{ background: "var(--ink-900)", borderColor: "var(--ink-border)" }}
     >
-      <div className="bg-grid absolute inset-0 opacity-60" />
       <div
         className="absolute h-16 w-16 rounded-full border"
         style={{
