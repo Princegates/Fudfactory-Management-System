@@ -83,7 +83,10 @@ export default async function HomePage() {
             </Reveal>
 
             <Reveal delay={0.16}>
-              <p className="mx-auto mt-6 max-w-md text-lg italic lg:mx-0" style={{ color: "var(--text-mid)" }}>
+              <p
+                className="mx-auto mt-6 max-w-md text-lg italic lg:mx-0"
+                style={{ color: "var(--text-mid)", fontFamily: '"Lucida Calligraphy", cursive' }}
+              >
                 {business.tagline} — cakes, pastries, meals and full event catering, made fresh daily and
                 delivered across Accra.
               </p>
