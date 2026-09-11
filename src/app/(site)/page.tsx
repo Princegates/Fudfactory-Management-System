@@ -69,22 +69,13 @@ export default async function HomePage() {
   return (
     <div>
       {/* ---------------------------------------------------------------- HERO */}
-      <section className="relative overflow-hidden pt-6 sm:pt-10">
+      <section className="relative overflow-hidden pt-2 sm:pt-4">
         <div className="aurora-bg" />
-        <div className="relative mx-auto grid max-w-6xl gap-12 px-4 py-14 sm:px-6 sm:py-20 lg:grid-cols-[1.05fr_0.95fr] lg:items-center lg:gap-8">
+        <div className="relative mx-auto grid max-w-6xl gap-12 px-4 py-10 sm:px-6 sm:py-14 lg:grid-cols-[1.05fr_0.95fr] lg:items-center lg:gap-8">
           <div className="relative z-10 text-center lg:text-left">
             <Reveal>
-              <span
-                className="underline-draw is-visible text-xs font-semibold uppercase tracking-[0.25em]"
-                style={{ color: "var(--glow-amber)" }}
-              >
-                @{business.instagramHandle} — Accra, Ghana
-              </span>
-            </Reveal>
-
-            <Reveal delay={0.08}>
               <h1
-                className="mx-auto mt-6 max-w-xl font-display text-5xl font-bold leading-[1.05] tracking-tight sm:text-6xl lg:mx-0 lg:text-7xl"
+                className="mx-auto max-w-xl font-display text-5xl font-bold leading-[1.05] tracking-tight sm:text-6xl lg:mx-0 lg:text-7xl"
                 style={{ color: "var(--text-hi)" }}
               >
                 Food that steals <span className="italic" style={{ color: "var(--glow-amber)" }}>the show</span>
@@ -92,7 +83,7 @@ export default async function HomePage() {
             </Reveal>
 
             <Reveal delay={0.16}>
-              <p className="mx-auto mt-6 max-w-md text-lg lg:mx-0" style={{ color: "var(--text-mid)" }}>
+              <p className="mx-auto mt-6 max-w-md text-lg italic lg:mx-0" style={{ color: "var(--text-mid)" }}>
                 {business.tagline} — cakes, pastries, meals and full event catering, made fresh daily and
                 delivered across Accra.
               </p>
@@ -113,15 +104,6 @@ export default async function HomePage() {
           {/* Big animated brand mark */}
           <div className="relative mx-auto flex aspect-square w-full max-w-md items-center justify-center">
             <Logo className="animate-float h-40 sm:h-52 lg:h-64" />
-            <div className="glass-strong absolute bottom-6 right-0 flex items-center gap-3 rounded-lg px-4 py-3 sm:bottom-10">
-              <Icon name="sparkle" className="h-6 w-6" style={{ color: "var(--glow-amber)" }} />
-              <div className="text-left">
-                <p className="text-sm font-bold" style={{ color: "var(--text-hi)" }}>
-                  {orderCount || 340}+ events &amp; orders
-                </p>
-                <p className="text-xs" style={{ color: "var(--text-lo)" }}>catered with care</p>
-              </div>
-            </div>
           </div>
         </div>
       </section>
@@ -141,8 +123,8 @@ export default async function HomePage() {
       {/* ---------------------------------------------------------------- STATS */}
       <section className="relative border-b" style={{ borderColor: "var(--ink-border)" }}>
         <div className="mx-auto grid max-w-5xl grid-cols-2 gap-8 px-4 py-12 sm:px-6 md:grid-cols-4">
-          <StatCounter value={customerCount || 120} suffix="+" label="Happy Customers" />
-          <StatCounter value={orderCount || 340} suffix="+" label="Orders Fulfilled" />
+          <StatCounter value={Math.max(customerCount, 1000)} suffix="+" label="Happy Customers" />
+          <StatCounter value={Math.max(orderCount, 3000)} suffix="+" label="Orders Fulfilled" />
           <StatCounter value={Math.round(avgRating * 10) / 10} suffix="★" label="Average Rating" />
           <StatCounter value={30} suffix="min" label="Avg. Prep Time" />
         </div>
@@ -156,7 +138,7 @@ export default async function HomePage() {
               Why FudFactory
             </span>
             <h2 className="mt-3 font-display text-3xl font-bold sm:text-4xl" style={{ color: "var(--text-hi)" }}>
-              Not just a kitchen — a whole occasion
+              Not just a kitchen — <span className="italic" style={{ color: "var(--glow-amber)" }}>a whole occasion</span>
             </h2>
           </div>
         </Reveal>
@@ -355,7 +337,7 @@ export default async function HomePage() {
             <div className="aurora-bg" />
             <div className="relative">
               <h2 className="font-display text-3xl font-bold sm:text-4xl" style={{ color: "var(--text-hi)" }}>
-                Hungry — or hosting?
+                Hungry — or <span className="italic" style={{ color: "var(--glow-amber)" }}>hosting?</span>
               </h2>
               <p className="mx-auto mt-3 max-w-md text-sm" style={{ color: "var(--text-mid)" }}>
                 Place an order in under a minute, or tell us about your next event and let us plan the whole thing.

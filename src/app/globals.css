@@ -1,6 +1,10 @@
 @import "tailwindcss";
 
 :root {
+  /* Georgia is a system serif (no webfont to load) used for every
+     display/heading treatment on the public site. */
+  --font-display: Georgia, "Times New Roman", Times, serif;
+
   /* Portal (light) defaults — unchanged so the internal admin tool keeps
      its calm, functional look. The public site overrides below. */
   --background: #fffaf3;
