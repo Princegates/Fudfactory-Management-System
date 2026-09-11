@@ -2,6 +2,7 @@ import Link from "next/link";
 import { requireStaff } from "@/lib/session";
 import { prisma } from "@/lib/prisma";
 import { RecipeForm } from "@/components/portal/RecipeForm";
+import { DeleteButton } from "@/components/portal/DeleteButton";
 
 export default async function RecipesPage() {
   await requireStaff(["SUPER_ADMIN", "OWNER_MANAGER", "PRODUCTION_OFFICER"]);
@@ -21,17 +22,18 @@ export default async function RecipesPage() {
 
       <div className="mt-6 grid gap-4 sm:grid-cols-2">
         {recipes.map((recipe) => (
-          <Link
-            key={recipe.id}
-            href={`/portal/recipes/${recipe.id}`}
-            className="rounded-2xl border border-brand-100 bg-white p-5 shadow-sm hover:border-brand-300"
-          >
-            <p className="font-bold text-cocoa-900">{recipe.name}</p>
-            <p className="text-sm text-cocoa-900/60">For {recipe.product.name}</p>
-            <p className="mt-2 text-xs text-cocoa-900/50">
-              Yields {recipe.yieldQuantity} · {recipe.items.length} ingredient(s)
-            </p>
-          </Link>
+          <div key={recipe.id} className="rounded-2xl border border-brand-100 bg-white p-5 shadow-sm hover:border-brand-300">
+            <div className="flex items-start justify-between gap-2">
+              <Link href={`/portal/recipes/${recipe.id}`} className="block flex-1">
+                <p className="font-bold text-cocoa-900">{recipe.name}</p>
+                <p className="text-sm text-cocoa-900/60">For {recipe.product.name}</p>
+                <p className="mt-2 text-xs text-cocoa-900/50">
+                  Yields {recipe.yieldQuantity} · {recipe.items.length} ingredient(s)
+                </p>
+              </Link>
+              <DeleteButton action={`/api/recipes/${recipe.id}`} confirmText={`Delete "${recipe.name}"?`} />
+            </div>
+          </div>
         ))}
         {recipes.length === 0 && <p className="text-sm text-cocoa-900/50">No recipes yet.</p>}
       </div>

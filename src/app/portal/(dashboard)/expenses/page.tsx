@@ -2,6 +2,7 @@ import { requireStaff } from "@/lib/session";
 import { prisma } from "@/lib/prisma";
 import { formatCurrency, formatDate } from "@/lib/format";
 import { QuickCreateForm } from "@/components/portal/QuickCreateForm";
+import { ExpenseRowControls } from "@/components/portal/ExpenseRowControls";
 
 const CATEGORIES = ["Ingredients", "Electricity", "Water", "Rent", "Fuel", "Salaries", "Packaging", "Transportation", "Advertising", "Equipment Maintenance", "Other"];
 
@@ -39,9 +40,8 @@ export default async function ExpensesPage() {
             <tr className="border-b border-brand-100 text-left text-cocoa-900/50">
               <th className="p-3">Date</th>
               <th className="p-3">Category</th>
-              <th className="p-3">Description</th>
               <th className="p-3">Recorded By</th>
-              <th className="p-3 text-right">Amount</th>
+              <th className="p-3 text-right">Description, Amount &amp; Actions</th>
             </tr>
           </thead>
           <tbody>
@@ -49,13 +49,14 @@ export default async function ExpensesPage() {
               <tr key={e.id} className="border-b border-brand-50">
                 <td className="p-3">{formatDate(e.expenseDate)}</td>
                 <td className="p-3">{e.category}</td>
-                <td className="p-3">{e.description ?? "—"}</td>
                 <td className="p-3">{e.recordedBy?.name ?? "—"}</td>
-                <td className="p-3 text-right">{formatCurrency(e.amount)}</td>
+                <td className="p-3 text-right">
+                  <ExpenseRowControls expenseId={e.id} amount={e.amount} description={e.description ?? ""} />
+                </td>
               </tr>
             ))}
             {expenses.length === 0 && (
-              <tr><td colSpan={5} className="p-6 text-center text-cocoa-900/50">No expenses recorded yet.</td></tr>
+              <tr><td colSpan={4} className="p-6 text-center text-cocoa-900/50">No expenses recorded yet.</td></tr>
             )}
           </tbody>
         </table>

@@ -2,6 +2,7 @@ import { requireStaff } from "@/lib/session";
 import { prisma } from "@/lib/prisma";
 import { formatCurrency, formatDate } from "@/lib/format";
 import { QuickCreateForm } from "@/components/portal/QuickCreateForm";
+import { PromotionRowControls } from "@/components/portal/PromotionRowControls";
 
 export default async function PromotionsPage() {
   await requireStaff(["SUPER_ADMIN", "OWNER_MANAGER"]);
@@ -47,6 +48,7 @@ export default async function PromotionsPage() {
               {formatDate(promo.startDate)} {promo.endDate ? `– ${formatDate(promo.endDate)}` : "onward"} · Used {promo.usedCount}{promo.usageLimit ? `/${promo.usageLimit}` : ""}
             </p>
             {promo.minSpend && <p className="mt-1 text-xs text-cocoa-900/50">Min spend {formatCurrency(promo.minSpend)}</p>}
+            <PromotionRowControls promotionId={promo.id} isActive={promo.isActive} />
           </div>
         ))}
         {promotions.length === 0 && <p className="text-sm text-cocoa-900/50">No promotions yet.</p>}

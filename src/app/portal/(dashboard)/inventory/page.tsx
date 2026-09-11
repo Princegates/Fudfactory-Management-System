@@ -2,6 +2,7 @@ import Link from "next/link";
 import { requireStaff } from "@/lib/session";
 import { prisma } from "@/lib/prisma";
 import { NewInventoryItemForm } from "@/components/portal/NewInventoryItemForm";
+import { InventoryItemRowControls } from "@/components/portal/InventoryItemRowControls";
 
 export default async function InventoryPage() {
   await requireStaff(["SUPER_ADMIN", "OWNER_MANAGER", "INVENTORY_OFFICER"]);
@@ -26,8 +27,8 @@ export default async function InventoryPage() {
               <th className="p-3">Name</th>
               <th className="p-3">Type</th>
               <th className="p-3 text-right">Stock</th>
-              <th className="p-3 text-right">Min</th>
               <th className="p-3">Supplier</th>
+              <th className="p-3 text-right">Min Stock, Cost &amp; Actions</th>
             </tr>
           </thead>
           <tbody>
@@ -44,8 +45,10 @@ export default async function InventoryPage() {
                   </td>
                   <td className="p-3">{item.itemType === "RAW_MATERIAL" ? "Raw Material" : "Finished Product"}</td>
                   <td className="p-3 text-right">{item.currentStock} {item.unit}</td>
-                  <td className="p-3 text-right">{item.minStock} {item.unit}</td>
                   <td className="p-3">{item.supplier?.name ?? "—"}</td>
+                  <td className="p-3 text-right">
+                    <InventoryItemRowControls itemId={item.id} minStock={item.minStock} costPerUnit={item.costPerUnit} />
+                  </td>
                 </tr>
               );
             })}

@@ -1,6 +1,7 @@
 import { requireStaff } from "@/lib/session";
 import { prisma } from "@/lib/prisma";
 import { QuickCreateForm } from "@/components/portal/QuickCreateForm";
+import { SupplierRowControls } from "@/components/portal/SupplierRowControls";
 
 export default async function SuppliersPage() {
   await requireStaff(["SUPER_ADMIN", "OWNER_MANAGER", "INVENTORY_OFFICER"]);
@@ -31,9 +32,7 @@ export default async function SuppliersPage() {
           <thead>
             <tr className="border-b border-brand-100 text-left text-cocoa-900/50">
               <th className="p-3">Name</th>
-              <th className="p-3">Phone</th>
-              <th className="p-3">Email</th>
-              <th className="p-3">Items Supplied</th>
+              <th className="p-3">Details</th>
               <th className="p-3 text-right">Linked Items</th>
             </tr>
           </thead>
@@ -41,14 +40,20 @@ export default async function SuppliersPage() {
             {suppliers.map((s) => (
               <tr key={s.id} className="border-b border-brand-50">
                 <td className="p-3 font-medium text-cocoa-900">{s.name}</td>
-                <td className="p-3">{s.phone ?? "—"}</td>
-                <td className="p-3">{s.email ?? "—"}</td>
-                <td className="p-3">{s.itemsSupplied ?? "—"}</td>
+                <td className="p-3">
+                  <SupplierRowControls
+                    supplierId={s.id}
+                    phone={s.phone ?? ""}
+                    email={s.email ?? ""}
+                    address={s.address ?? ""}
+                    itemsSupplied={s.itemsSupplied ?? ""}
+                  />
+                </td>
                 <td className="p-3 text-right">{s.inventoryItems.length}</td>
               </tr>
             ))}
             {suppliers.length === 0 && (
-              <tr><td colSpan={5} className="p-6 text-center text-cocoa-900/50">No suppliers yet.</td></tr>
+              <tr><td colSpan={3} className="p-6 text-center text-cocoa-900/50">No suppliers yet.</td></tr>
             )}
           </tbody>
         </table>

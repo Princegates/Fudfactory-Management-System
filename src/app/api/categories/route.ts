@@ -16,7 +16,10 @@ export async function POST(request: NextRequest) {
   if (!name) return NextResponse.json({ error: "Category name is required." }, { status: 400 });
 
   try {
-    const category = await prisma.category.create({ data: { name, slug: slugify(name) } });
+    const last = await prisma.category.findFirst({ orderBy: { sortOrder: "desc" } });
+    const category = await prisma.category.create({
+      data: { name, slug: slugify(name), sortOrder: (last?.sortOrder ?? -1) + 1 },
+    });
     return NextResponse.json(category);
   } catch {
     return NextResponse.json({ error: "A category with this name already exists." }, { status: 409 });

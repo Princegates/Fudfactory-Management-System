@@ -2,17 +2,22 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { DeleteButton } from "./DeleteButton";
 
 export function ProductRowControls({
   productId,
   price,
   isAvailable,
   isFeatured,
+  categoryId,
+  categories,
 }: {
   productId: string;
   price: number;
   isAvailable: boolean;
   isFeatured: boolean;
+  categoryId: string;
+  categories: { id: string; name: string }[];
 }) {
   const router = useRouter();
   const [priceValue, setPriceValue] = useState(price);
@@ -39,6 +44,16 @@ export function ProductRowControls({
         onBlur={() => priceValue !== price && update({ price: priceValue })}
         className="w-24 rounded-lg border border-brand-200 px-2 py-1 text-xs"
       />
+      <select
+        defaultValue={categoryId}
+        disabled={saving}
+        onChange={(e) => update({ categoryId: e.target.value })}
+        className="rounded-lg border border-brand-200 px-2 py-1 text-xs"
+      >
+        {categories.map((c) => (
+          <option key={c.id} value={c.id}>{c.name}</option>
+        ))}
+      </select>
       <button
         type="button"
         onClick={() => update({ isAvailable: !isAvailable })}
@@ -55,6 +70,10 @@ export function ProductRowControls({
       >
         {isFeatured ? "Featured" : "Feature"}
       </button>
+      <DeleteButton
+        action={`/api/products/${productId}`}
+        confirmText="Delete this product? This can't be undone."
+      />
     </div>
   );
 }
