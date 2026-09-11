@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { formatCurrency } from "@/lib/format";
 
 type Product = {
@@ -13,6 +13,10 @@ type Product = {
 };
 
 type CartLine = { productId: string; name: string; price: number; quantity: number };
+type HubtelChannel = { value: string; label: string };
+
+const POLL_INTERVAL_MS = 2500;
+const POLL_TIMEOUT_MS = 90000;
 
 export function PosTerminal({
   products,
@@ -27,9 +31,30 @@ export function PosTerminal({
   const [customerName, setCustomerName] = useState("");
   const [customerPhone, setCustomerPhone] = useState("");
   const [paymentMethod, setPaymentMethod] = useState("CASH");
+  const [momoChannel, setMomoChannel] = useState("");
+  const [transactionRef, setTransactionRef] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
   const [receipt, setReceipt] = useState<{ orderNumber: string; totalAmount: number } | null>(null);
+
+  const [hubtelEnabled, setHubtelEnabled] = useState(false);
+  const [hubtelChannels, setHubtelChannels] = useState<HubtelChannel[]>([]);
+  const [awaitingApproval, setAwaitingApproval] = useState<{ orderNumber: string; totalAmount: number } | null>(null);
+  const pollRef = useRef<ReturnType<typeof setInterval> | null>(null);
+
+  useEffect(() => {
+    fetch("/api/payments/available")
+      .then((r) => r.json())
+      .then((data) => {
+        setHubtelEnabled(Boolean(data.hubtel));
+        setHubtelChannels(data.hubtelChannels ?? []);
+        if (data.hubtelChannels?.[0]) setMomoChannel(data.hubtelChannels[0].value);
+      })
+      .catch(() => {});
+    return () => {
+      if (pollRef.current) clearInterval(pollRef.current);
+    };
+  }, []);
 
   const filtered = useMemo(
     () =>
@@ -58,10 +83,70 @@ export function PosTerminal({
     setCart((prev) => prev.map((l) => (l.productId === productId ? { ...l, quantity } : l)).filter((l) => l.quantity > 0));
   }
 
+  function resetSaleForm() {
+    setCart([]);
+    setCustomerName("");
+    setCustomerPhone("");
+    setTransactionRef("");
+  }
+
+  function pollForPayment(orderNumber: string, totalAmount: number) {
+    const startedAt = Date.now();
+    setAwaitingApproval({ orderNumber, totalAmount });
+    pollRef.current = setInterval(async () => {
+      if (Date.now() - startedAt > POLL_TIMEOUT_MS) {
+        if (pollRef.current) clearInterval(pollRef.current);
+        setAwaitingApproval(null);
+        setError("The customer didn't approve the payment in time. Check Orders to retry or record cash instead.");
+        return;
+      }
+      const res = await fetch(`/api/payments/status/${orderNumber}`);
+      if (!res.ok) return;
+      const data = await res.json();
+      if (data.latestPaymentStatus === "SUCCESSFUL") {
+        if (pollRef.current) clearInterval(pollRef.current);
+        setAwaitingApproval(null);
+        setReceipt({ orderNumber, totalAmount });
+        resetSaleForm();
+      } else if (data.latestPaymentStatus === "FAILED") {
+        if (pollRef.current) clearInterval(pollRef.current);
+        setAwaitingApproval(null);
+        setError("The mobile money payment failed or was declined. You can try again.");
+      }
+    }, POLL_INTERVAL_MS);
+  }
+
   async function completeSale() {
     if (cart.length === 0) return;
-    setSubmitting(true);
     setError(null);
+
+    if (paymentMethod === "HUBTEL_MOMO") {
+      if (!customerPhone.trim()) {
+        setError("Enter the customer's mobile money number.");
+        return;
+      }
+      setSubmitting(true);
+      const res = await fetch("/api/payments/hubtel/charge", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          lines: cart.map((l) => ({ productId: l.productId, quantity: l.quantity })),
+          customerName,
+          customerMsisdn: customerPhone,
+          channel: momoChannel,
+        }),
+      });
+      const data = await res.json();
+      setSubmitting(false);
+      if (!res.ok) {
+        setError(data.error ?? "Could not start the mobile money charge.");
+        return;
+      }
+      pollForPayment(data.orderNumber, data.totalAmount);
+      return;
+    }
+
+    setSubmitting(true);
     const res = await fetch("/api/pos/sale", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -70,6 +155,7 @@ export function PosTerminal({
         paymentMethod,
         customerName,
         customerPhone,
+        transactionRef: transactionRef.trim() || undefined,
       }),
     });
     const data = await res.json();
@@ -79,9 +165,21 @@ export function PosTerminal({
       return;
     }
     setReceipt({ orderNumber: data.orderNumber, totalAmount: data.totalAmount });
-    setCart([]);
-    setCustomerName("");
-    setCustomerPhone("");
+    resetSaleForm();
+  }
+
+  if (awaitingApproval) {
+    return (
+      <div className="mx-auto max-w-md rounded-2xl border border-brand-200 bg-brand-50 p-8 text-center">
+        <div className="mx-auto h-10 w-10 animate-spin rounded-full border-4 border-brand-200 border-t-brand-500" />
+        <p className="mt-4 text-lg font-bold text-cocoa-900">Waiting for customer approval...</p>
+        <p className="mt-2 text-sm text-cocoa-900/70">
+          A mobile money prompt was sent to {customerPhone || "the customer's phone"}. Ask them to enter their PIN.
+        </p>
+        <p className="mt-1 text-2xl font-bold text-brand-700">{formatCurrency(awaitingApproval.totalAmount)}</p>
+        <p className="mt-4 text-xs text-cocoa-900/50">Order {awaitingApproval.orderNumber}</p>
+      </div>
+    );
   }
 
   if (receipt) {
@@ -180,7 +278,7 @@ export function PosTerminal({
           <input
             value={customerPhone}
             onChange={(e) => setCustomerPhone(e.target.value)}
-            placeholder="Customer phone (optional, for loyalty)"
+            placeholder={paymentMethod === "HUBTEL_MOMO" ? "Mobile money number" : "Customer phone (optional, for loyalty)"}
             className="w-full rounded-lg border border-brand-200 px-3 py-2 text-sm"
           />
           <select
@@ -189,10 +287,30 @@ export function PosTerminal({
             className="w-full rounded-lg border border-brand-200 px-3 py-2 text-sm"
           >
             <option value="CASH">Cash</option>
-            <option value="MOBILE_MONEY">Mobile Money</option>
-            <option value="CARD">Card</option>
+            <option value="MOBILE_MONEY">Mobile Money (manual)</option>
+            <option value="CARD">Card (manual)</option>
             <option value="BANK_TRANSFER">Bank Transfer</option>
+            {hubtelEnabled && <option value="HUBTEL_MOMO">📲 Mobile Money — charge via Hubtel</option>}
           </select>
+          {paymentMethod === "HUBTEL_MOMO" && (
+            <select
+              value={momoChannel}
+              onChange={(e) => setMomoChannel(e.target.value)}
+              className="w-full rounded-lg border border-brand-200 px-3 py-2 text-sm"
+            >
+              {hubtelChannels.map((c) => (
+                <option key={c.value} value={c.value}>{c.label}</option>
+              ))}
+            </select>
+          )}
+          {(paymentMethod === "MOBILE_MONEY" || paymentMethod === "CARD" || paymentMethod === "BANK_TRANSFER") && (
+            <input
+              value={transactionRef}
+              onChange={(e) => setTransactionRef(e.target.value)}
+              placeholder="Transaction reference (optional)"
+              className="w-full rounded-lg border border-brand-200 px-3 py-2 text-sm"
+            />
+          )}
         </div>
 
         {error && <p className="mt-2 text-sm text-red-600">{error}</p>}
@@ -203,7 +321,11 @@ export function PosTerminal({
           disabled={cart.length === 0 || submitting}
           className="mt-4 w-full rounded-full bg-brand-500 py-3 text-sm font-semibold text-white hover:bg-brand-600 disabled:opacity-60"
         >
-          {submitting ? "Processing..." : `Complete Sale · ${formatCurrency(total)}`}
+          {submitting
+            ? "Processing..."
+            : paymentMethod === "HUBTEL_MOMO"
+              ? `Charge Mobile Money · ${formatCurrency(total)}`
+              : `Complete Sale · ${formatCurrency(total)}`}
         </button>
       </div>
     </div>

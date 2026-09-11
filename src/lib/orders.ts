@@ -1,4 +1,4 @@
-import { OrderChannel, FulfillmentType, PaymentMethod } from "@prisma/client";
+import { OrderChannel, FulfillmentType, PaymentMethod, PaymentGateway, Order } from "@prisma/client";
 import { prisma } from "./prisma";
 import { deductInventoryForSale, completeOrderCrmEffects } from "./sales";
 import { generateOrderNumber } from "./format";
@@ -22,6 +22,15 @@ export type CreateOrderInput = {
   // Optional for anonymous POS walk-in sales; required for online orders
   // (enforced by the API route) so delivery/tracking/CRM has somewhere to go.
   customer?: { id?: string; name: string; phone: string; email?: string };
+  // When set, payment is processed by a gateway (Paystack/Hubtel) rather
+  // than recorded instantly: the order is created with paymentStatus
+  // PENDING regardless of channel, and completion is deferred until the
+  // gateway confirms via webhook/callback (see finalizeGatewayPayment).
+  gateway?: Extract<PaymentGateway, "PAYSTACK" | "HUBTEL">;
+  // Customer-supplied reference for a direct/manual payment (e.g. a Mobile
+  // Money transaction ID for a transfer sent outside any gateway, or a bank
+  // transfer reference). Recorded for staff to verify before confirming.
+  transactionRef?: string;
 };
 
 const DEFAULT_DELIVERY_FEE = 15;
@@ -111,9 +120,19 @@ export async function createOrder(input: CreateOrderInput) {
     const deliveryFee = input.fulfillmentType === "DELIVERY" ? DEFAULT_DELIVERY_FEE : 0;
     const totalAmount = Math.max(0, subtotal - discountAmount + deliveryFee);
 
-    const isImmediatePayment = input.channel === "POS" || input.paymentMethod !== "CASH";
+    const usesGateway = Boolean(input.gateway);
+    // POS: the cashier is physically present and confirms payment on the
+    // spot, so a manually-recorded method is instantly successful. Online:
+    // every manual method (cash on delivery, direct MoMo transfer, bank
+    // transfer) needs a human to actually check the money arrived, so it
+    // stays PENDING until staff confirms it on the Payments screen — a
+    // gateway (Paystack/Hubtel) is the only way to confirm automatically.
+    const isImmediatePayment = !usesGateway && input.channel === "POS";
     const paymentStatus = isImmediatePayment ? "SUCCESSFUL" : "PENDING";
-    const orderStatus = input.channel === "POS" ? "COMPLETED" : "NEW";
+    // A gateway payment is never instantly complete — completion (and, for
+    // POS, marking the order COMPLETED) happens in finalizeGatewayPayment
+    // once the gateway actually confirms the charge.
+    const orderStatus = !usesGateway && input.channel === "POS" ? "COMPLETED" : "NEW";
 
     const order = await tx.order.create({
       data: {
@@ -144,6 +163,9 @@ export async function createOrder(input: CreateOrderInput) {
         method: input.paymentMethod,
         status: paymentStatus,
         paidAt: isImmediatePayment ? new Date() : null,
+        transactionRef: input.transactionRef,
+        gateway: input.gateway ?? "NONE",
+        gatewayReference: usesGateway ? order.orderNumber : null,
       },
     });
 
@@ -184,5 +206,63 @@ export async function createOrder(input: CreateOrderInput) {
     }
 
     return order;
+  });
+}
+
+/**
+ * Called from a payment gateway's webhook/callback once it confirms the
+ * final result of a charge. Idempotent: safe to call more than once for the
+ * same reference (e.g. both a browser callback and a server webhook land)
+ * — a payment already in a terminal state is left alone.
+ */
+export async function finalizeGatewayPayment(params: {
+  gateway: Extract<PaymentGateway, "PAYSTACK" | "HUBTEL">;
+  gatewayReference: string; // == orderNumber
+  outcome: "SUCCESSFUL" | "FAILED";
+  gatewayMeta?: unknown;
+}): Promise<{ order: Order; alreadyFinalized: boolean } | null> {
+  return prisma.$transaction(async (tx) => {
+    const payment = await tx.payment.findFirst({
+      where: { gateway: params.gateway, gatewayReference: params.gatewayReference },
+      orderBy: { createdAt: "desc" },
+    });
+    if (!payment) return null;
+
+    const order = await tx.order.findUnique({ where: { id: payment.orderId } });
+    if (!order) return null;
+
+    if (payment.status === "SUCCESSFUL" || payment.status === "FAILED") {
+      return { order, alreadyFinalized: true };
+    }
+
+    await tx.payment.update({
+      where: { id: payment.id },
+      data: {
+        status: params.outcome,
+        paidAt: params.outcome === "SUCCESSFUL" ? new Date() : null,
+        gatewayMeta: params.gatewayMeta ? JSON.stringify(params.gatewayMeta) : undefined,
+      },
+    });
+
+    if (params.outcome === "FAILED") {
+      await tx.order.update({ where: { id: order.id }, data: { paymentStatus: "FAILED" } });
+      return { order, alreadyFinalized: false };
+    }
+
+    // SUCCESSFUL: a POS sale completes immediately on payment confirmation,
+    // same as a manually-recorded POS payment would. An online order moves
+    // from NEW to CONFIRMED — completion still follows the normal
+    // production/delivery workflow via the Orders screen.
+    const nextStatus = order.channel === "POS" ? "COMPLETED" : order.status === "NEW" ? "CONFIRMED" : order.status;
+    await tx.order.update({
+      where: { id: order.id },
+      data: { paymentStatus: "SUCCESSFUL", status: nextStatus },
+    });
+
+    if (nextStatus === "COMPLETED") {
+      await completeOrderCrmEffects(tx, order.id);
+    }
+
+    return { order: { ...order, status: nextStatus, paymentStatus: "SUCCESSFUL" }, alreadyFinalized: false };
   });
 }

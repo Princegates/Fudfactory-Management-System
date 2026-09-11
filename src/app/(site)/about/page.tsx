@@ -14,6 +14,7 @@ const OFFERINGS = [
   { icon: "🍚", label: "Rice & spaghetti cuisine" },
   { icon: "🍌", label: "Yam & plantain dishes" },
   { icon: "🎉", label: "Corporate & bulk catering" },
+  { icon: "🎪", label: "Full event planning services" },
 ];
 
 export default async function AboutPage() {

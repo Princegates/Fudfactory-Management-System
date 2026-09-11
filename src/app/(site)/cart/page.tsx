@@ -25,6 +25,9 @@ export default function CartPage() {
   const [promoError, setPromoError] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
+  const [gateways, setGateways] = useState({ paystack: false, hubtel: false });
+  const [manualMomo, setManualMomo] = useState<{ number: string; network: string; instructions: string } | null>(null);
+  const [transactionRef, setTransactionRef] = useState("");
 
   useEffect(() => {
     fetch("/api/auth/customer/me")
@@ -36,6 +39,13 @@ export default function CartPage() {
           setEmail(data.customer.email ?? "");
           setDeliveryAddress(data.customer.address ?? "");
         }
+      })
+      .catch(() => {});
+    fetch("/api/payments/available")
+      .then((r) => r.json())
+      .then((data) => {
+        setGateways({ paystack: Boolean(data.paystack), hubtel: Boolean(data.hubtel) });
+        setManualMomo(data.manualMomo ?? null);
       })
       .catch(() => {});
   }, []);
@@ -70,6 +80,13 @@ export default function CartPage() {
       setError("Please enter a delivery address.");
       return;
     }
+    if (paymentMethod === "MOBILE_MONEY" && !transactionRef.trim()) {
+      setError("Enter the Mobile Money transaction ID from your payment SMS.");
+      return;
+    }
+
+    const gatewayProvider = paymentMethod === "PAYSTACK" || paymentMethod === "HUBTEL" ? paymentMethod : undefined;
+
     setSubmitting(true);
     const res = await fetch("/api/orders", {
       method: "POST",
@@ -81,19 +98,42 @@ export default function CartPage() {
         fulfillmentType,
         deliveryAddress: fulfillmentType === "DELIVERY" ? deliveryAddress : undefined,
         scheduledFor: scheduledFor || undefined,
-        paymentMethod,
+        paymentMethod: gatewayProvider ? "CARD" : paymentMethod,
+        gatewayProvider,
+        transactionRef: paymentMethod === "MOBILE_MONEY" ? transactionRef.trim() : undefined,
         promotionCode: promoResult ? promoCode : undefined,
         lines: items.map((i) => ({ productId: i.productId, quantity: i.quantity, sizeLabel: i.sizeLabel })),
       }),
     });
     const data = await res.json();
-    setSubmitting(false);
     if (!res.ok) {
+      setSubmitting(false);
       setError(data.error ?? "Could not place order.");
       return;
     }
     clear();
-    router.push(`/order/${data.orderNumber}?phone=${encodeURIComponent(phone)}`);
+
+    if (!gatewayProvider) {
+      setSubmitting(false);
+      router.push(`/order/${data.orderNumber}?phone=${encodeURIComponent(phone)}`);
+      return;
+    }
+
+    // Kick off the hosted checkout and send the browser there.
+    const endpoint = gatewayProvider === "PAYSTACK" ? "/api/payments/paystack/initialize" : "/api/payments/hubtel/checkout";
+    const gwRes = await fetch(endpoint, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ orderNumber: data.orderNumber, phone }),
+    });
+    const gwData = await gwRes.json();
+    setSubmitting(false);
+    if (!gwRes.ok) {
+      setError(`${gwData.error ?? "Could not start payment."} You can retry from your order page.`);
+      router.push(`/order/${data.orderNumber}?phone=${encodeURIComponent(phone)}`);
+      return;
+    }
+    window.location.href = gwData.authorizationUrl ?? gwData.checkoutUrl;
   }
 
   if (items.length === 0) {
@@ -227,11 +267,35 @@ export default function CartPage() {
                 className="input-dark mt-2 w-full rounded-lg px-3 py-2 text-sm"
               >
                 <option value="CASH" className="bg-ink-900">Cash on pickup/delivery</option>
-                <option value="MOBILE_MONEY" className="bg-ink-900">Mobile Money</option>
-                <option value="CARD" className="bg-ink-900">Card</option>
+                <option value="MOBILE_MONEY" className="bg-ink-900">Mobile Money — send to our number</option>
+                <option value="CARD" className="bg-ink-900">Card (pay on delivery)</option>
                 <option value="BANK_TRANSFER" className="bg-ink-900">Bank Transfer</option>
-                <option value="ONLINE" className="bg-ink-900">Online Payment</option>
+                {gateways.paystack && <option value="PAYSTACK" className="bg-ink-900">💳 Pay now with Paystack (card / mobile money)</option>}
+                {gateways.hubtel && <option value="HUBTEL" className="bg-ink-900">📲 Pay now with Hubtel (card / mobile money)</option>}
               </select>
+
+              {paymentMethod === "MOBILE_MONEY" && (
+                <div className="glass mt-3 rounded-xl p-4">
+                  {manualMomo ? (
+                    <>
+                      <p className="text-sm" style={{ color: "var(--text-mid)" }}>{manualMomo.instructions}</p>
+                      <p className="mt-2 font-display text-lg font-bold text-gradient">{manualMomo.number}</p>
+                      <p className="text-xs" style={{ color: "var(--text-lo)" }}>{manualMomo.network}</p>
+                    </>
+                  ) : (
+                    <p className="text-sm" style={{ color: "var(--text-mid)" }}>
+                      Send the order total to our Mobile Money number (see the Contact page), then enter the
+                      transaction ID from your confirmation SMS below.
+                    </p>
+                  )}
+                  <input
+                    value={transactionRef}
+                    onChange={(e) => setTransactionRef(e.target.value)}
+                    placeholder="Transaction ID / reference"
+                    className="input-dark mt-3 w-full rounded-lg px-3 py-2 text-sm"
+                  />
+                </div>
+              )}
             </div>
           </div>
 

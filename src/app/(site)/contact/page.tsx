@@ -59,8 +59,9 @@ export default async function ContactPage() {
                 <h2 className="text-xs font-semibold uppercase tracking-widest" style={{ color: "var(--glow-amber)" }}>
                   Hours
                 </h2>
-                <p className="mt-1" style={{ color: "var(--text-hi)" }}>Mon – Sat: 8:00am – 8:00pm</p>
-                <p style={{ color: "var(--text-hi)" }}>Sunday: 12:00pm – 6:00pm</p>
+                {business.businessHours.split("\n").map((line) => (
+                  <p key={line} style={{ color: "var(--text-hi)" }}>{line}</p>
+                ))}
               </div>
             </div>
           </Reveal>

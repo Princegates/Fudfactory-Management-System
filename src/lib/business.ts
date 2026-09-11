@@ -11,6 +11,7 @@ const DEFAULTS = {
   facebookUrl: null as string | null,
   aboutText: null as string | null,
   heroImageUrl: null as string | null,
+  businessHours: "Mon – Sat: 8:00am – 8:00pm\nSunday: 12:00pm – 6:00pm",
 };
 
 export async function getBusinessProfile() {
@@ -26,5 +27,6 @@ export async function getBusinessProfile() {
     facebookUrl: profile?.facebookUrl ?? DEFAULTS.facebookUrl,
     aboutText: profile?.aboutText ?? DEFAULTS.aboutText,
     heroImageUrl: profile?.heroImageUrl ?? DEFAULTS.heroImageUrl,
+    businessHours: profile?.businessHours ?? DEFAULTS.businessHours,
   };
 }

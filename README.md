@@ -1,13 +1,15 @@
 # FudFactory Management System
 
-A full-stack web platform for **FudFactory** (Instagram: [@fudfactory.gh](https://instagram.com/fudfactory.gh)) — a food, pastry and catering business. It combines a public ordering website with an internal business management portal (POS, inventory, production, CRM, finance, marketing and reporting), built from the project's Software Requirements Specification.
+A full-stack web platform for **FudFactory** (Instagram: [@fudfactory.gh](https://instagram.com/fudfactory.gh)) — a food, pastry, catering and event-planning business. It combines a public ordering website with an internal business management portal (POS, inventory, production, CRM, finance, marketing, payments and reporting), built from the project's Software Requirements Specification.
 
 ## Tech stack
 
 - **Framework**: Next.js 16 (App Router, TypeScript, Route Handlers as the API layer)
-- **Styling**: Tailwind CSS v4
+- **Styling**: Tailwind CSS v4 — the public site uses a dark, glassmorphic "futuristic" design system (animated gradient backdrops, glass cards, neon glow accents) with 12 selectable color themes; the staff portal keeps a calm, functional light UI
 - **Database/ORM**: Prisma 6 + SQLite for local development (swap the `datasource` provider to `postgresql`/`mysql` for production — the schema is written to be provider-agnostic)
 - **Auth**: Custom JWT sessions in httpOnly cookies — separate sessions for staff (`/portal`) and customers (`/account`)
+- **Payments**: Real Paystack and Hubtel gateway integrations, plus a manual "pay to our own Mobile Money number" flow verified by transaction ID
+- **Animation**: `motion` for scroll-reveal and micro-interactions
 - **Charts**: Recharts
 
 This matches the stack recommended in the SRS (§43): React/Next.js + Tailwind, a Node.js backend, and a relational database behind an API-driven architecture.
@@ -53,13 +55,31 @@ One database, one source of truth (SRS §49): placing an online order or ringing
 - Completing a production order consumes the recipe's raw materials and increases finished-goods stock, calculating estimated cost (ingredients + labor + packaging + overhead) and implied gross profit.
 - Cancelling, rejecting or refunding an order reverses any inventory it had deducted.
 - Completing an order awards loyalty points and updates the customer's lifetime spend and segment (NEW → REGULAR → VIP).
+- A payment gateway (Paystack/Hubtel) order stays `PENDING` until the gateway confirms via webhook — `src/lib/orders.ts#finalizeGatewayPayment` handles that transition, completing the order (POS) or confirming it (online) once payment is real.
+- Every other **manual** payment method (cash on delivery, direct Mobile Money transfer, bank transfer) placed **online** also stays `PENDING` — staff verify the transaction reference against their bank/MoMo statement and confirm it from the Payments screen. POS sales remain instant, since the cashier is physically present to confirm payment on the spot.
 
 ### Route map
 
-- `src/app/(site)/*` — public website: home, menu, product details, cart/checkout, gallery, promotions, custom/event order quotations, contact, customer account & order tracking.
-- `src/app/portal/*` — staff portal, gated by `src/proxy.ts` (Next's renamed Middleware) and role checks in `src/lib/permissions.ts` / `src/lib/session.ts`. Each module (POS, Orders, Inventory, Recipes, Production, Deliveries, Payments, Expenses, Quotations, Promotions, Loyalty, Reports, Reviews, Staff, Settings, Audit Log) is a separate route restricted to the roles defined in the SRS (§4).
-- `src/app/api/*` — Route Handlers backing both the site and portal.
-- `prisma/schema.prisma` — the full data model (SRS §32): Users, Customers, Categories, Products, Suppliers, Inventory (raw materials + finished goods) with a full transaction ledger, Recipes/BOM, Production, Orders/Payments/Deliveries, Expenses, Promotions, Loyalty, Notifications, Reviews, Quotations, Business Settings and an Audit Log.
+- `src/app/(site)/*` — public website: home, menu, product details, cart/checkout, gallery, promotions, custom/event order & full event-planning quotations, contact, customer account & order tracking.
+- `src/app/portal/*` — staff portal, gated by `src/proxy.ts` (Next's renamed Middleware) and role checks in `src/lib/permissions.ts` / `src/lib/session.ts`. Each module (POS, Orders, Inventory, Recipes, Production, Deliveries, Payments, Expenses, Quotations, Promotions, Loyalty, Reports, Reviews, Staff, System Settings, Audit Log) is a separate route restricted to the roles defined in the SRS (§4).
+- `src/app/portal/(dashboard)/settings/*` — System Settings, with its own sub-navigation: General, Payment Methods, Notifications, WhatsApp Messaging, SMS, Email, Print/Receipts, Website (Front CMS), Themes, Roles & Permissions (reference), Currency, Backup & Restore.
+- `src/app/api/*` — Route Handlers backing both the site and portal, including `api/payments/*` for gateway initialize/charge/callback/webhook routes.
+- `prisma/schema.prisma` — the full data model (SRS §32): Users, Customers, Categories, Products, Suppliers, Inventory (raw materials + finished goods) with a full transaction ledger, Recipes/BOM, Production, Orders/Payments (with gateway fields)/Deliveries, Expenses, Promotions, Loyalty, Notifications, Reviews, Quotations, a generic `Setting` key-value store, Business Settings and an Audit Log.
+
+## Payments
+
+Configured entirely from **Settings → Payment Methods** (Super Admin only) — no redeploy needed:
+
+- **Paystack** — hosted checkout (card + Mobile Money) for online orders. Configure the public/secret key, then set your Paystack webhook to `<your-domain>/api/payments/paystack/webhook` and the dashboard callback to `<your-domain>/api/payments/paystack/callback`.
+- **Hubtel** — a direct Mobile Money charge (MTN, Telecel, AirtelTigo) that prompts the customer's phone for a PIN, used in the **POS**; and a hosted checkout for online orders. Configure the merchant account number, client ID and client secret, then point Hubtel's callback at `<your-domain>/api/payments/hubtel/callback`.
+- **Direct Mobile Money (manual)** — the simplest option: display your own MoMo number and instructions at checkout; the customer pays you directly (no gateway fees) and enters the transaction ID, which staff cross-check against their MoMo statement before confirming the payment on the Payments screen.
+- **Cash, Card (manual) and Bank Transfer** always work with no configuration, recorded and confirmed by staff the same way.
+
+`src/lib/payments/paystack.ts` and `src/lib/payments/hubtel.ts` isolate the gateway HTTP calls. **Important caveat**: this project was built in a sandboxed environment whose network egress is blocked to `paystack.co` and `hubtel.com`, so neither integration could be live-tested against the real APIs. The Paystack implementation follows Paystack's stable, well-documented REST API closely. The Hubtel implementation follows Hubtel's published Online Checkout / Receive Money API shapes as documented at the time of writing — **verify the endpoint paths and payload fields against Hubtel's current developer portal and test with real sandbox credentials before going live**; every call surfaces Hubtel's raw error response to make any mismatch easy to diagnose.
+
+## Themes
+
+Settings → Themes lets a Super Admin instantly switch the public site's whole color palette (12 options: Amber Glow, Neon Sunset, Cyber Lime, Ocean Depths, Royal Violet, Ruby Fire, Emerald Circuit, Electric Blue, Rose Gold, Solar Flare, Arctic Frost, Midnight Mint) with no code changes or redeploy — see `src/lib/themes.ts` and the `[data-site-theme]` blocks in `src/app/globals.css`.
 
 ## Phased delivery vs. the SRS roadmap (§47)
 
@@ -67,24 +87,26 @@ One database, one source of truth (SRS §49): placing an online order or ringing
 |---|---|
 | 1 — Website, POS, Products, Orders, Customers, Inventory | ✅ Built |
 | 2 — Recipes, Production, Suppliers, Delivery, Expenses | ✅ Built |
-| 3 — CRM, Loyalty, Promotions | ✅ Built (SMS/Email/WhatsApp are simulated — see below) |
+| 3 — CRM, Loyalty, Promotions | ✅ Built (SMS/Email/WhatsApp dispatch is not wired to a live provider — see below; payments are real, see above) |
 | 4 — Advanced analytics / forecasting | ◐ Partial — Reports & Analytics page covers revenue, product performance, channel mix and CSV export; predictive forecasting is not implemented |
 | 5 — Mobile apps | ✗ Not built — the API-driven Route Handler layer is ready to serve a future mobile client |
 
 ## Known simplifications (documented, not hidden)
 
-- **Payments** are simulated: there's no live Mobile Money/card gateway integration. Cash orders start `PENDING`; other methods are marked `SUCCESSFUL` immediately. Swapping in a real gateway means replacing the payment-status logic in `src/lib/orders.ts`.
-- **Notifications** (order-received SMS/WhatsApp) are recorded in the `Notification` table but not actually dispatched — there's no SMS/WhatsApp Business API credential wired up. The "Contact Us" form instead opens a pre-filled WhatsApp chat link, which needs no backend.
+- **Notification dispatch**: Settings → Notifications/SMS/Email/WhatsApp store provider configuration (and a `Notification` row is created for order events), but no SMS/email/WhatsApp is actually sent yet — wiring an actual provider call is the next step once you have live credentials. The "Contact Us" form instead opens a pre-filled WhatsApp chat link, which needs no backend.
 - **Reports** export as CSV (`/portal/reports`); PDF/Excel formats mentioned in the SRS aren't implemented.
 - **Delivery fees** are a flat rate rather than zone-based pricing.
+- **Backup & Restore**: export to JSON works; restoring from a backup file isn't implemented (re-importing safely needs more validation than a simple upload) — restore at the database level with a developer's help if ever needed.
 - Employees are modeled as `User` records with HR fields (department, employment status) rather than a separate `Employee` table, since every staff member also needs portal login.
 - Promotions support percentage and fixed-amount discounts automatically at checkout; BOGO/combo offers are recorded but applied manually by staff.
+- Product/category photos are generative gradient art (`src/components/site/ProductArt.tsx`) rather than real photography — this environment's network egress is blocked to Instagram and the business's live site, so no real photos could be fetched. Add real photos any time via the image-URL fields already in the portal (Products, Settings → Website).
 
 ## Security notes
 
 - Passwords are hashed with bcrypt; sessions are JWTs in httpOnly, `sameSite=lax` cookies.
 - `src/proxy.ts` does a cheap cookie-presence check on `/portal/*`; every portal page additionally calls `requireStaff([...roles])` server-side, which is the actual authorization boundary.
 - All prices are recalculated server-side from the database at checkout — client-submitted prices are never trusted.
+- Payment gateway secret keys are stored in the database (Settings → Payment Methods, Super Admin only) and masked in the UI once set; the Paystack webhook is signature-verified (`x-paystack-signature`, HMAC-SHA512).
 - Set a strong `JWT_SECRET` before deploying anywhere beyond local development.
 
 ## Scripts

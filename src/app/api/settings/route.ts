@@ -9,7 +9,7 @@ export async function PATCH(request: NextRequest) {
   }
 
   const body = await request.json().catch(() => null);
-  const fields = ["businessName", "tagline", "phone", "whatsapp", "email", "address", "instagramHandle", "facebookUrl", "aboutText", "heroImageUrl"];
+  const fields = ["businessName", "tagline", "phone", "whatsapp", "email", "address", "instagramHandle", "facebookUrl", "aboutText", "heroImageUrl", "businessHours"];
   const data: Record<string, unknown> = {};
   for (const field of fields) {
     if (typeof body?.[field] === "string") data[field] = body[field];

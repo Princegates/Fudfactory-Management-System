@@ -4,7 +4,7 @@ import { Reveal } from "@/components/site/Reveal";
 
 export const metadata: Metadata = {
   title: "Custom & Event Orders",
-  description: "Request a quotation for birthday cakes, weddings, corporate and bulk orders.",
+  description: "Request a quotation for birthday cakes, weddings, corporate orders and full event planning.",
 };
 
 export default function CustomOrdersPage() {
@@ -14,11 +14,12 @@ export default function CustomOrdersPage() {
       <div className="relative mx-auto max-w-3xl px-4 py-20 sm:px-6">
         <Reveal>
           <h1 className="font-display text-4xl font-bold" style={{ color: "var(--text-hi)" }}>
-            Custom &amp; <span className="text-gradient">Event Orders</span>
+            Custom Orders &amp; <span className="text-gradient">Event Planning</span>
           </h1>
           <p className="mt-3" style={{ color: "var(--text-mid)" }}>
-            Planning a birthday, wedding, graduation or corporate event? Tell us what you need and
-            we&apos;ll send you a quotation.
+            Planning a birthday, wedding, graduation or corporate event? Beyond cakes and catering,
+            we also offer full event planning services. Tell us what you need and we&apos;ll send you
+            a quotation.
           </p>
         </Reveal>
         <Reveal delay={0.1}>

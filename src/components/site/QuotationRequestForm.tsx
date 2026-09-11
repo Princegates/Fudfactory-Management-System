@@ -10,6 +10,7 @@ const EVENT_TYPES = [
   "Graduation Cake",
   "Party Package",
   "Bulk Order",
+  "Full Event Planning",
   "Other",
 ];
 

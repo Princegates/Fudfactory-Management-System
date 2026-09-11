@@ -145,6 +145,12 @@ enum QuotationStatus {
   EXPIRED
 }
 
+enum PaymentGateway {
+  NONE
+  PAYSTACK
+  HUBTEL
+}
+
 // ---------------------------------------------------------------------------
 // Users, Roles & Access (Sections 4, 25, 26, 27)
 // ---------------------------------------------------------------------------
@@ -416,20 +422,26 @@ model OrderItem {
 }
 
 model Payment {
-  id             String        @id @default(cuid())
-  orderId        String
-  customerId     String?
-  amount         Float
-  method         PaymentMethod
-  transactionRef String?
-  status         PaymentStatus @default(PENDING)
-  paidAt         DateTime?
-  createdAt      DateTime      @default(now())
+  id               String         @id @default(cuid())
+  orderId          String
+  customerId       String?
+  amount           Float
+  method           PaymentMethod
+  transactionRef   String?
+  status           PaymentStatus  @default(PENDING)
+  paidAt           DateTime?
+  createdAt        DateTime       @default(now())
+  // Payment gateway processing (Paystack / Hubtel). NONE means a manually
+  // recorded payment (cash, or marked successful by staff).
+  gateway          PaymentGateway @default(NONE)
+  gatewayReference String? // our reference sent to the gateway (== orderNumber)
+  gatewayMeta      String? // raw JSON response/status snapshot from the gateway
 
   order    Order     @relation(fields: [orderId], references: [id])
   customer Customer? @relation(fields: [customerId], references: [id])
 
   @@index([orderId])
+  @@index([gatewayReference])
 }
 
 model Delivery {
@@ -573,6 +585,18 @@ model BusinessProfile {
   aboutText       String?
   heroImageUrl    String?
   updatedAt       DateTime @updatedAt
+}
+
+// Generic key/value store backing the System Settings section (payment
+// gateway credentials, notification provider config, theme choice, etc.).
+// A flexible KV table avoids a schema migration for every new setting page.
+// Values are stored as plain strings (JSON-encode on the read/write side
+// for structured data). Secret-looking keys (containing "secret" or "key")
+// are masked when read back through the settings API.
+model Setting {
+  key       String   @id
+  value     String
+  updatedAt DateTime @updatedAt
 }
 
 model AuditLog {

@@ -17,6 +17,7 @@ export async function POST(request: NextRequest) {
     : "CASH";
   const customerName = typeof body?.customerName === "string" ? body.customerName.trim() : "";
   const customerPhone = typeof body?.customerPhone === "string" ? body.customerPhone.trim() : "";
+  const transactionRef = typeof body?.transactionRef === "string" && body.transactionRef.trim() ? body.transactionRef.trim() : undefined;
 
   if (lines.length === 0) {
     return NextResponse.json({ error: "Add at least one item to the sale." }, { status: 400 });
@@ -32,6 +33,7 @@ export async function POST(request: NextRequest) {
       fulfillmentType: "PICKUP",
       paymentMethod,
       cashierId: session.id,
+      transactionRef,
       customer: customerPhone ? { name: customerName || "Walk-in Customer", phone: customerPhone } : undefined,
     });
 

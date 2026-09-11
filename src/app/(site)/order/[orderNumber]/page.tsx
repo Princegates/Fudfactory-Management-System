@@ -1,6 +1,7 @@
 import { notFound } from "next/navigation";
 import { prisma } from "@/lib/prisma";
 import { formatCurrency, formatDate } from "@/lib/format";
+import { RetryPaymentButton } from "@/components/site/RetryPaymentButton";
 
 const STATUS_STEPS = [
   "NEW",
@@ -18,14 +19,14 @@ export default async function OrderTrackingPage({
   searchParams,
 }: {
   params: Promise<{ orderNumber: string }>;
-  searchParams: Promise<{ phone?: string }>;
+  searchParams: Promise<{ phone?: string; paymentFailed?: string }>;
 }) {
   const { orderNumber } = await params;
-  const { phone } = await searchParams;
+  const { phone, paymentFailed } = await searchParams;
 
   const order = await prisma.order.findUnique({
     where: { orderNumber },
-    include: { items: true, customer: true, delivery: true },
+    include: { items: true, customer: true, delivery: true, payments: { orderBy: { createdAt: "desc" }, take: 1 } },
   });
 
   if (!order || !phone || order.customer?.phone !== phone) {
@@ -34,6 +35,13 @@ export default async function OrderTrackingPage({
 
   const currentIndex = STATUS_STEPS.indexOf(order.status);
   const isTerminalIssue = ["CANCELLED", "REFUNDED", "REJECTED", "PARTIALLY_FULFILLED"].includes(order.status);
+  const latestPayment = order.payments[0];
+  const retryGateway =
+    order.channel === "ONLINE" && order.paymentStatus !== "SUCCESSFUL" && latestPayment
+      ? latestPayment.gateway === "PAYSTACK" || latestPayment.gateway === "HUBTEL"
+        ? latestPayment.gateway
+        : null
+      : null;
 
   return (
     <div className="relative">
@@ -49,6 +57,12 @@ export default async function OrderTrackingPage({
             </span>
           </div>
           <p className="mt-1 text-sm" style={{ color: "var(--text-lo)" }}>Placed {formatDate(order.createdAt)}</p>
+
+          {paymentFailed && (
+            <div className="mt-4 rounded-xl bg-red-500/10 px-4 py-3 text-sm text-red-400">
+              Your payment didn&apos;t go through. Your order is saved — try again below.
+            </div>
+          )}
 
           {!isTerminalIssue && (
             <ol className="mt-6 flex flex-wrap gap-2 text-xs">
@@ -95,6 +109,10 @@ export default async function OrderTrackingPage({
             {order.deliveryAddress && <p><span className="font-semibold" style={{ color: "var(--text-hi)" }}>Address:</span> {order.deliveryAddress}</p>}
             <p><span className="font-semibold" style={{ color: "var(--text-hi)" }}>Payment status:</span> {order.paymentStatus}</p>
           </div>
+
+          {retryGateway && (
+            <RetryPaymentButton orderNumber={order.orderNumber} phone={phone as string} gateway={retryGateway} />
+          )}
         </div>
       </div>
     </div>

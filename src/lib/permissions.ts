@@ -38,7 +38,7 @@ export const PORTAL_NAV: NavItem[] = [
   { href: "/portal/reports", label: "Reports & Analytics", roles: ["SUPER_ADMIN", "OWNER_MANAGER"] },
   { href: "/portal/reviews", label: "Reviews", roles: ["SUPER_ADMIN", "OWNER_MANAGER"] },
   { href: "/portal/staff", label: "Staff Management", roles: ["SUPER_ADMIN"] },
-  { href: "/portal/settings", label: "Business Settings", roles: ["SUPER_ADMIN"] },
+  { href: "/portal/settings", label: "System Settings", roles: ["SUPER_ADMIN"] },
   { href: "/portal/audit-log", label: "Audit Log", roles: ["SUPER_ADMIN"] },
 ];
 

@@ -66,9 +66,13 @@ export default async function PortalOrderDetailPage({ params }: { params: Promis
         <h2 className="font-bold text-cocoa-900">Payments</h2>
         <ul className="mt-3 space-y-2 text-sm text-cocoa-900/80">
           {order.payments.map((p) => (
-            <li key={p.id} className="flex justify-between">
-              <span>{p.method} — {p.status}</span>
-              <span>{formatCurrency(p.amount)}</span>
+            <li key={p.id} className="flex justify-between gap-3">
+              <span>
+                {p.method} — {p.status}
+                {p.gateway !== "NONE" && <span className="text-cocoa-900/50"> ({p.gateway})</span>}
+                {p.transactionRef && <span className="ml-2 font-mono text-xs text-cocoa-900/50">Ref: {p.transactionRef}</span>}
+              </span>
+              <span className="shrink-0">{formatCurrency(p.amount)}</span>
             </li>
           ))}
         </ul>
