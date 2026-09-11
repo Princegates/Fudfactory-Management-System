@@ -13,8 +13,8 @@ const VARIANTS = [
   { a: "var(--glow-amber)", b: "var(--glow-cyan)" },
   { a: "var(--glow-cyan)", b: "var(--glow-amber-strong)" },
   { a: "var(--glow-amber-strong)", b: "var(--glow-amber)" },
-  { a: "#c084fc", b: "var(--glow-amber)" },
-  { a: "var(--glow-cyan)", b: "#c084fc" },
+  { a: "var(--glow-cyan)", b: "var(--glow-amber)" },
+  { a: "var(--glow-amber-strong)", b: "var(--glow-cyan)" },
 ];
 
 function hashString(str: string) {
@@ -51,7 +51,8 @@ export function ProductArt({
       />
       <div className="bg-grid absolute inset-0 opacity-40" />
       <span
-        className={`relative drop-shadow-[0_0_24px_rgba(255,180,84,0.45)] ${iconClassName}`}
+        className={`relative ${iconClassName}`}
+        style={{ filter: `drop-shadow(0 0 24px color-mix(in srgb, ${variant.a} 45%, transparent))` }}
         aria-hidden
       >
         {icon}

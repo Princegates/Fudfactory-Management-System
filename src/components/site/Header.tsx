@@ -4,6 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import { useCart } from "./CartContext";
+import { ModeToggle } from "./ModeToggle";
 
 const NAV_LINKS = [
   { href: "/", label: "Home" },
@@ -11,11 +12,11 @@ const NAV_LINKS = [
   { href: "/about", label: "About" },
   { href: "/gallery", label: "Gallery" },
   { href: "/promotions", label: "Promotions" },
-  { href: "/custom-orders", label: "Custom Orders" },
+  { href: "/custom-orders", label: "Events & Custom" },
   { href: "/contact", label: "Contact" },
 ];
 
-export function Header() {
+export function Header({ mode }: { mode: "dark" | "light" }) {
   const [open, setOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const { count } = useCart();
@@ -31,15 +32,15 @@ export function Header() {
   return (
     <header
       className={`sticky top-0 z-40 transition-all duration-300 ${
-        scrolled ? "glass-strong shadow-[0_8px_32px_-16px_rgba(0,0,0,0.6)]" : "bg-transparent"
+        scrolled ? "glass-strong shadow-[0_8px_32px_-16px_rgba(0,0,0,0.5)]" : "bg-transparent"
       }`}
     >
       <div className="mx-auto flex max-w-6xl items-center justify-between gap-4 px-4 py-3.5 sm:px-6">
         <Link href="/" className="group flex shrink-0 items-center gap-2.5">
-          <span className="relative grid h-9 w-9 place-items-center rounded-xl bg-gradient-to-br from-glow-amber to-glow-amber-strong text-sm font-bold text-ink-950 shadow-[0_0_20px_-2px_rgba(255,138,61,0.7)] transition-transform group-hover:scale-105">
+          <span className="relative grid h-9 w-9 rotate-[-6deg] place-items-center rounded-xl bg-gradient-to-br from-glow-amber to-glow-amber-strong text-sm font-bold text-ink-950 shadow-[0_0_20px_-2px_var(--glow-amber-strong)] transition-transform group-hover:rotate-0 group-hover:scale-105">
             FF
           </span>
-          <span className="font-display text-lg font-bold tracking-tight text-text-hi" style={{ color: "var(--text-hi)" }}>
+          <span className="font-display text-lg font-bold tracking-tight" style={{ color: "var(--text-hi)" }}>
             FudFactory
           </span>
         </Link>
@@ -51,21 +52,26 @@ export function Header() {
               <Link
                 key={link.href}
                 href={link.href}
-                className={`relative rounded-full px-3.5 py-2 transition-colors ${
-                  active ? "text-glow-amber" : "hover:text-glow-amber"
-                }`}
+                className="relative rounded-full px-3.5 py-2 transition-colors hover:text-[var(--glow-amber)]"
                 style={{ color: active ? "var(--glow-amber)" : "var(--text-mid)" }}
               >
                 {link.label}
+                {active && (
+                  <span
+                    className="absolute inset-x-3 -bottom-0.5 h-0.5 rounded-full"
+                    style={{ background: "linear-gradient(90deg, var(--glow-amber), var(--glow-amber-strong))" }}
+                  />
+                )}
               </Link>
             );
           })}
         </nav>
 
         <div className="flex items-center gap-2.5">
+          <ModeToggle mode={mode} />
           <Link
             href="/account"
-            className="hidden rounded-full px-3.5 py-2 text-sm font-medium transition-colors hover:text-glow-amber sm:block"
+            className="hidden rounded-full px-3.5 py-2 text-sm font-medium transition-colors hover:text-[var(--glow-amber)] sm:block"
             style={{ color: "var(--text-mid)" }}
           >
             Account

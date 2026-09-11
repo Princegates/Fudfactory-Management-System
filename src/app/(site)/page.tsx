@@ -6,6 +6,39 @@ import { Reveal } from "@/components/site/Reveal";
 import { StatCounter } from "@/components/site/StatCounter";
 import { getBusinessProfile } from "@/lib/business";
 
+const FEATURES = [
+  {
+    icon: "🍰",
+    title: "Baked fresh, daily",
+    body: "Cakes, pastries, snacks and meals made same-day from quality ingredients — never sitting in a freezer.",
+  },
+  {
+    icon: "🎉",
+    title: "Full event planning",
+    body: "Weddings, engagements, corporate functions — we plan the menu, cook it and cater the whole occasion.",
+  },
+  {
+    icon: "🛵",
+    title: "Fast pickup & delivery",
+    body: "Order online and choose pickup or zone-based delivery, tracked live from the kitchen to your door.",
+  },
+  {
+    icon: "💳",
+    title: "Pay your way",
+    body: "Card, Mobile Money or cash — confirmed instantly through Paystack/Hubtel or verified by our team.",
+  },
+  {
+    icon: "🎁",
+    title: "Loyalty rewards",
+    body: "Every order earns points toward member-only perks and discounts on your next treat.",
+  },
+  {
+    icon: "📦",
+    title: "Custom & bulk orders",
+    body: "Bespoke cakes, party trays and bulk catering, made exactly to your spec and headcount.",
+  },
+];
+
 export default async function HomePage() {
   const [featured, categories, reviews, business, customerCount, orderCount, avgRatingAgg] = await Promise.all([
     prisma.product.findMany({
@@ -28,69 +61,93 @@ export default async function HomePage() {
 
   const avgRating = avgRatingAgg._avg.rating ?? 5;
   const galleryProducts = await prisma.product.findMany({ orderBy: { createdAt: "desc" }, take: 6 });
+  const collage = featured.slice(0, 3);
 
   return (
     <div>
       {/* ---------------------------------------------------------------- HERO */}
-      <section className="relative overflow-hidden">
+      <section className="relative overflow-hidden pt-6 sm:pt-10">
         <div className="aurora-bg" />
         <div className="bg-grid absolute inset-0" />
-        <div className="relative mx-auto flex max-w-6xl flex-col items-center gap-7 px-4 py-24 text-center sm:px-6 sm:py-32">
-          <Reveal>
-            <span className="glass inline-flex items-center gap-2 rounded-full px-4 py-1.5 text-sm font-semibold" style={{ color: "var(--glow-amber)" }}>
-              <span className="relative flex h-2 w-2">
-                <span className="absolute inline-flex h-full w-full animate-ping rounded-full opacity-75" style={{ background: "var(--glow-amber)" }} />
-                <span className="relative inline-flex h-2 w-2 rounded-full" style={{ background: "var(--glow-amber)" }} />
+        <div className="relative mx-auto grid max-w-6xl gap-12 px-4 py-14 sm:px-6 sm:py-20 lg:grid-cols-[1.05fr_0.95fr] lg:items-center lg:gap-8">
+          <div className="relative z-10 text-center lg:text-left">
+            <Reveal>
+              <span className="chip mx-auto inline-flex items-center gap-2 rounded-full px-4 py-1.5 text-sm font-semibold lg:mx-0" data-active="true">
+                <span className="relative flex h-2 w-2">
+                  <span className="absolute inline-flex h-full w-full animate-ping rounded-full opacity-75" style={{ background: "var(--glow-amber)" }} />
+                  <span className="relative inline-flex h-2 w-2 rounded-full" style={{ background: "var(--glow-amber)" }} />
+                </span>
+                @{business.instagramHandle} · Ordering online now
               </span>
-              @{business.instagramHandle} · Ordering online now
-            </span>
-          </Reveal>
+            </Reveal>
 
-          <Reveal delay={0.08}>
-            <h1 className="max-w-3xl font-display text-5xl font-bold tracking-tight sm:text-7xl" style={{ color: "var(--text-hi)" }}>
-              <span className="text-gradient">Your Favorite Chef,</span>
-              <br />
-              Delivered to Your Door
-            </h1>
-          </Reveal>
-
-          <Reveal delay={0.16}>
-            <p className="max-w-xl text-lg" style={{ color: "var(--text-mid)" }}>
-              {business.tagline} — cakes, pastries, meals and catering made fresh daily. Order online,
-              track every step, and taste why Accra keeps coming back.
-            </p>
-          </Reveal>
-
-          <Reveal delay={0.24}>
-            <div className="flex flex-wrap items-center justify-center gap-3">
-              <Link href="/menu" className="btn-glow rounded-full px-7 py-3.5 text-sm font-semibold">
-                Order Now →
-              </Link>
-              <Link href="/menu" className="btn-ghost rounded-full px-7 py-3.5 text-sm font-semibold">
-                View Menu
-              </Link>
-              <Link href="/contact" className="btn-ghost rounded-full px-7 py-3.5 text-sm font-semibold">
-                Contact Us
-              </Link>
-            </div>
-          </Reveal>
-
-          {/* Floating showcase cards */}
-          <div className="pointer-events-none mt-8 hidden w-full max-w-3xl items-end justify-center gap-6 md:flex">
-            {featured.slice(0, 3).map((p, i) => (
-              <div
-                key={p.id}
-                className="glow-card glass animate-float overflow-hidden rounded-2xl"
-                style={{
-                  width: i === 1 ? 160 : 130,
-                  height: i === 1 ? 160 : 130,
-                  animationDelay: `${i * 0.7}s`,
-                  marginBottom: i === 1 ? 24 : 0,
-                }}
+            <Reveal delay={0.08}>
+              <h1
+                className="mx-auto mt-6 max-w-xl font-display text-5xl font-bold leading-[1.05] tracking-tight sm:text-6xl lg:mx-0 lg:text-7xl"
+                style={{ color: "var(--text-hi)" }}
               >
-                <ProductArt name={p.name} category={p.category.name} className="h-full w-full" iconClassName="text-4xl" />
+                Food that steals <span className="text-gradient italic">the show</span>
+              </h1>
+            </Reveal>
+
+            <Reveal delay={0.16}>
+              <p className="mx-auto mt-6 max-w-md text-lg lg:mx-0" style={{ color: "var(--text-mid)" }}>
+                {business.tagline} — cakes, pastries, meals and full event catering, made fresh daily and
+                delivered across Accra.
+              </p>
+            </Reveal>
+
+            <Reveal delay={0.24}>
+              <div className="mt-8 flex flex-wrap items-center justify-center gap-3 lg:justify-start">
+                <Link href="/menu" className="btn-glow rounded-full px-7 py-3.5 text-sm font-semibold">
+                  Order Now →
+                </Link>
+                <Link href="/custom-orders" className="btn-ghost rounded-full px-7 py-3.5 text-sm font-semibold">
+                  Plan an Event ✦
+                </Link>
               </div>
-            ))}
+            </Reveal>
+          </div>
+
+          {/* Asymmetrical floating collage */}
+          <div className="relative mx-auto hidden aspect-square w-full max-w-md lg:block">
+            <div
+              className="blob-shape absolute inset-8 opacity-70 blur-[2px]"
+              style={{ background: "linear-gradient(135deg, var(--glow-amber), var(--glow-cyan))" }}
+            />
+            {collage[0] && (
+              <div
+                className="glow-card glass absolute left-0 top-2 h-36 w-36 overflow-hidden rounded-2xl shadow-2xl"
+                style={{ transform: "rotate(-9deg)" }}
+              >
+                <ProductArt name={collage[0].name} category={collage[0].category.name} className="h-full w-full" iconClassName="text-4xl" />
+              </div>
+            )}
+            {collage[1] && (
+              <div
+                className="glow-card glass animate-float absolute right-2 top-20 h-52 w-52 overflow-hidden rounded-3xl shadow-2xl"
+                style={{ ["--float-rot" as string]: "4deg", transform: "rotate(4deg)" }}
+              >
+                <ProductArt name={collage[1].name} category={collage[1].category.name} className="h-full w-full" iconClassName="text-6xl" />
+              </div>
+            )}
+            {collage[2] && (
+              <div
+                className="glow-card glass absolute bottom-2 left-12 h-32 w-32 overflow-hidden rounded-2xl shadow-2xl"
+                style={{ transform: "rotate(11deg)" }}
+              >
+                <ProductArt name={collage[2].name} category={collage[2].category.name} className="h-full w-full" iconClassName="text-3xl" />
+              </div>
+            )}
+            <div className="glass-strong absolute -bottom-4 right-0 flex items-center gap-2 rounded-2xl px-4 py-3 shadow-xl">
+              <span className="text-xl">🎉</span>
+              <div className="text-left">
+                <p className="text-sm font-bold" style={{ color: "var(--text-hi)" }}>
+                  {orderCount || 340}+ events &amp; orders
+                </p>
+                <p className="text-xs" style={{ color: "var(--text-lo)" }}>catered with care</p>
+              </div>
+            </div>
           </div>
         </div>
       </section>
@@ -105,9 +162,43 @@ export default async function HomePage() {
         </div>
       </section>
 
+      {/* ---------------------------------------------------------------- FEATURE GRID */}
+      <section className="mx-auto max-w-6xl px-4 py-20 sm:px-6">
+        <Reveal>
+          <div className="mx-auto max-w-xl text-center">
+            <span className="text-xs font-semibold uppercase tracking-[0.2em]" style={{ color: "var(--glow-amber)" }}>
+              Why FudFactory
+            </span>
+            <h2 className="mt-3 font-display text-3xl font-bold sm:text-4xl" style={{ color: "var(--text-hi)" }}>
+              Not just a kitchen — a whole occasion
+            </h2>
+          </div>
+        </Reveal>
+        <div className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          {FEATURES.map((feature, i) => (
+            <Reveal key={feature.title} delay={i * 0.06}>
+              <div className="glass glow-card h-full rounded-2xl p-6">
+                <span
+                  className="grid h-12 w-12 place-items-center rounded-xl text-2xl"
+                  style={{ background: "linear-gradient(135deg, color-mix(in srgb, var(--glow-amber) 22%, transparent), color-mix(in srgb, var(--glow-cyan) 22%, transparent))" }}
+                >
+                  {feature.icon}
+                </span>
+                <h3 className="mt-4 font-display text-lg font-bold" style={{ color: "var(--text-hi)" }}>
+                  {feature.title}
+                </h3>
+                <p className="mt-2 text-sm leading-relaxed" style={{ color: "var(--text-mid)" }}>
+                  {feature.body}
+                </p>
+              </div>
+            </Reveal>
+          ))}
+        </div>
+      </section>
+
       {/* ---------------------------------------------------------------- CATEGORIES */}
       {categories.length > 0 && (
-        <section className="mx-auto max-w-6xl px-4 py-20 sm:px-6">
+        <section className="mx-auto max-w-6xl px-4 py-12 sm:px-6">
           <Reveal>
             <h2 className="font-display text-2xl font-bold sm:text-3xl" style={{ color: "var(--text-hi)" }}>
               Shop by category
@@ -118,7 +209,7 @@ export default async function HomePage() {
               <Reveal key={category.id} delay={i * 0.04}>
                 <Link
                   href={`/menu?category=${category.slug}`}
-                  className="glass glow-card block rounded-2xl px-4 py-7 text-center text-sm font-semibold transition-colors hover:text-glow-amber"
+                  className="glass glow-card block rounded-2xl px-4 py-7 text-center text-sm font-semibold transition-colors hover:text-[var(--glow-amber)]"
                   style={{ color: "var(--text-hi)" }}
                 >
                   {category.name}
@@ -136,7 +227,7 @@ export default async function HomePage() {
             <h2 className="font-display text-2xl font-bold sm:text-3xl" style={{ color: "var(--text-hi)" }}>
               Featured products
             </h2>
-            <Link href="/menu" className="text-sm font-semibold transition-colors hover:text-glow-amber" style={{ color: "var(--glow-cyan)" }}>
+            <Link href="/menu" className="text-sm font-semibold transition-colors hover:text-[var(--glow-amber)]" style={{ color: "var(--glow-cyan)" }}>
               View all →
             </Link>
           </div>
@@ -179,25 +270,25 @@ export default async function HomePage() {
               </h2>
               <p className="mt-3 text-sm leading-relaxed" style={{ color: "var(--text-mid)" }}>
                 {business.aboutText ??
-                  "FudFactory bakes and prepares meat pies, doughnuts, cakes, snacks and full meals fresh every day. We serve walk-in customers, online orders and full-scale event catering — all made with quality ingredients and a lot of care."}
+                  "FudFactory bakes and prepares meat pies, doughnuts, cakes, snacks and full meals fresh every day. We serve walk-in customers, online orders and full-scale event planning &amp; catering — all made with quality ingredients and a lot of care."}
               </p>
-              <Link href="/about" className="mt-4 inline-block text-sm font-semibold transition-colors hover:text-glow-amber" style={{ color: "var(--glow-amber)" }}>
+              <Link href="/about" className="mt-4 inline-block text-sm font-semibold transition-colors hover:text-[var(--glow-amber)]" style={{ color: "var(--glow-amber)" }}>
                 Learn more about us →
               </Link>
             </div>
           </Reveal>
           <Reveal delay={0.1}>
             <div className="glass h-full rounded-3xl p-8">
-              <span className="text-3xl">🛵</span>
+              <span className="text-3xl">🎪</span>
               <h2 className="mt-4 font-display text-xl font-bold" style={{ color: "var(--text-hi)" }}>
-                Pickup &amp; Delivery
+                Events &amp; Catering
               </h2>
               <p className="mt-3 text-sm leading-relaxed" style={{ color: "var(--text-mid)" }}>
-                Order online and choose pickup at our shop or zone-based delivery to your doorstep.
-                Track your order status live, from confirmation to your door, right from your account.
+                From engagements to corporate functions, our team plans the menu, bakes and cooks the day
+                of, and handles setup — a full event-planning service, not just a food order.
               </p>
-              <Link href="/track" className="mt-4 inline-block text-sm font-semibold transition-colors hover:text-glow-amber" style={{ color: "var(--glow-amber)" }}>
-                Track an order →
+              <Link href="/custom-orders" className="mt-4 inline-block text-sm font-semibold transition-colors hover:text-[var(--glow-amber)]" style={{ color: "var(--glow-amber)" }}>
+                Request a quote →
               </Link>
             </div>
           </Reveal>
@@ -241,14 +332,29 @@ export default async function HomePage() {
       {reviews.length > 0 && (
         <section className="mx-auto max-w-6xl px-4 py-20 sm:px-6">
           <Reveal>
-            <h2 className="font-display text-2xl font-bold sm:text-3xl" style={{ color: "var(--text-hi)" }}>
-              What customers say
-            </h2>
+            <div className="mx-auto max-w-xl text-center">
+              <span className="text-xs font-semibold uppercase tracking-[0.2em]" style={{ color: "var(--glow-amber)" }}>
+                Social proof
+              </span>
+              <h2 className="mt-3 font-display text-3xl font-bold sm:text-4xl" style={{ color: "var(--text-hi)" }}>
+                What customers say
+              </h2>
+            </div>
           </Reveal>
-          <div className="mt-8 grid gap-4 md:grid-cols-3">
+          <div className="mt-10 grid gap-4 md:grid-cols-3">
             {reviews.map((review, i) => (
               <Reveal key={review.id} delay={i * 0.08}>
-                <div className="glass h-full rounded-2xl p-6">
+                <div
+                  className="glass glow-card relative h-full rounded-2xl p-6"
+                  style={{ transform: i === 1 ? "rotate(0deg)" : i === 0 ? "rotate(-1.5deg)" : "rotate(1.5deg)" }}
+                >
+                  <span
+                    className="font-display absolute -top-3 left-5 text-5xl leading-none opacity-40"
+                    style={{ color: "var(--glow-amber)" }}
+                    aria-hidden
+                  >
+                    &ldquo;
+                  </span>
                   <div style={{ color: "var(--glow-amber)" }}>{"★".repeat(review.rating)}{"☆".repeat(5 - review.rating)}</div>
                   <p className="mt-3 text-sm leading-relaxed" style={{ color: "var(--text-mid)" }}>&ldquo;{review.comment}&rdquo;</p>
                   <p className="mt-4 text-sm font-semibold" style={{ color: "var(--text-hi)" }}>{review.customer.name}</p>
@@ -266,14 +372,19 @@ export default async function HomePage() {
             <div className="aurora-bg opacity-60" />
             <div className="relative">
               <h2 className="font-display text-3xl font-bold sm:text-4xl" style={{ color: "var(--text-hi)" }}>
-                Hungry yet?
+                Hungry — or hosting?
               </h2>
               <p className="mx-auto mt-3 max-w-md text-sm" style={{ color: "var(--text-mid)" }}>
-                Place your order in under a minute and taste why FudFactory is the neighbourhood favourite.
+                Place an order in under a minute, or tell us about your next event and let us plan the whole thing.
               </p>
-              <Link href="/menu" className="btn-glow mt-6 inline-block rounded-full px-8 py-3.5 text-sm font-semibold">
-                Order Now →
-              </Link>
+              <div className="mt-6 flex flex-wrap items-center justify-center gap-3">
+                <Link href="/menu" className="btn-glow inline-block rounded-full px-8 py-3.5 text-sm font-semibold">
+                  Order Now →
+                </Link>
+                <Link href="/custom-orders" className="btn-ghost inline-block rounded-full px-8 py-3.5 text-sm font-semibold">
+                  Plan an Event ✦
+                </Link>
+              </div>
             </div>
           </div>
         </Reveal>

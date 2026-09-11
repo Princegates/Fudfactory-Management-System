@@ -5,7 +5,7 @@ A full-stack web platform for **FudFactory** (Instagram: [@fudfactory.gh](https:
 ## Tech stack
 
 - **Framework**: Next.js 16 (App Router, TypeScript, Route Handlers as the API layer)
-- **Styling**: Tailwind CSS v4 — the public site uses a dark, glassmorphic "futuristic" design system (animated gradient backdrops, glass cards, neon glow accents) with 12 selectable color themes; the staff portal keeps a calm, functional light UI
+- **Styling**: Tailwind CSS v4 — the public site uses a bold, editorial design system (Fraunces display serif + Inter body, asymmetrical glassmorphic layouts, organic blob shapes, tangerine/magenta/violet gradient accents) with a night/day mode toggle and 12 selectable color themes; the staff portal keeps a calm, functional light UI
 - **Database/ORM**: Prisma 6 + SQLite for local development (swap the `datasource` provider to `postgresql`/`mysql` for production — the schema is written to be provider-agnostic)
 - **Auth**: Custom JWT sessions in httpOnly cookies — separate sessions for staff (`/portal`) and customers (`/account`)
 - **Payments**: Real Paystack and Hubtel gateway integrations, plus a manual "pay to our own Mobile Money number" flow verified by transaction ID
@@ -77,9 +77,11 @@ Configured entirely from **Settings → Payment Methods** (Super Admin only) —
 
 `src/lib/payments/paystack.ts` and `src/lib/payments/hubtel.ts` isolate the gateway HTTP calls. **Important caveat**: this project was built in a sandboxed environment whose network egress is blocked to `paystack.co` and `hubtel.com`, so neither integration could be live-tested against the real APIs. The Paystack implementation follows Paystack's stable, well-documented REST API closely. The Hubtel implementation follows Hubtel's published Online Checkout / Receive Money API shapes as documented at the time of writing — **verify the endpoint paths and payload fields against Hubtel's current developer portal and test with real sandbox credentials before going live**; every call surfaces Hubtel's raw error response to make any mismatch easy to diagnose.
 
-## Themes
+## Themes and night/day mode
 
 Settings → Themes lets a Super Admin instantly switch the public site's whole color palette (12 options: Amber Glow, Neon Sunset, Cyber Lime, Ocean Depths, Royal Violet, Ruby Fire, Emerald Circuit, Electric Blue, Rose Gold, Solar Flare, Arctic Frost, Midnight Mint) with no code changes or redeploy — see `src/lib/themes.ts` and the `[data-site-theme]` blocks in `src/app/globals.css`.
+
+Independently, every visitor can flip the site between night (dark) and day (light) mode with the sun/moon switch in the header (`src/components/site/ModeToggle.tsx`). The choice is stored in a `ff_site_mode` cookie and read server-side in `src/app/(site)/layout.tsx`, so the correct palette renders on the very first request — no flash of the wrong mode. Each of the 12 themes ships both a night and a day surface palette (`[data-mode="light"]` overrides in `globals.css`) built from the same CSS custom properties (`--ink-*`, `--text-*`, `--glow-*`) every site page already consumes, so the whole public site — not just the homepage — respects both the chosen accent theme and the chosen mode.
 
 ## Phased delivery vs. the SRS roadmap (§47)
 

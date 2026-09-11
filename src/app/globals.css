@@ -22,7 +22,8 @@
   --cocoa-50: #f6f1ee;
   --cocoa-900: #2b1a12;
 
-  /* Futuristic public-site theme: deep space ink + neon glow accents. */
+  /* Public-site theme: deep-space ink + bold ember/magenta/violet glow
+     accents by default. Overridden per-theme and per-mode below. */
   --ink-950: #050608;
   --ink-900: #0a0c10;
   --ink-800: #12151b;
@@ -31,9 +32,9 @@
   --ink-border: rgba(255, 255, 255, 0.08);
   --ink-border-strong: rgba(255, 255, 255, 0.16);
 
-  --glow-amber: #ffb454;
-  --glow-amber-strong: #ff8a3d;
-  --glow-cyan: #35e6d3;
+  --glow-amber: #ff7a3d;
+  --glow-amber-strong: #ff2f6e;
+  --glow-cyan: #8b5cf6;
 
   --text-hi: #f6f2ea;
   --text-mid: rgba(246, 242, 234, 0.72);
@@ -80,8 +81,10 @@ body {
 }
 
 /* ---------------------------------------------------------------------
-   Futuristic public-site theme utilities (scoped under .site-theme so
-   they never leak into the portal's light admin UI).
+   Public-site theme utilities (scoped under .site-theme so they never
+   leak into the portal's light admin UI). Every theme below ships both
+   a night (default) and day palette — toggled via [data-mode] — plus a
+   color accent picked in Settings → Themes via [data-site-theme].
    --------------------------------------------------------------------- */
 
 .site-theme {
@@ -90,7 +93,18 @@ body {
   font-family: var(--font-body), sans-serif;
   position: relative;
   isolation: isolate;
-  transition: background-color 0.4s ease;
+  transition: background-color 0.4s ease, color 0.4s ease;
+}
+
+/* Shared "day" text + border tokens — a single warm-neutral ink reads
+   well against every theme's light surface tint, so only the surface
+   colors themselves vary per theme below. */
+.site-theme[data-mode="light"] {
+  --text-hi: #180f08;
+  --text-mid: rgba(24, 15, 8, 0.7);
+  --text-lo: rgba(24, 15, 8, 0.48);
+  --ink-border: rgba(24, 15, 8, 0.1);
+  --ink-border-strong: rgba(24, 15, 8, 0.18);
 }
 
 /* ---------------------------------------------------------------------
@@ -98,65 +112,123 @@ body {
    custom properties consumed everywhere else in this file and by the
    Tailwind color utilities (bg-ink-900, text-glow-amber, etc — wired via
    `@theme inline` above so they resolve these variables at runtime, not
-   build time). Selected in Settings → Themes, applied as a data attribute
+   build time). Selected in Settings → Themes, applied as data attributes
    on the .site-theme wrapper in the (site) route group layout.
    --------------------------------------------------------------------- */
 
 .site-theme[data-site-theme="amber-glow"] {
   --ink-950: #050608; --ink-900: #0a0c10; --ink-800: #12151b; --ink-700: #1b1f28; --ink-600: #262b36;
-  --glow-amber: #ffb454; --glow-amber-strong: #ff8a3d; --glow-cyan: #35e6d3;
+  --glow-amber: #ff7a3d; --glow-amber-strong: #ff2f6e; --glow-cyan: #8b5cf6;
 }
+.site-theme[data-site-theme="amber-glow"][data-mode="light"] {
+  --ink-950: #fff9f0; --ink-900: #fef1de; --ink-800: #fbe3bd; --ink-700: #f3cd8e; --ink-600: #e6b364;
+  --glow-amber: #e2620f; --glow-amber-strong: #d41358; --glow-cyan: #6d28d9;
+}
+
 .site-theme[data-site-theme="neon-sunset"] {
   --ink-950: #0d0611; --ink-900: #150a1c; --ink-800: #1f1128; --ink-700: #2b1938; --ink-600: #392347;
   --glow-amber: #ff6ec7; --glow-amber-strong: #ff2fb0; --glow-cyan: #a78bfa;
 }
+.site-theme[data-site-theme="neon-sunset"][data-mode="light"] {
+  --ink-950: #fff7fb; --ink-900: #fdeef7; --ink-800: #fadcf0; --ink-700: #f3c3e6; --ink-600: #e8a8d8;
+}
+
 .site-theme[data-site-theme="cyber-lime"] {
   --ink-950: #06090a; --ink-900: #0a0f10; --ink-800: #121a1b; --ink-700: #1a2527; --ink-600: #253335;
   --glow-amber: #baff3d; --glow-amber-strong: #8cff00; --glow-cyan: #ff3df0;
 }
+.site-theme[data-site-theme="cyber-lime"][data-mode="light"] {
+  --ink-950: #f7fff0; --ink-900: #ecffd9; --ink-800: #dbffb8; --ink-700: #c3f591; --ink-600: #a8e06a;
+  --glow-amber: #4c8f00; --glow-amber-strong: #2f6b00; --glow-cyan: #c2189c;
+}
+
 .site-theme[data-site-theme="ocean-depths"] {
   --ink-950: #04080c; --ink-900: #071019; --ink-800: #0c1a26; --ink-700: #122535; --ink-600: #1a3346;
   --glow-amber: #35c7ff; --glow-amber-strong: #0ea5e9; --glow-cyan: #5eead4;
 }
+.site-theme[data-site-theme="ocean-depths"][data-mode="light"] {
+  --ink-950: #f0fbff; --ink-900: #ddf4ff; --ink-800: #c0e9fb; --ink-700: #98d8f0; --ink-600: #6cc2e0;
+  --glow-amber: #0077ad; --glow-amber-strong: #0a5f87;
+}
+
 .site-theme[data-site-theme="royal-violet"] {
   --ink-950: #0a0714; --ink-900: #120d20; --ink-800: #1c1530; --ink-700: #281d42; --ink-600: #362856;
   --glow-amber: #c084fc; --glow-amber-strong: #a855f7; --glow-cyan: #fbbf24;
 }
+.site-theme[data-site-theme="royal-violet"][data-mode="light"] {
+  --ink-950: #f9f5ff; --ink-900: #f0e6ff; --ink-800: #e2ccfd; --ink-700: #cfaafa; --ink-600: #b788ef;
+  --glow-amber: #7e22ce; --glow-amber-strong: #6423ba;
+}
+
 .site-theme[data-site-theme="ruby-fire"] {
   --ink-950: #0c0506; --ink-900: #170a0b; --ink-800: #241012; --ink-700: #33171a; --ink-600: #441f23;
   --glow-amber: #ff5470; --glow-amber-strong: #e11d48; --glow-cyan: #ffb454;
 }
+.site-theme[data-site-theme="ruby-fire"][data-mode="light"] {
+  --ink-950: #fff5f6; --ink-900: #ffe4e8; --ink-800: #ffc7cf; --ink-700: #ffa0ad; --ink-600: #f5758a;
+  --glow-amber: #c81742; --glow-amber-strong: #a30f36;
+}
+
 .site-theme[data-site-theme="emerald-circuit"] {
   --ink-950: #040a08; --ink-900: #08130f; --ink-800: #0e1e17; --ink-700: #152b21; --ink-600: #1d3a2d;
   --glow-amber: #34e89e; --glow-amber-strong: #10b981; --glow-cyan: #35e6d3;
 }
+.site-theme[data-site-theme="emerald-circuit"][data-mode="light"] {
+  --ink-950: #f2fff9; --ink-900: #ddffee; --ink-800: #bdf7d8; --ink-700: #93e8bd; --ink-600: #66d19f;
+  --glow-amber: #067a4c; --glow-amber-strong: #05623c;
+}
+
 .site-theme[data-site-theme="electric-blue"] {
   --ink-950: #050810; --ink-900: #0a0f1c; --ink-800: #10182b; --ink-700: #17223c; --ink-600: #202f52;
   --glow-amber: #4d9fff; --glow-amber-strong: #2563eb; --glow-cyan: #7dd3fc;
 }
+.site-theme[data-site-theme="electric-blue"][data-mode="light"] {
+  --ink-950: #f2f7ff; --ink-900: #e0ecff; --ink-800: #c3daff; --ink-700: #9dc1fb; --ink-600: #75a3f0;
+  --glow-amber: #1d4ed8; --glow-amber-strong: #1739a8;
+}
+
 .site-theme[data-site-theme="rose-gold"] {
   --ink-950: #0e0709; --ink-900: #180d10; --ink-800: #24141a; --ink-700: #331c24; --ink-600: #45252f;
   --glow-amber: #ffb4c6; --glow-amber-strong: #fb7185; --glow-cyan: #fbbf24;
 }
+.site-theme[data-site-theme="rose-gold"][data-mode="light"] {
+  --ink-950: #fff6f8; --ink-900: #ffe9ee; --ink-800: #ffd3dc; --ink-700: #ffb3c2; --ink-600: #f591a3;
+  --glow-amber: #be123c; --glow-amber-strong: #9f1239;
+}
+
 .site-theme[data-site-theme="solar-flare"] {
   --ink-950: #0a0705; --ink-900: #150e08; --ink-800: #21170c; --ink-700: #2f2010; --ink-600: #402c15;
   --glow-amber: #ffd23f; --glow-amber-strong: #ff6b35; --glow-cyan: #ff206e;
 }
+.site-theme[data-site-theme="solar-flare"][data-mode="light"] {
+  --ink-950: #fffaf0; --ink-900: #fff1d9; --ink-800: #ffe2b0; --ink-700: #ffcd80; --ink-600: #ffb14f;
+  --glow-amber: #a3620a; --glow-amber-strong: #c23a10;
+}
+
 .site-theme[data-site-theme="arctic-frost"] {
   --ink-950: #05080a; --ink-900: #0a1014; --ink-800: #101a20; --ink-700: #17242d; --ink-600: #20303c;
   --glow-amber: #7dd3fc; --glow-amber-strong: #38bdf8; --glow-cyan: #e0f2fe;
 }
+.site-theme[data-site-theme="arctic-frost"][data-mode="light"] {
+  --ink-950: #f3fbff; --ink-900: #e2f5ff; --ink-800: #c9ecff; --ink-700: #a7dffc; --ink-600: #7fcdf2;
+  --glow-amber: #0369a1; --glow-amber-strong: #075985;
+}
+
 .site-theme[data-site-theme="midnight-mint"] {
   --ink-950: #050a09; --ink-900: #091210; --ink-800: #0e1c19; --ink-700: #142823; --ink-600: #1b352f;
   --glow-amber: #6ee7b7; --glow-amber-strong: #34d399; --glow-cyan: #c084fc;
+}
+.site-theme[data-site-theme="midnight-mint"][data-mode="light"] {
+  --ink-950: #f2fffa; --ink-900: #ddfff2; --ink-800: #bdf5e2; --ink-700: #96e8cd; --ink-600: #6fd1b3;
+  --glow-amber: #067a56; --glow-amber-strong: #076449;
 }
 
 .site-theme h1,
 .site-theme h2,
 .site-theme h3,
 .site-theme h4 {
-  font-family: var(--font-display), sans-serif;
-  letter-spacing: -0.02em;
+  font-family: var(--font-display), serif;
+  letter-spacing: -0.01em;
 }
 
 /* Animated aurora / gradient-mesh backdrop, pure CSS, GPU-friendly */
@@ -179,6 +251,10 @@ body {
   filter: blur(90px);
   opacity: 0.35;
   animation: aurora-drift 22s ease-in-out infinite alternate;
+}
+.site-theme[data-mode="light"] .aurora-bg::before,
+.site-theme[data-mode="light"] .aurora-bg::after {
+  opacity: 0.22;
 }
 .aurora-bg::before {
   top: -20%;
@@ -203,23 +279,29 @@ body {
   }
 }
 
+/* Organic (non-circular) accent silhouette — used behind hero collage
+   art so the site reads less like a stock "blurred circle" SaaS page. */
+.blob-shape {
+  clip-path: polygon(38% 0%, 74% 8%, 100% 38%, 92% 76%, 58% 100%, 20% 92%, 0% 58%, 6% 22%);
+}
+
 .bg-grid {
   background-image:
-    linear-gradient(to right, rgba(255, 255, 255, 0.05) 1px, transparent 1px),
-    linear-gradient(to bottom, rgba(255, 255, 255, 0.05) 1px, transparent 1px);
+    linear-gradient(to right, color-mix(in srgb, var(--text-hi) 6%, transparent) 1px, transparent 1px),
+    linear-gradient(to bottom, color-mix(in srgb, var(--text-hi) 6%, transparent) 1px, transparent 1px);
   background-size: 48px 48px;
   -webkit-mask-image: radial-gradient(ellipse 80% 60% at 50% 0%, black 40%, transparent 100%);
   mask-image: radial-gradient(ellipse 80% 60% at 50% 0%, black 40%, transparent 100%);
 }
 
 .glass {
-  background: rgba(255, 255, 255, 0.045);
+  background: color-mix(in srgb, var(--text-hi) 4.5%, transparent);
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
   border: 1px solid var(--ink-border);
 }
 .glass-strong {
-  background: rgba(255, 255, 255, 0.07);
+  background: color-mix(in srgb, var(--text-hi) 7%, transparent);
   backdrop-filter: blur(24px);
   -webkit-backdrop-filter: blur(24px);
   border: 1px solid var(--ink-border-strong);
@@ -230,19 +312,21 @@ body {
 }
 .glow-card:hover {
   transform: translateY(-4px);
-  border-color: rgba(255, 180, 84, 0.35);
-  box-shadow: 0 0 0 1px rgba(255, 180, 84, 0.15), 0 20px 60px -20px rgba(255, 138, 61, 0.35);
+  border-color: color-mix(in srgb, var(--glow-amber) 40%, transparent);
+  box-shadow:
+    0 0 0 1px color-mix(in srgb, var(--glow-amber) 18%, transparent),
+    0 20px 60px -20px color-mix(in srgb, var(--glow-amber-strong) 45%, transparent);
 }
 
 .text-gradient {
-  background: linear-gradient(90deg, var(--glow-amber) 0%, var(--glow-amber-strong) 45%, #ffd9a8 100%);
+  background: linear-gradient(90deg, var(--glow-amber) 0%, var(--glow-amber-strong) 55%, var(--glow-cyan) 100%);
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
 }
 
 .text-gradient-cool {
-  background: linear-gradient(90deg, var(--glow-cyan) 0%, #7dd3fc 100%);
+  background: linear-gradient(90deg, var(--glow-cyan) 0%, var(--glow-amber-strong) 100%);
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
@@ -251,12 +335,16 @@ body {
 .btn-glow {
   position: relative;
   background: linear-gradient(135deg, var(--glow-amber) 0%, var(--glow-amber-strong) 100%);
-  color: #1a0f04;
-  box-shadow: 0 0 0 1px rgba(255, 180, 84, 0.4), 0 8px 30px -8px rgba(255, 138, 61, 0.65);
+  color: #180a04;
+  box-shadow:
+    0 0 0 1px color-mix(in srgb, var(--glow-amber) 45%, transparent),
+    0 8px 30px -8px color-mix(in srgb, var(--glow-amber-strong) 65%, transparent);
   transition: box-shadow 0.3s, transform 0.3s;
 }
 .btn-glow:hover {
-  box-shadow: 0 0 0 1px rgba(255, 180, 84, 0.6), 0 12px 40px -6px rgba(255, 138, 61, 0.85);
+  box-shadow:
+    0 0 0 1px color-mix(in srgb, var(--glow-amber) 65%, transparent),
+    0 12px 40px -6px color-mix(in srgb, var(--glow-amber-strong) 85%, transparent);
   transform: translateY(-2px);
 }
 .btn-glow:active {
@@ -264,34 +352,38 @@ body {
 }
 
 .btn-ghost {
-  background: rgba(255, 255, 255, 0.04);
+  background: color-mix(in srgb, var(--text-hi) 4%, transparent);
   border: 1px solid var(--ink-border-strong);
   color: var(--text-hi);
   transition: background 0.3s, border-color 0.3s;
 }
 .btn-ghost:hover {
-  background: rgba(255, 255, 255, 0.08);
-  border-color: rgba(255, 180, 84, 0.4);
+  background: color-mix(in srgb, var(--text-hi) 8%, transparent);
+  border-color: color-mix(in srgb, var(--glow-amber) 40%, transparent);
 }
 
 .chip {
   border: 1px solid var(--ink-border-strong);
-  background: rgba(255, 255, 255, 0.04);
+  background: color-mix(in srgb, var(--text-hi) 4%, transparent);
   color: var(--text-mid);
   transition: all 0.25s;
 }
 .chip[data-active="true"] {
-  border-color: rgba(255, 180, 84, 0.5);
-  background: linear-gradient(135deg, rgba(255, 180, 84, 0.18), rgba(255, 138, 61, 0.1));
+  border-color: color-mix(in srgb, var(--glow-amber) 50%, transparent);
+  background: linear-gradient(
+    135deg,
+    color-mix(in srgb, var(--glow-amber) 18%, transparent),
+    color-mix(in srgb, var(--glow-amber-strong) 10%, transparent)
+  );
   color: var(--glow-amber);
 }
 .chip:hover {
-  border-color: rgba(255, 180, 84, 0.35);
+  border-color: color-mix(in srgb, var(--glow-amber) 35%, transparent);
   color: var(--text-hi);
 }
 
 .input-dark {
-  background: rgba(255, 255, 255, 0.04);
+  background: color-mix(in srgb, var(--text-hi) 4%, transparent);
   border: 1px solid var(--ink-border-strong);
   color: var(--text-hi);
   transition: border-color 0.25s, background 0.25s;
@@ -301,13 +393,13 @@ body {
 }
 .input-dark:focus {
   outline: none;
-  border-color: rgba(255, 180, 84, 0.5);
-  background: rgba(255, 255, 255, 0.06);
+  border-color: color-mix(in srgb, var(--glow-amber) 50%, transparent);
+  background: color-mix(in srgb, var(--text-hi) 6%, transparent);
 }
 
 .divider-glow {
   height: 1px;
-  background: linear-gradient(90deg, transparent, rgba(255, 180, 84, 0.5), transparent);
+  background: linear-gradient(90deg, transparent, color-mix(in srgb, var(--glow-amber) 55%, transparent), transparent);
 }
 
 .noise-overlay {
@@ -319,12 +411,44 @@ body {
 }
 
 @keyframes float-slow {
-  0%, 100% { transform: translateY(0) rotate(0deg); }
-  50% { transform: translateY(-14px) rotate(2deg); }
+  0%, 100% { transform: translateY(0) rotate(var(--float-rot, 0deg)); }
+  50% { transform: translateY(-14px) rotate(calc(var(--float-rot, 0deg) + 2deg)); }
 }
 .animate-float {
   animation: float-slow 6s ease-in-out infinite;
 }
 @media (prefers-reduced-motion: reduce) {
   .animate-float { animation: none; }
+}
+
+/* Sun/moon mode-toggle switch */
+.mode-toggle {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  border: 1px solid var(--ink-border-strong);
+  background: color-mix(in srgb, var(--text-hi) 5%, transparent);
+  border-radius: 999px;
+  padding: 3px;
+  width: 56px;
+  height: 30px;
+  cursor: pointer;
+  transition: border-color 0.25s, background 0.25s;
+}
+.mode-toggle:hover {
+  border-color: color-mix(in srgb, var(--glow-amber) 40%, transparent);
+}
+.mode-toggle__thumb {
+  display: grid;
+  place-items: center;
+  height: 22px;
+  width: 22px;
+  border-radius: 999px;
+  background: linear-gradient(135deg, var(--glow-amber) 0%, var(--glow-amber-strong) 100%);
+  font-size: 12px;
+  transform: translateX(0);
+  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.site-theme[data-mode="light"] .mode-toggle__thumb {
+  transform: translateX(26px);
 }

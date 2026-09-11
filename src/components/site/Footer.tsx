@@ -9,7 +9,7 @@ export async function Footer() {
       <div className="mx-auto grid max-w-6xl gap-10 px-4 py-16 sm:px-6 md:grid-cols-4">
         <div>
           <div className="flex items-center gap-2.5">
-            <span className="grid h-9 w-9 place-items-center rounded-xl bg-gradient-to-br from-glow-amber to-glow-amber-strong text-sm font-bold text-ink-950 shadow-[0_0_20px_-4px_rgba(255,138,61,0.6)]">
+            <span className="grid h-9 w-9 rotate-[-6deg] place-items-center rounded-xl bg-gradient-to-br from-glow-amber to-glow-amber-strong text-sm font-bold text-ink-950 shadow-[0_0_20px_-4px_var(--glow-amber-strong)]">
               FF
             </span>
             <span className="font-display text-lg font-bold" style={{ color: "var(--text-hi)" }}>
@@ -38,7 +38,7 @@ export async function Footer() {
             <li><Link href="/menu" className="transition-colors hover:text-white">Menu</Link></li>
             <li><Link href="/gallery" className="transition-colors hover:text-white">Gallery</Link></li>
             <li><Link href="/promotions" className="transition-colors hover:text-white">Promotions</Link></li>
-            <li><Link href="/custom-orders" className="transition-colors hover:text-white">Custom &amp; Event Orders</Link></li>
+            <li><Link href="/custom-orders" className="transition-colors hover:text-white">Custom Orders &amp; Event Planning</Link></li>
           </ul>
         </div>
 
