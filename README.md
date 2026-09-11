@@ -81,7 +81,7 @@ Configured entirely from **Settings → Payment Methods** (Super Admin only) —
 
 ## Themes and night/day mode
 
-Settings → Themes lets a Super Admin instantly switch the public site's whole color palette (12 muted, single-accent options: Paprika, Plum, Olive, Denim Ink, Aubergine, Rust, Forest, Cobalt, Clay Pink, Mustard, Slate Teal, Sage) with no code changes or redeploy — see `src/lib/themes.ts` and the `[data-site-theme]` blocks in `src/app/globals.css`.
+Settings → Themes lets a Super Admin instantly switch the public site's whole color palette (12 muted, single-accent options: Signature, Plum, Olive, Denim Ink, Aubergine, Rust, Forest, Cobalt, Clay Pink, Mustard, Slate Teal, Sage) with no code changes or redeploy — see `src/lib/themes.ts` and the `[data-site-theme]` blocks in `src/app/globals.css`.
 
 Independently, every visitor can flip the site between night (dark) and day (light) mode with the sun/moon switch in the header (`src/components/site/ModeToggle.tsx`). The choice is stored in a `ff_site_mode` cookie and read server-side in `src/app/(site)/layout.tsx`, so the correct palette renders on the very first request — no flash of the wrong mode. Each of the 12 themes ships both a night and a day surface palette (`[data-mode="light"]` overrides in `globals.css`) built from the same CSS custom properties (`--ink-*`, `--text-*`, `--glow-*`) every site page already consumes, so the whole public site — not just the homepage — respects both the chosen accent theme and the chosen mode.
 

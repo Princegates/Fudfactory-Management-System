@@ -8,9 +8,9 @@ export type SiteTheme = {
 export const SITE_THEMES: SiteTheme[] = [
   {
     slug: "amber-glow",
-    name: "Paprika",
-    description: "The default — warm terracotta on espresso brown.",
-    swatch: { ink: "#241a11", amber: "#c1440e", amberStrong: "#8f320a", cyan: "#4b5d3a" },
+    name: "Signature",
+    description: "The default — FudFactory's real brand maroon, with a gold accent.",
+    swatch: { ink: "#221419", amber: "#8c1f3a", amberStrong: "#6b1228", cyan: "#c98a3d" },
   },
   {
     slug: "neon-sunset",
