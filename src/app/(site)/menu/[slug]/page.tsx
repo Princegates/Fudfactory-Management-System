@@ -55,7 +55,7 @@ export default async function ProductDetailPage({
                 // eslint-disable-next-line @next/next/no-img-element
                 <img src={product.imageUrl} alt={product.name} className="h-full w-full object-cover" />
               ) : (
-                <ProductArt name={product.name} category={product.category.name} className="h-full w-full" iconClassName="text-8xl" />
+                <ProductArt name={product.name} category={product.category.name} className="h-full w-full" iconClassName="h-24 w-24" />
               )}
             </div>
           </Reveal>

@@ -52,7 +52,7 @@ export function ReviewForm({ orderId }: { orderId: string }) {
         type="button"
         onClick={submit}
         disabled={submitting}
-        className="btn-glow mt-2 rounded-full px-4 py-1.5 text-xs font-semibold disabled:opacity-60"
+        className="btn-glow mt-2 rounded-md px-4 py-1.5 text-xs font-semibold disabled:opacity-60"
       >
         {submitting ? "Submitting..." : "Submit Review"}
       </button>

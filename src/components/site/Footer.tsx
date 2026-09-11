@@ -9,7 +9,10 @@ export async function Footer() {
       <div className="mx-auto grid max-w-6xl gap-10 px-4 py-16 sm:px-6 md:grid-cols-4">
         <div>
           <div className="flex items-center gap-2.5">
-            <span className="grid h-9 w-9 rotate-[-6deg] place-items-center rounded-xl bg-gradient-to-br from-glow-amber to-glow-amber-strong text-sm font-bold text-ink-950 shadow-[0_0_20px_-4px_var(--glow-amber-strong)]">
+            <span
+              className="grid h-9 w-9 rotate-[-4deg] place-items-center rounded-lg text-sm font-bold"
+              style={{ background: "var(--glow-amber)", color: "#fdf8ef" }}
+            >
               FF
             </span>
             <span className="font-display text-lg font-bold" style={{ color: "var(--text-hi)" }}>

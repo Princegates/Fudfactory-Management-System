@@ -31,7 +31,7 @@ export function WhatsAppContactForm() {
         rows={4}
         className="input-dark rounded-lg px-4 py-2 text-sm"
       />
-      <button type="submit" className="btn-glow self-start rounded-full px-6 py-2.5 text-sm font-semibold">
+      <button type="submit" className="btn-glow self-start rounded-md px-6 py-2.5 text-sm font-semibold">
         Send via WhatsApp
       </button>
     </form>

@@ -2,6 +2,7 @@
 
 import { useRouter } from "next/navigation";
 import { useTransition } from "react";
+import { Icon } from "./Icon";
 
 const MODE_COOKIE = "ff_site_mode";
 
@@ -26,7 +27,7 @@ export function ModeToggle({ mode }: { mode: "dark" | "light" }) {
       title={mode === "dark" ? "Switch to day mode" : "Switch to night mode"}
     >
       <span className="mode-toggle__thumb" aria-hidden>
-        {mode === "dark" ? "🌙" : "☀️"}
+        <Icon name={mode === "dark" ? "moon" : "sun"} className="h-3.5 w-3.5" />
       </span>
     </button>
   );

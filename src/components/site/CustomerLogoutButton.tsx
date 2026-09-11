@@ -12,7 +12,7 @@ export function CustomerLogoutButton() {
         router.push("/");
         router.refresh();
       }}
-      className="btn-ghost rounded-full px-4 py-2 text-sm font-semibold"
+      className="btn-ghost rounded-md px-4 py-2 text-sm font-semibold"
     >
       Log Out
     </button>

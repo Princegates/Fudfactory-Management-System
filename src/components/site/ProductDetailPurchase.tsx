@@ -95,7 +95,7 @@ export function ProductDetailPurchase({
             setAdded(true);
             setTimeout(() => setAdded(false), 1200);
           }}
-          className="btn-glow rounded-full px-6 py-3 text-sm font-semibold"
+          className="btn-glow rounded-md px-6 py-3 text-sm font-semibold"
         >
           {added ? "Added to cart ✓" : "Add to Cart"}
         </button>
@@ -112,7 +112,7 @@ export function ProductDetailPurchase({
             });
             router.push("/cart");
           }}
-          className="btn-ghost rounded-full px-6 py-3 text-sm font-semibold"
+          className="btn-ghost rounded-md px-6 py-3 text-sm font-semibold"
         >
           Buy Now
         </button>

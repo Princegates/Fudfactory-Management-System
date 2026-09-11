@@ -145,7 +145,7 @@ export default function CartPage() {
             Your cart is empty
           </h1>
           <p className="mt-2" style={{ color: "var(--text-mid)" }}>Add something delicious from the menu to get started.</p>
-          <Link href="/menu" className="btn-glow mt-6 inline-block rounded-full px-6 py-3 text-sm font-semibold">
+          <Link href="/menu" className="btn-glow mt-6 inline-block rounded-md px-6 py-3 text-sm font-semibold">
             Browse Menu
           </Link>
         </div>
@@ -175,7 +175,7 @@ export default function CartPage() {
                       // eslint-disable-next-line @next/next/no-img-element
                       <img src={item.imageUrl} alt={item.name} className="h-full w-full object-cover" />
                     ) : (
-                      <ProductArt name={item.name} className="h-full w-full" iconClassName="text-2xl" />
+                      <ProductArt name={item.name} className="h-full w-full" iconClassName="h-7 w-7" />
                     )}
                   </div>
                   <div className="flex-1">
@@ -270,8 +270,8 @@ export default function CartPage() {
                 <option value="MOBILE_MONEY" className="bg-ink-900">Mobile Money — send to our number</option>
                 <option value="CARD" className="bg-ink-900">Card (pay on delivery)</option>
                 <option value="BANK_TRANSFER" className="bg-ink-900">Bank Transfer</option>
-                {gateways.paystack && <option value="PAYSTACK" className="bg-ink-900">💳 Pay now with Paystack (card / mobile money)</option>}
-                {gateways.hubtel && <option value="HUBTEL" className="bg-ink-900">📲 Pay now with Hubtel (card / mobile money)</option>}
+                {gateways.paystack && <option value="PAYSTACK" className="bg-ink-900">Pay now with Paystack (card / mobile money)</option>}
+                {gateways.hubtel && <option value="HUBTEL" className="bg-ink-900">Pay now with Hubtel (card / mobile money)</option>}
               </select>
 
               {paymentMethod === "MOBILE_MONEY" && (
@@ -332,7 +332,7 @@ export default function CartPage() {
               type="button"
               onClick={submitOrder}
               disabled={submitting}
-              className="btn-glow mt-6 w-full rounded-full py-3 text-sm font-semibold disabled:opacity-60"
+              className="btn-glow mt-6 w-full rounded-md py-3 text-sm font-semibold disabled:opacity-60"
             >
               {submitting ? "Placing order..." : "Place Order"}
             </button>

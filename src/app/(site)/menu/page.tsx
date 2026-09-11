@@ -54,7 +54,7 @@ export default async function MenuPage({
               style={{ color: "var(--text-hi)" }}
             />
             {category && <input type="hidden" name="category" value={category} />}
-            <button className="btn-glow rounded-full px-5 py-2.5 text-sm font-semibold">Search</button>
+            <button className="btn-glow rounded-md px-5 py-2.5 text-sm font-semibold">Search</button>
           </form>
 
           <div className="mt-4 flex flex-wrap gap-2">

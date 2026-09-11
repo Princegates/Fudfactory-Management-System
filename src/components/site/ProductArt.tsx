@@ -1,21 +1,15 @@
-const CATEGORY_ICON: Record<string, string> = {
-  Cakes: "🎂",
-  Pastries: "🥐",
-  Snacks: "🍩",
-  "Main Meals": "🍛",
-  Drinks: "🥤",
-  Breakfast: "🍳",
-  "Event Packages": "🎉",
-  "Special Orders": "✨",
-};
+import { Icon, type IconName } from "./Icon";
 
-const VARIANTS = [
-  { a: "var(--glow-amber)", b: "var(--glow-cyan)" },
-  { a: "var(--glow-cyan)", b: "var(--glow-amber-strong)" },
-  { a: "var(--glow-amber-strong)", b: "var(--glow-amber)" },
-  { a: "var(--glow-cyan)", b: "var(--glow-amber)" },
-  { a: "var(--glow-amber-strong)", b: "var(--glow-cyan)" },
-];
+const CATEGORY_ICON: Record<string, IconName> = {
+  Cakes: "cake",
+  Pastries: "pastry",
+  Snacks: "donut",
+  "Main Meals": "bowl",
+  Drinks: "cup",
+  Breakfast: "egg",
+  "Event Packages": "event",
+  "Special Orders": "sparkle",
+};
 
 function hashString(str: string) {
   let hash = 0;
@@ -30,33 +24,31 @@ export function ProductArt({
   name,
   category,
   className = "",
-  iconClassName = "text-6xl",
+  iconClassName = "h-14 w-14",
 }: {
   name: string;
   category?: string;
   className?: string;
   iconClassName?: string;
 }) {
-  const icon = (category && CATEGORY_ICON[category]) || "🧁";
-  const variant = VARIANTS[hashString(name) % VARIANTS.length];
-  const angle = hashString(name + "angle") % 360;
+  const icon = (category && CATEGORY_ICON[category]) || "sparkle";
+  const angle = hashString(name + "angle") % 4;
 
   return (
-    <div className={`relative flex items-center justify-center overflow-hidden bg-ink-900 ${className}`}>
+    <div
+      className={`relative flex items-center justify-center overflow-hidden border ${className}`}
+      style={{ background: "var(--ink-900)", borderColor: "var(--ink-border)" }}
+    >
+      <div className="bg-grid absolute inset-0 opacity-60" />
       <div
-        className="absolute -inset-6 opacity-60 blur-2xl"
+        className="absolute h-16 w-16 rounded-full border"
         style={{
-          background: `conic-gradient(from ${angle}deg, ${variant.a}, transparent 35%, ${variant.b}, transparent 75%, ${variant.a})`,
+          borderColor: "var(--ink-border-strong)",
+          transform: `translate(${angle % 2 === 0 ? "-30%" : "30%"}, ${angle < 2 ? "-30%" : "30%"})`,
         }}
       />
-      <div className="bg-grid absolute inset-0 opacity-40" />
-      <span
-        className={`relative ${iconClassName}`}
-        style={{ filter: `drop-shadow(0 0 24px color-mix(in srgb, ${variant.a} 45%, transparent))` }}
-        aria-hidden
-      >
-        {icon}
-      </span>
+      <Icon name={icon} className={`relative ${iconClassName}`} />
+      <span className="sr-only">{name}</span>
     </div>
   );
 }

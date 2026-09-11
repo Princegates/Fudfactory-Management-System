@@ -69,11 +69,11 @@ export default async function OrderTrackingPage({
               {STATUS_STEPS.map((step, idx) => (
                 <li
                   key={step}
-                  className="rounded-full px-3 py-1 font-semibold"
+                  className="rounded-md px-3 py-1 font-semibold"
                   style={
                     idx <= currentIndex
-                      ? { background: "linear-gradient(135deg, var(--glow-amber), var(--glow-amber-strong))", color: "#1a0f04" }
-                      : { background: "rgba(255,255,255,0.04)", color: "var(--text-lo)" }
+                      ? { background: "var(--glow-amber)", color: "#fdf8ef" }
+                      : { background: "var(--ink-900)", color: "var(--text-lo)" }
                   }
                 >
                   {step.replace(/_/g, " ")}

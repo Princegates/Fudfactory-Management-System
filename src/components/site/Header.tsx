@@ -37,7 +37,10 @@ export function Header({ mode }: { mode: "dark" | "light" }) {
     >
       <div className="mx-auto flex max-w-6xl items-center justify-between gap-4 px-4 py-3.5 sm:px-6">
         <Link href="/" className="group flex shrink-0 items-center gap-2.5">
-          <span className="relative grid h-9 w-9 rotate-[-6deg] place-items-center rounded-xl bg-gradient-to-br from-glow-amber to-glow-amber-strong text-sm font-bold text-ink-950 shadow-[0_0_20px_-2px_var(--glow-amber-strong)] transition-transform group-hover:rotate-0 group-hover:scale-105">
+          <span
+            className="relative grid h-9 w-9 rotate-[-4deg] place-items-center rounded-lg text-sm font-bold transition-transform group-hover:rotate-0"
+            style={{ background: "var(--glow-amber)", color: "#fdf8ef" }}
+          >
             FF
           </span>
           <span className="font-display text-lg font-bold tracking-tight" style={{ color: "var(--text-hi)" }}>
@@ -58,8 +61,8 @@ export function Header({ mode }: { mode: "dark" | "light" }) {
                 {link.label}
                 {active && (
                   <span
-                    className="absolute inset-x-3 -bottom-0.5 h-0.5 rounded-full"
-                    style={{ background: "linear-gradient(90deg, var(--glow-amber), var(--glow-amber-strong))" }}
+                    className="absolute inset-x-3 -bottom-0.5 h-0.5"
+                    style={{ background: "var(--glow-amber)" }}
                   />
                 )}
               </Link>
@@ -76,7 +79,7 @@ export function Header({ mode }: { mode: "dark" | "light" }) {
           >
             Account
           </Link>
-          <Link href="/cart" className="btn-glow relative inline-flex items-center gap-2 rounded-full px-4 py-2 text-sm font-semibold">
+          <Link href="/cart" className="btn-glow relative inline-flex items-center gap-2 rounded-md px-4 py-2 text-sm font-semibold">
             Cart
             {count > 0 && (
               <span className="grid h-5 w-5 place-items-center rounded-full bg-ink-950 text-xs font-bold text-glow-amber">

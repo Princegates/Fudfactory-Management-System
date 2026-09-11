@@ -36,7 +36,7 @@ export default function TrackOrderPage() {
             placeholder="Phone number"
             className="input-dark rounded-lg px-4 py-2.5 text-sm"
           />
-          <button type="submit" className="btn-glow rounded-full py-3 text-sm font-semibold">
+          <button type="submit" className="btn-glow rounded-md py-3 text-sm font-semibold">
             Track Order
           </button>
         </form>

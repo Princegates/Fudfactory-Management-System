@@ -41,9 +41,9 @@ export function ThemePicker({ current }: { current: string }) {
               className="flex h-20 items-center justify-center gap-2 rounded-xl"
               style={{ background: theme.swatch.ink }}
             >
-              <span className="h-5 w-5 rounded-full" style={{ background: theme.swatch.amber, boxShadow: `0 0 12px 2px ${theme.swatch.amber}` }} />
-              <span className="h-5 w-5 rounded-full" style={{ background: theme.swatch.amberStrong, boxShadow: `0 0 12px 2px ${theme.swatch.amberStrong}` }} />
-              <span className="h-5 w-5 rounded-full" style={{ background: theme.swatch.cyan, boxShadow: `0 0 12px 2px ${theme.swatch.cyan}` }} />
+              <span className="h-5 w-5 rounded-full ring-2 ring-white/20" style={{ background: theme.swatch.amber }} />
+              <span className="h-5 w-5 rounded-full ring-2 ring-white/20" style={{ background: theme.swatch.amberStrong }} />
+              <span className="h-5 w-5 rounded-full ring-2 ring-white/20" style={{ background: theme.swatch.cyan }} />
             </div>
             <div className="mt-3 flex items-center justify-between">
               <p className="font-bold text-cocoa-900">{theme.name}</p>

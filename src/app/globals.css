@@ -22,23 +22,23 @@
   --cocoa-50: #f6f1ee;
   --cocoa-900: #2b1a12;
 
-  /* Public-site theme: deep-space ink + bold ember/magenta/violet glow
-     accents by default. Overridden per-theme and per-mode below. */
-  --ink-950: #050608;
-  --ink-900: #0a0c10;
-  --ink-800: #12151b;
-  --ink-700: #1b1f28;
-  --ink-600: #262b36;
-  --ink-border: rgba(255, 255, 255, 0.08);
-  --ink-border-strong: rgba(255, 255, 255, 0.16);
+  /* Public-site theme: warm paper / espresso surfaces with a single
+     confident accent — overridden per-theme and per-mode below. */
+  --ink-950: #1c130c;
+  --ink-900: #241a11;
+  --ink-800: #2f2417;
+  --ink-700: #3b301f;
+  --ink-600: #493c29;
+  --ink-border: rgba(242, 233, 216, 0.1);
+  --ink-border-strong: rgba(242, 233, 216, 0.2);
 
-  --glow-amber: #ff7a3d;
-  --glow-amber-strong: #ff2f6e;
-  --glow-cyan: #8b5cf6;
+  --glow-amber: #c1440e;
+  --glow-amber-strong: #8f320a;
+  --glow-cyan: #4b5d3a;
 
-  --text-hi: #f6f2ea;
-  --text-mid: rgba(246, 242, 234, 0.72);
-  --text-lo: rgba(246, 242, 234, 0.48);
+  --text-hi: #f2e9d8;
+  --text-mid: rgba(242, 233, 216, 0.68);
+  --text-lo: rgba(242, 233, 216, 0.45);
 }
 
 @theme inline {
@@ -82,9 +82,9 @@ body {
 
 /* ---------------------------------------------------------------------
    Public-site theme utilities (scoped under .site-theme so they never
-   leak into the portal's light admin UI). Every theme below ships both
-   a night (default) and day palette — toggled via [data-mode] — plus a
-   color accent picked in Settings → Themes via [data-site-theme].
+   leak into the portal's light admin UI). Flat, editorial surfaces —
+   no blur, no neon glow — with one confident accent per theme and a
+   night (default) / day mode toggled via [data-mode].
    --------------------------------------------------------------------- */
 
 .site-theme {
@@ -96,131 +96,117 @@ body {
   transition: background-color 0.4s ease, color 0.4s ease;
 }
 
-/* Shared "day" text + border tokens — a single warm-neutral ink reads
-   well against every theme's light surface tint, so only the surface
-   colors themselves vary per theme below. */
+/* Shared "day" text + border tokens — a single warm-ink reads well
+   against every theme's paper surface tint. */
 .site-theme[data-mode="light"] {
-  --text-hi: #180f08;
-  --text-mid: rgba(24, 15, 8, 0.7);
-  --text-lo: rgba(24, 15, 8, 0.48);
-  --ink-border: rgba(24, 15, 8, 0.1);
-  --ink-border-strong: rgba(24, 15, 8, 0.18);
+  --text-hi: #201509;
+  --text-mid: rgba(32, 21, 9, 0.66);
+  --text-lo: rgba(32, 21, 9, 0.45);
+  --ink-border: rgba(32, 21, 9, 0.12);
+  --ink-border-strong: rgba(32, 21, 9, 0.22);
 }
 
 /* ---------------------------------------------------------------------
-   Selectable site themes. Each block re-points the same ink and glow
-   custom properties consumed everywhere else in this file and by the
-   Tailwind color utilities (bg-ink-900, text-glow-amber, etc — wired via
-   `@theme inline` above so they resolve these variables at runtime, not
-   build time). Selected in Settings → Themes, applied as data attributes
-   on the .site-theme wrapper in the (site) route group layout.
+   Selectable site themes — each a single restrained accent (plus a
+   muted secondary) over its own warm paper/espresso surface tint.
+   Selected in Settings → Themes, applied as data attributes on the
+   .site-theme wrapper in the (site) route group layout.
    --------------------------------------------------------------------- */
 
 .site-theme[data-site-theme="amber-glow"] {
-  --ink-950: #050608; --ink-900: #0a0c10; --ink-800: #12151b; --ink-700: #1b1f28; --ink-600: #262b36;
-  --glow-amber: #ff7a3d; --glow-amber-strong: #ff2f6e; --glow-cyan: #8b5cf6;
+  --ink-950: #1c130c; --ink-900: #241a11; --ink-800: #2f2417; --ink-700: #3b301f; --ink-600: #493c29;
+  --glow-amber: #c1440e; --glow-amber-strong: #8f320a; --glow-cyan: #4b5d3a;
 }
 .site-theme[data-site-theme="amber-glow"][data-mode="light"] {
-  --ink-950: #fff9f0; --ink-900: #fef1de; --ink-800: #fbe3bd; --ink-700: #f3cd8e; --ink-600: #e6b364;
-  --glow-amber: #e2620f; --glow-amber-strong: #d41358; --glow-cyan: #6d28d9;
+  --ink-950: #f8f1e4; --ink-900: #f1e6d2; --ink-800: #e8d8bc; --ink-700: #dcc79f; --ink-600: #ccb27f;
 }
 
 .site-theme[data-site-theme="neon-sunset"] {
-  --ink-950: #0d0611; --ink-900: #150a1c; --ink-800: #1f1128; --ink-700: #2b1938; --ink-600: #392347;
-  --glow-amber: #ff6ec7; --glow-amber-strong: #ff2fb0; --glow-cyan: #a78bfa;
+  --ink-950: #1a1116; --ink-900: #22161d; --ink-800: #2d1e26; --ink-700: #392631; --ink-600: #47313e;
+  --glow-amber: #7c3a5d; --glow-amber-strong: #5c2a45; --glow-cyan: #c98a3d;
 }
 .site-theme[data-site-theme="neon-sunset"][data-mode="light"] {
-  --ink-950: #fff7fb; --ink-900: #fdeef7; --ink-800: #fadcf0; --ink-700: #f3c3e6; --ink-600: #e8a8d8;
+  --ink-950: #f8eef1; --ink-900: #f0dfe6; --ink-800: #e4cbd6; --ink-700: #d3b0c0; --ink-600: #bd93a7;
 }
 
 .site-theme[data-site-theme="cyber-lime"] {
-  --ink-950: #06090a; --ink-900: #0a0f10; --ink-800: #121a1b; --ink-700: #1a2527; --ink-600: #253335;
-  --glow-amber: #baff3d; --glow-amber-strong: #8cff00; --glow-cyan: #ff3df0;
+  --ink-950: #14170f; --ink-900: #1b1f14; --ink-800: #24291b; --ink-700: #2e3423; --ink-600: #39412c;
+  --glow-amber: #5c6b2e; --glow-amber-strong: #444f20; --glow-cyan: #a6371f;
 }
 .site-theme[data-site-theme="cyber-lime"][data-mode="light"] {
-  --ink-950: #f7fff0; --ink-900: #ecffd9; --ink-800: #dbffb8; --ink-700: #c3f591; --ink-600: #a8e06a;
-  --glow-amber: #4c8f00; --glow-amber-strong: #2f6b00; --glow-cyan: #c2189c;
+  --ink-950: #f3f4e8; --ink-900: #e9ecd6; --ink-800: #dbe0bd; --ink-700: #c8cf9e; --ink-600: #b1ba7d;
 }
 
 .site-theme[data-site-theme="ocean-depths"] {
-  --ink-950: #04080c; --ink-900: #071019; --ink-800: #0c1a26; --ink-700: #122535; --ink-600: #1a3346;
-  --glow-amber: #35c7ff; --glow-amber-strong: #0ea5e9; --glow-cyan: #5eead4;
+  --ink-950: #10161c; --ink-900: #151d24; --ink-800: #1c262f; --ink-700: #24313c; --ink-600: #2e3e4b;
+  --glow-amber: #35597a; --glow-amber-strong: #244059; --glow-cyan: #c1440e;
 }
 .site-theme[data-site-theme="ocean-depths"][data-mode="light"] {
-  --ink-950: #f0fbff; --ink-900: #ddf4ff; --ink-800: #c0e9fb; --ink-700: #98d8f0; --ink-600: #6cc2e0;
-  --glow-amber: #0077ad; --glow-amber-strong: #0a5f87;
+  --ink-950: #eef3f6; --ink-900: #dde8ee; --ink-800: #c6dae3; --ink-700: #a9c7d3; --ink-600: #86adbe;
 }
 
 .site-theme[data-site-theme="royal-violet"] {
-  --ink-950: #0a0714; --ink-900: #120d20; --ink-800: #1c1530; --ink-700: #281d42; --ink-600: #362856;
-  --glow-amber: #c084fc; --glow-amber-strong: #a855f7; --glow-cyan: #fbbf24;
+  --ink-950: #18121c; --ink-900: #201824; --ink-800: #2a1f2f; --ink-700: #35283c; --ink-600: #42324b;
+  --glow-amber: #5b3868; --glow-amber-strong: #402649; --glow-cyan: #c98a3d;
 }
 .site-theme[data-site-theme="royal-violet"][data-mode="light"] {
-  --ink-950: #f9f5ff; --ink-900: #f0e6ff; --ink-800: #e2ccfd; --ink-700: #cfaafa; --ink-600: #b788ef;
-  --glow-amber: #7e22ce; --glow-amber-strong: #6423ba;
+  --ink-950: #f4eef6; --ink-900: #e9dfed; --ink-800: #dac9e0; --ink-700: #c5abcf; --ink-600: #ab89b8;
 }
 
 .site-theme[data-site-theme="ruby-fire"] {
-  --ink-950: #0c0506; --ink-900: #170a0b; --ink-800: #241012; --ink-700: #33171a; --ink-600: #441f23;
-  --glow-amber: #ff5470; --glow-amber-strong: #e11d48; --glow-cyan: #ffb454;
+  --ink-950: #1c130f; --ink-900: #251913; --ink-800: #30201a; --ink-700: #3d2921; --ink-600: #4b342a;
+  --glow-amber: #a6371f; --glow-amber-strong: #7c2916; --glow-cyan: #35597a;
 }
 .site-theme[data-site-theme="ruby-fire"][data-mode="light"] {
-  --ink-950: #fff5f6; --ink-900: #ffe4e8; --ink-800: #ffc7cf; --ink-700: #ffa0ad; --ink-600: #f5758a;
-  --glow-amber: #c81742; --glow-amber-strong: #a30f36;
+  --ink-950: #f8ede6; --ink-900: #f2ddd0; --ink-800: #e8c5b0; --ink-700: #dba98c; --ink-600: #c98a67;
 }
 
 .site-theme[data-site-theme="emerald-circuit"] {
-  --ink-950: #040a08; --ink-900: #08130f; --ink-800: #0e1e17; --ink-700: #152b21; --ink-600: #1d3a2d;
-  --glow-amber: #34e89e; --glow-amber-strong: #10b981; --glow-cyan: #35e6d3;
+  --ink-950: #101a13; --ink-900: #16211a; --ink-800: #1d2b22; --ink-700: #26362b; --ink-600: #304336;
+  --glow-amber: #3f6b45; --glow-amber-strong: #2d4e32; --glow-cyan: #a6371f;
 }
 .site-theme[data-site-theme="emerald-circuit"][data-mode="light"] {
-  --ink-950: #f2fff9; --ink-900: #ddffee; --ink-800: #bdf7d8; --ink-700: #93e8bd; --ink-600: #66d19f;
-  --glow-amber: #067a4c; --glow-amber-strong: #05623c;
+  --ink-950: #eef5ef; --ink-900: #dcece0; --ink-800: #c3dcc9; --ink-700: #a2c7ab; --ink-600: #7cae88;
 }
 
 .site-theme[data-site-theme="electric-blue"] {
-  --ink-950: #050810; --ink-900: #0a0f1c; --ink-800: #10182b; --ink-700: #17223c; --ink-600: #202f52;
-  --glow-amber: #4d9fff; --glow-amber-strong: #2563eb; --glow-cyan: #7dd3fc;
+  --ink-950: #10141c; --ink-900: #151b25; --ink-800: #1c2430; --ink-700: #242f3d; --ink-600: #2e3c4c;
+  --glow-amber: #2c4f8c; --glow-amber-strong: #1f3a68; --glow-cyan: #c1440e;
 }
 .site-theme[data-site-theme="electric-blue"][data-mode="light"] {
-  --ink-950: #f2f7ff; --ink-900: #e0ecff; --ink-800: #c3daff; --ink-700: #9dc1fb; --ink-600: #75a3f0;
-  --glow-amber: #1d4ed8; --glow-amber-strong: #1739a8;
+  --ink-950: #eef1f6; --ink-900: #dde4ee; --ink-800: #c4d0e2; --ink-700: #a3b6d0; --ink-600: #7c95b9;
 }
 
 .site-theme[data-site-theme="rose-gold"] {
-  --ink-950: #0e0709; --ink-900: #180d10; --ink-800: #24141a; --ink-700: #331c24; --ink-600: #45252f;
-  --glow-amber: #ffb4c6; --glow-amber-strong: #fb7185; --glow-cyan: #fbbf24;
+  --ink-950: #1c1214; --ink-900: #25181b; --ink-800: #302023; --ink-700: #3d2a2d; --ink-600: #4b3538;
+  --glow-amber: #b5657a; --glow-amber-strong: #8c4a5c; --glow-cyan: #5c6b2e;
 }
 .site-theme[data-site-theme="rose-gold"][data-mode="light"] {
-  --ink-950: #fff6f8; --ink-900: #ffe9ee; --ink-800: #ffd3dc; --ink-700: #ffb3c2; --ink-600: #f591a3;
-  --glow-amber: #be123c; --glow-amber-strong: #9f1239;
+  --ink-950: #f9edee; --ink-900: #f3dde0; --ink-800: #eac7cb; --ink-700: #dda7ac; --ink-600: #cb8288;
 }
 
 .site-theme[data-site-theme="solar-flare"] {
-  --ink-950: #0a0705; --ink-900: #150e08; --ink-800: #21170c; --ink-700: #2f2010; --ink-600: #402c15;
-  --glow-amber: #ffd23f; --glow-amber-strong: #ff6b35; --glow-cyan: #ff206e;
+  --ink-950: #1b1710; --ink-900: #241e14; --ink-800: #2f271a; --ink-700: #3c3221; --ink-600: #4b3f2a;
+  --glow-amber: #b9822c; --glow-amber-strong: #8c611e; --glow-cyan: #7c3a5d;
 }
 .site-theme[data-site-theme="solar-flare"][data-mode="light"] {
-  --ink-950: #fffaf0; --ink-900: #fff1d9; --ink-800: #ffe2b0; --ink-700: #ffcd80; --ink-600: #ffb14f;
-  --glow-amber: #a3620a; --glow-amber-strong: #c23a10;
+  --ink-950: #f9f2e2; --ink-900: #f2e6c9; --ink-800: #e9d6a5; --ink-700: #dbc07a; --ink-600: #c7a54f;
 }
 
 .site-theme[data-site-theme="arctic-frost"] {
-  --ink-950: #05080a; --ink-900: #0a1014; --ink-800: #101a20; --ink-700: #17242d; --ink-600: #20303c;
-  --glow-amber: #7dd3fc; --glow-amber-strong: #38bdf8; --glow-cyan: #e0f2fe;
+  --ink-950: #101818; --ink-900: #151f1f; --ink-800: #1c2828; --ink-700: #243333; --ink-600: #2e4141;
+  --glow-amber: #3c6e6b; --glow-amber-strong: #2a4e4c; --glow-cyan: #a6371f;
 }
 .site-theme[data-site-theme="arctic-frost"][data-mode="light"] {
-  --ink-950: #f3fbff; --ink-900: #e2f5ff; --ink-800: #c9ecff; --ink-700: #a7dffc; --ink-600: #7fcdf2;
-  --glow-amber: #0369a1; --glow-amber-strong: #075985;
+  --ink-950: #edf4f4; --ink-900: #dbe9e9; --ink-800: #c1d9d9; --ink-700: #a0c3c3; --ink-600: #79a7a7;
 }
 
 .site-theme[data-site-theme="midnight-mint"] {
-  --ink-950: #050a09; --ink-900: #091210; --ink-800: #0e1c19; --ink-700: #142823; --ink-600: #1b352f;
-  --glow-amber: #6ee7b7; --glow-amber-strong: #34d399; --glow-cyan: #c084fc;
+  --ink-950: #131a15; --ink-900: #19221c; --ink-800: #212c24; --ink-700: #2a372e; --ink-600: #35453a;
+  --glow-amber: #4f7a5e; --glow-amber-strong: #395a45; --glow-cyan: #7c3a5d;
 }
 .site-theme[data-site-theme="midnight-mint"][data-mode="light"] {
-  --ink-950: #f2fffa; --ink-900: #ddfff2; --ink-800: #bdf5e2; --ink-700: #96e8cd; --ink-600: #6fd1b3;
-  --glow-amber: #067a56; --glow-amber-strong: #076449;
+  --ink-950: #eef4ef; --ink-900: #dde9df; --ink-800: #c4dbc8; --ink-700: #a3c7a9; --ink-600: #7cae85;
 }
 
 .site-theme h1,
@@ -231,7 +217,8 @@ body {
   letter-spacing: -0.01em;
 }
 
-/* Animated aurora / gradient-mesh backdrop, pure CSS, GPU-friendly */
+/* A single restrained wash of ambient warmth — one soft light source,
+   not a pair of neon blobs. */
 .aurora-bg {
   position: absolute;
   inset: 0;
@@ -239,48 +226,34 @@ body {
   z-index: 0;
   pointer-events: none;
 }
-.aurora-bg::before,
-.aurora-bg::after {
+.aurora-bg::before {
   content: "";
   position: absolute;
-  width: 60vw;
-  height: 60vw;
-  max-width: 900px;
-  max-height: 900px;
-  border-radius: 50%;
-  filter: blur(90px);
-  opacity: 0.35;
-  animation: aurora-drift 22s ease-in-out infinite alternate;
-}
-.site-theme[data-mode="light"] .aurora-bg::before,
-.site-theme[data-mode="light"] .aurora-bg::after {
-  opacity: 0.22;
-}
-.aurora-bg::before {
-  top: -20%;
-  left: -10%;
-  background: radial-gradient(circle, var(--glow-amber) 0%, transparent 70%);
-}
-.aurora-bg::after {
-  bottom: -25%;
+  top: -30%;
   right: -10%;
-  background: radial-gradient(circle, var(--glow-cyan) 0%, transparent 70%);
-  animation-delay: -11s;
+  width: 55vw;
+  height: 55vw;
+  max-width: 760px;
+  max-height: 760px;
+  border-radius: 50%;
+  filter: blur(100px);
+  opacity: 0.14;
+  background: radial-gradient(circle, var(--glow-amber) 0%, transparent 70%);
+  animation: aurora-drift 30s ease-in-out infinite alternate;
+}
+.site-theme[data-mode="light"] .aurora-bg::before {
+  opacity: 0.1;
 }
 @keyframes aurora-drift {
   0% { transform: translate(0, 0) scale(1); }
-  50% { transform: translate(4%, 6%) scale(1.1); }
-  100% { transform: translate(-4%, -3%) scale(0.95); }
+  100% { transform: translate(-4%, 5%) scale(1.08); }
 }
 @media (prefers-reduced-motion: reduce) {
-  .aurora-bg::before,
-  .aurora-bg::after {
-    animation: none;
-  }
+  .aurora-bg::before { animation: none; }
 }
 
-/* Organic (non-circular) accent silhouette — used behind hero collage
-   art so the site reads less like a stock "blurred circle" SaaS page. */
+/* Small hand-stamped accent shape — used sparingly as a decorative
+   flourish instead of a giant blurred hero blob. */
 .blob-shape {
   clip-path: polygon(38% 0%, 74% 8%, 100% 38%, 92% 76%, 58% 100%, 20% 92%, 0% 58%, 6% 22%);
 }
@@ -294,96 +267,113 @@ body {
   mask-image: radial-gradient(ellipse 80% 60% at 50% 0%, black 40%, transparent 100%);
 }
 
+/* Flat editorial surfaces — solid paper/espresso fill, thin hairline
+   border, no backdrop blur. */
 .glass {
-  background: color-mix(in srgb, var(--text-hi) 4.5%, transparent);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
+  background: var(--ink-900);
   border: 1px solid var(--ink-border);
 }
 .glass-strong {
-  background: color-mix(in srgb, var(--text-hi) 7%, transparent);
-  backdrop-filter: blur(24px);
-  -webkit-backdrop-filter: blur(24px);
+  background: var(--ink-800);
   border: 1px solid var(--ink-border-strong);
 }
 
 .glow-card {
-  transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.35s, box-shadow 0.35s;
+  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.3s, box-shadow 0.3s;
 }
 .glow-card:hover {
-  transform: translateY(-4px);
-  border-color: color-mix(in srgb, var(--glow-amber) 40%, transparent);
-  box-shadow:
-    0 0 0 1px color-mix(in srgb, var(--glow-amber) 18%, transparent),
-    0 20px 60px -20px color-mix(in srgb, var(--glow-amber-strong) 45%, transparent);
+  transform: translateY(-3px);
+  border-color: color-mix(in srgb, var(--glow-amber) 55%, transparent);
+  box-shadow: 0 16px 32px -20px color-mix(in srgb, var(--glow-amber) 45%, transparent);
 }
 
-.text-gradient {
-  background: linear-gradient(90deg, var(--glow-amber) 0%, var(--glow-amber-strong) 55%, var(--glow-cyan) 100%);
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
-}
-
+.text-gradient,
 .text-gradient-cool {
-  background: linear-gradient(90deg, var(--glow-cyan) 0%, var(--glow-amber-strong) 100%);
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
+  color: var(--glow-amber);
+}
+
+/* Thin accent rule that draws in — a restrained substitute for
+   gradient-text and glow effects, used under kickers and headline
+   words. */
+.underline-draw {
+  position: relative;
+  display: inline-block;
+}
+.underline-draw::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -0.08em;
+  height: 0.09em;
+  background: var(--glow-amber);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.underline-draw.is-visible::after,
+.underline-draw:hover::after {
+  transform: scaleX(1);
 }
 
 .btn-glow {
   position: relative;
-  background: linear-gradient(135deg, var(--glow-amber) 0%, var(--glow-amber-strong) 100%);
-  color: #180a04;
-  box-shadow:
-    0 0 0 1px color-mix(in srgb, var(--glow-amber) 45%, transparent),
-    0 8px 30px -8px color-mix(in srgb, var(--glow-amber-strong) 65%, transparent);
-  transition: box-shadow 0.3s, transform 0.3s;
+  overflow: hidden;
+  background: var(--glow-amber);
+  color: #fdf8ef;
+  border: 1px solid color-mix(in srgb, var(--glow-amber) 60%, black 10%);
+  transition: background 0.3s, transform 0.3s, box-shadow 0.3s;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.12);
+}
+.btn-glow::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: color-mix(in srgb, white 18%, transparent);
+  transform: translateX(-105%);
+  transition: transform 0.45s cubic-bezier(0.16, 1, 0.3, 1);
 }
 .btn-glow:hover {
-  box-shadow:
-    0 0 0 1px color-mix(in srgb, var(--glow-amber) 65%, transparent),
-    0 12px 40px -6px color-mix(in srgb, var(--glow-amber-strong) 85%, transparent);
+  background: var(--glow-amber-strong);
   transform: translateY(-2px);
+  box-shadow: 0 10px 24px -10px color-mix(in srgb, var(--glow-amber) 55%, transparent);
+}
+.btn-glow:hover::before {
+  transform: translateX(0);
 }
 .btn-glow:active {
   transform: translateY(0);
 }
 
 .btn-ghost {
-  background: color-mix(in srgb, var(--text-hi) 4%, transparent);
-  border: 1px solid var(--ink-border-strong);
+  background: transparent;
+  border: 1.5px solid var(--ink-border-strong);
   color: var(--text-hi);
-  transition: background 0.3s, border-color 0.3s;
+  transition: background 0.3s, border-color 0.3s, color 0.3s;
 }
 .btn-ghost:hover {
-  background: color-mix(in srgb, var(--text-hi) 8%, transparent);
-  border-color: color-mix(in srgb, var(--glow-amber) 40%, transparent);
+  border-color: var(--glow-amber);
+  color: var(--glow-amber);
 }
 
 .chip {
   border: 1px solid var(--ink-border-strong);
-  background: color-mix(in srgb, var(--text-hi) 4%, transparent);
+  background: transparent;
   color: var(--text-mid);
   transition: all 0.25s;
 }
 .chip[data-active="true"] {
-  border-color: color-mix(in srgb, var(--glow-amber) 50%, transparent);
-  background: linear-gradient(
-    135deg,
-    color-mix(in srgb, var(--glow-amber) 18%, transparent),
-    color-mix(in srgb, var(--glow-amber-strong) 10%, transparent)
-  );
+  border-color: var(--glow-amber);
   color: var(--glow-amber);
+  background: color-mix(in srgb, var(--glow-amber) 10%, transparent);
 }
 .chip:hover {
-  border-color: color-mix(in srgb, var(--glow-amber) 35%, transparent);
+  border-color: var(--glow-amber);
   color: var(--text-hi);
 }
 
 .input-dark {
-  background: color-mix(in srgb, var(--text-hi) 4%, transparent);
+  background: var(--ink-900);
   border: 1px solid var(--ink-border-strong);
   color: var(--text-hi);
   transition: border-color 0.25s, background 0.25s;
@@ -393,13 +383,12 @@ body {
 }
 .input-dark:focus {
   outline: none;
-  border-color: color-mix(in srgb, var(--glow-amber) 50%, transparent);
-  background: color-mix(in srgb, var(--text-hi) 6%, transparent);
+  border-color: var(--glow-amber);
 }
 
 .divider-glow {
   height: 1px;
-  background: linear-gradient(90deg, transparent, color-mix(in srgb, var(--glow-amber) 55%, transparent), transparent);
+  background: var(--ink-border-strong);
 }
 
 .noise-overlay {
@@ -412,13 +401,34 @@ body {
 
 @keyframes float-slow {
   0%, 100% { transform: translateY(0) rotate(var(--float-rot, 0deg)); }
-  50% { transform: translateY(-14px) rotate(calc(var(--float-rot, 0deg) + 2deg)); }
+  50% { transform: translateY(-10px) rotate(calc(var(--float-rot, 0deg) + 1deg)); }
 }
 .animate-float {
-  animation: float-slow 6s ease-in-out infinite;
+  animation: float-slow 7s ease-in-out infinite;
 }
 @media (prefers-reduced-motion: reduce) {
   .animate-float { animation: none; }
+}
+
+/* Scrolling announcement ticker — an editorial-brand touch (real
+   bakeries/boutiques use these) rather than a SaaS product pattern. */
+.marquee {
+  overflow: hidden;
+  -webkit-mask-image: linear-gradient(90deg, transparent, black 8%, black 92%, transparent);
+  mask-image: linear-gradient(90deg, transparent, black 8%, black 92%, transparent);
+}
+.marquee__track {
+  display: flex;
+  width: max-content;
+  gap: 2.5rem;
+  animation: marquee-scroll 28s linear infinite;
+}
+@keyframes marquee-scroll {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .marquee__track { animation: none; }
 }
 
 /* Sun/moon mode-toggle switch */
@@ -427,16 +437,17 @@ body {
   display: inline-flex;
   align-items: center;
   border: 1px solid var(--ink-border-strong);
-  background: color-mix(in srgb, var(--text-hi) 5%, transparent);
+  background: transparent;
   border-radius: 999px;
   padding: 3px;
   width: 56px;
   height: 30px;
   cursor: pointer;
-  transition: border-color 0.25s, background 0.25s;
+  transition: border-color 0.25s;
+  color: var(--text-mid);
 }
 .mode-toggle:hover {
-  border-color: color-mix(in srgb, var(--glow-amber) 40%, transparent);
+  border-color: var(--glow-amber);
 }
 .mode-toggle__thumb {
   display: grid;
@@ -444,10 +455,10 @@ body {
   height: 22px;
   width: 22px;
   border-radius: 999px;
-  background: linear-gradient(135deg, var(--glow-amber) 0%, var(--glow-amber-strong) 100%);
-  font-size: 12px;
+  background: var(--glow-amber);
+  color: #fdf8ef;
   transform: translateX(0);
-  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), background 0.3s;
 }
 .site-theme[data-mode="light"] .mode-toggle__thumb {
   transform: translateX(26px);

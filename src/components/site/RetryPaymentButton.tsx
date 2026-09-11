@@ -34,7 +34,7 @@ export function RetryPaymentButton({
 
   return (
     <div className="mt-4">
-      <button type="button" onClick={retry} disabled={loading} className="btn-glow rounded-full px-6 py-2.5 text-sm font-semibold disabled:opacity-60">
+      <button type="button" onClick={retry} disabled={loading} className="btn-glow rounded-md px-6 py-2.5 text-sm font-semibold disabled:opacity-60">
         {loading ? "Starting payment..." : `Complete Payment with ${gateway === "PAYSTACK" ? "Paystack" : "Hubtel"}`}
       </button>
       {error && <p className="mt-2 text-sm text-red-400">{error}</p>}

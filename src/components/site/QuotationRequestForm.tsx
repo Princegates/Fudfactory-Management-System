@@ -78,7 +78,7 @@ export function QuotationRequestForm() {
       <button
         type="submit"
         disabled={submitting}
-        className="btn-glow rounded-full px-6 py-3 text-sm font-semibold disabled:opacity-60 sm:col-span-2 sm:w-fit"
+        className="btn-glow rounded-md px-6 py-3 text-sm font-semibold disabled:opacity-60 sm:col-span-2 sm:w-fit"
       >
         {submitting ? "Submitting..." : "Request a Quotation"}
       </button>

@@ -1,20 +1,21 @@
 import type { Metadata } from "next";
 import { getBusinessProfile } from "@/lib/business";
 import { Reveal } from "@/components/site/Reveal";
+import { Icon, type IconName } from "@/components/site/Icon";
 
 export const metadata: Metadata = {
   title: "About Us",
   description: "Learn about FudFactory — a Ghanaian food, pastry and catering business.",
 };
 
-const OFFERINGS = [
-  { icon: "🎂", label: "Cakes & celebration bakes" },
-  { icon: "🥐", label: "Pastries & pies" },
-  { icon: "🍩", label: "Snacks & breakfast items" },
-  { icon: "🍚", label: "Rice & spaghetti cuisine" },
-  { icon: "🍌", label: "Yam & plantain dishes" },
-  { icon: "🎉", label: "Corporate & bulk catering" },
-  { icon: "🎪", label: "Full event planning services" },
+const OFFERINGS: { icon: IconName; label: string }[] = [
+  { icon: "cake", label: "Cakes & celebration bakes" },
+  { icon: "pastry", label: "Pastries & pies" },
+  { icon: "donut", label: "Snacks & breakfast items" },
+  { icon: "bowl", label: "Rice & spaghetti cuisine" },
+  { icon: "box", label: "Yam & plantain dishes" },
+  { icon: "gift", label: "Corporate & bulk catering" },
+  { icon: "event", label: "Full event planning services" },
 ];
 
 export default async function AboutPage() {
@@ -29,7 +30,7 @@ export default async function AboutPage() {
             Our Story
           </span>
           <h1 className="mt-2 font-display text-4xl font-bold" style={{ color: "var(--text-hi)" }}>
-            About <span className="text-gradient">{business.businessName}</span>
+            About <span className="italic" style={{ color: "var(--glow-amber)" }}>{business.businessName}</span>
           </h1>
         </Reveal>
 
@@ -54,10 +55,10 @@ export default async function AboutPage() {
             {OFFERINGS.map((item) => (
               <li
                 key={item.label}
-                className="glass glow-card flex items-center gap-3 rounded-xl px-4 py-3.5 text-sm font-medium"
+                className="glass glow-card flex items-center gap-3 rounded-lg px-4 py-3.5 text-sm font-medium"
                 style={{ color: "var(--text-hi)" }}
               >
-                <span className="text-xl">{item.icon}</span>
+                <Icon name={item.icon} className="h-5 w-5 shrink-0" style={{ color: "var(--glow-amber)" }} />
                 {item.label}
               </li>
             ))}

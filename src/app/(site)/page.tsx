@@ -4,40 +4,43 @@ import { ProductCard } from "@/components/site/ProductCard";
 import { ProductArt } from "@/components/site/ProductArt";
 import { Reveal } from "@/components/site/Reveal";
 import { StatCounter } from "@/components/site/StatCounter";
+import { Icon, type IconName } from "@/components/site/Icon";
 import { getBusinessProfile } from "@/lib/business";
 
-const FEATURES = [
+const FEATURES: { icon: IconName; title: string; body: string }[] = [
   {
-    icon: "🍰",
+    icon: "cake",
     title: "Baked fresh, daily",
     body: "Cakes, pastries, snacks and meals made same-day from quality ingredients — never sitting in a freezer.",
   },
   {
-    icon: "🎉",
+    icon: "event",
     title: "Full event planning",
     body: "Weddings, engagements, corporate functions — we plan the menu, cook it and cater the whole occasion.",
   },
   {
-    icon: "🛵",
+    icon: "bike",
     title: "Fast pickup & delivery",
     body: "Order online and choose pickup or zone-based delivery, tracked live from the kitchen to your door.",
   },
   {
-    icon: "💳",
+    icon: "card",
     title: "Pay your way",
     body: "Card, Mobile Money or cash — confirmed instantly through Paystack/Hubtel or verified by our team.",
   },
   {
-    icon: "🎁",
+    icon: "gift",
     title: "Loyalty rewards",
     body: "Every order earns points toward member-only perks and discounts on your next treat.",
   },
   {
-    icon: "📦",
+    icon: "box",
     title: "Custom & bulk orders",
     body: "Bespoke cakes, party trays and bulk catering, made exactly to your spec and headcount.",
   },
 ];
+
+const TICKER = ["Baked fresh daily", "Full event planning", "Pickup & delivery", "Secure payments", "Loyalty rewards"];
 
 export default async function HomePage() {
   const [featured, categories, reviews, business, customerCount, orderCount, avgRatingAgg] = await Promise.all([
@@ -72,12 +75,11 @@ export default async function HomePage() {
         <div className="relative mx-auto grid max-w-6xl gap-12 px-4 py-14 sm:px-6 sm:py-20 lg:grid-cols-[1.05fr_0.95fr] lg:items-center lg:gap-8">
           <div className="relative z-10 text-center lg:text-left">
             <Reveal>
-              <span className="chip mx-auto inline-flex items-center gap-2 rounded-full px-4 py-1.5 text-sm font-semibold lg:mx-0" data-active="true">
-                <span className="relative flex h-2 w-2">
-                  <span className="absolute inline-flex h-full w-full animate-ping rounded-full opacity-75" style={{ background: "var(--glow-amber)" }} />
-                  <span className="relative inline-flex h-2 w-2 rounded-full" style={{ background: "var(--glow-amber)" }} />
-                </span>
-                @{business.instagramHandle} · Ordering online now
+              <span
+                className="underline-draw is-visible text-xs font-semibold uppercase tracking-[0.25em]"
+                style={{ color: "var(--glow-amber)" }}
+              >
+                @{business.instagramHandle} — Accra, Ghana
               </span>
             </Reveal>
 
@@ -86,7 +88,7 @@ export default async function HomePage() {
                 className="mx-auto mt-6 max-w-xl font-display text-5xl font-bold leading-[1.05] tracking-tight sm:text-6xl lg:mx-0 lg:text-7xl"
                 style={{ color: "var(--text-hi)" }}
               >
-                Food that steals <span className="text-gradient italic">the show</span>
+                Food that steals <span className="italic" style={{ color: "var(--glow-amber)" }}>the show</span>
               </h1>
             </Reveal>
 
@@ -99,48 +101,44 @@ export default async function HomePage() {
 
             <Reveal delay={0.24}>
               <div className="mt-8 flex flex-wrap items-center justify-center gap-3 lg:justify-start">
-                <Link href="/menu" className="btn-glow rounded-full px-7 py-3.5 text-sm font-semibold">
-                  Order Now →
+                <Link href="/menu" className="btn-glow rounded-md px-7 py-3.5 text-sm font-semibold">
+                  Order Now
                 </Link>
-                <Link href="/custom-orders" className="btn-ghost rounded-full px-7 py-3.5 text-sm font-semibold">
-                  Plan an Event ✦
+                <Link href="/custom-orders" className="btn-ghost rounded-md px-7 py-3.5 text-sm font-semibold">
+                  Plan an Event
                 </Link>
               </div>
             </Reveal>
           </div>
 
-          {/* Asymmetrical floating collage */}
+          {/* Asymmetrical collage */}
           <div className="relative mx-auto hidden aspect-square w-full max-w-md lg:block">
-            <div
-              className="blob-shape absolute inset-8 opacity-70 blur-[2px]"
-              style={{ background: "linear-gradient(135deg, var(--glow-amber), var(--glow-cyan))" }}
-            />
             {collage[0] && (
               <div
-                className="glow-card glass absolute left-0 top-2 h-36 w-36 overflow-hidden rounded-2xl shadow-2xl"
-                style={{ transform: "rotate(-9deg)" }}
+                className="glow-card glass absolute left-0 top-2 h-36 w-36 overflow-hidden rounded-lg"
+                style={{ transform: "rotate(-6deg)" }}
               >
-                <ProductArt name={collage[0].name} category={collage[0].category.name} className="h-full w-full" iconClassName="text-4xl" />
+                <ProductArt name={collage[0].name} category={collage[0].category.name} className="h-full w-full" iconClassName="h-10 w-10" />
               </div>
             )}
             {collage[1] && (
               <div
-                className="glow-card glass animate-float absolute right-2 top-20 h-52 w-52 overflow-hidden rounded-3xl shadow-2xl"
-                style={{ ["--float-rot" as string]: "4deg", transform: "rotate(4deg)" }}
+                className="glow-card glass animate-float absolute right-2 top-20 h-52 w-52 overflow-hidden rounded-lg"
+                style={{ ["--float-rot" as string]: "3deg", transform: "rotate(3deg)" }}
               >
-                <ProductArt name={collage[1].name} category={collage[1].category.name} className="h-full w-full" iconClassName="text-6xl" />
+                <ProductArt name={collage[1].name} category={collage[1].category.name} className="h-full w-full" iconClassName="h-16 w-16" />
               </div>
             )}
             {collage[2] && (
               <div
-                className="glow-card glass absolute bottom-2 left-12 h-32 w-32 overflow-hidden rounded-2xl shadow-2xl"
-                style={{ transform: "rotate(11deg)" }}
+                className="glow-card glass absolute bottom-2 left-12 h-32 w-32 overflow-hidden rounded-lg"
+                style={{ transform: "rotate(8deg)" }}
               >
-                <ProductArt name={collage[2].name} category={collage[2].category.name} className="h-full w-full" iconClassName="text-3xl" />
+                <ProductArt name={collage[2].name} category={collage[2].category.name} className="h-full w-full" iconClassName="h-8 w-8" />
               </div>
             )}
-            <div className="glass-strong absolute -bottom-4 right-0 flex items-center gap-2 rounded-2xl px-4 py-3 shadow-xl">
-              <span className="text-xl">🎉</span>
+            <div className="glass-strong absolute -bottom-4 right-0 flex items-center gap-3 rounded-lg px-4 py-3">
+              <Icon name="sparkle" className="h-6 w-6" style={{ color: "var(--glow-amber)" }} />
               <div className="text-left">
                 <p className="text-sm font-bold" style={{ color: "var(--text-hi)" }}>
                   {orderCount || 340}+ events &amp; orders
@@ -152,8 +150,20 @@ export default async function HomePage() {
         </div>
       </section>
 
+      {/* ---------------------------------------------------------------- TICKER */}
+      <div className="marquee border-y py-3" style={{ borderColor: "var(--ink-border)" }}>
+        <div className="marquee__track">
+          {[...TICKER, ...TICKER].map((item, i) => (
+            <span key={i} className="flex items-center gap-2 text-sm font-semibold uppercase tracking-[0.15em] whitespace-nowrap" style={{ color: "var(--text-mid)" }}>
+              {item}
+              <span aria-hidden style={{ color: "var(--glow-amber)" }}>·</span>
+            </span>
+          ))}
+        </div>
+      </div>
+
       {/* ---------------------------------------------------------------- STATS */}
-      <section className="relative border-y" style={{ borderColor: "var(--ink-border)" }}>
+      <section className="relative border-b" style={{ borderColor: "var(--ink-border)" }}>
         <div className="mx-auto grid max-w-5xl grid-cols-2 gap-8 px-4 py-12 sm:px-6 md:grid-cols-4">
           <StatCounter value={customerCount || 120} suffix="+" label="Happy Customers" />
           <StatCounter value={orderCount || 340} suffix="+" label="Orders Fulfilled" />
@@ -177,12 +187,12 @@ export default async function HomePage() {
         <div className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {FEATURES.map((feature, i) => (
             <Reveal key={feature.title} delay={i * 0.06}>
-              <div className="glass glow-card h-full rounded-2xl p-6">
+              <div className="glass glow-card h-full rounded-lg p-6">
                 <span
-                  className="grid h-12 w-12 place-items-center rounded-xl text-2xl"
-                  style={{ background: "linear-gradient(135deg, color-mix(in srgb, var(--glow-amber) 22%, transparent), color-mix(in srgb, var(--glow-cyan) 22%, transparent))" }}
+                  className="grid h-11 w-11 place-items-center rounded-md"
+                  style={{ background: "color-mix(in srgb, var(--glow-amber) 14%, transparent)", color: "var(--glow-amber)" }}
                 >
-                  {feature.icon}
+                  <Icon name={feature.icon} className="h-5 w-5" />
                 </span>
                 <h3 className="mt-4 font-display text-lg font-bold" style={{ color: "var(--text-hi)" }}>
                   {feature.title}
@@ -209,7 +219,7 @@ export default async function HomePage() {
               <Reveal key={category.id} delay={i * 0.04}>
                 <Link
                   href={`/menu?category=${category.slug}`}
-                  className="glass glow-card block rounded-2xl px-4 py-7 text-center text-sm font-semibold transition-colors hover:text-[var(--glow-amber)]"
+                  className="glass glow-card block rounded-lg px-4 py-7 text-center text-sm font-semibold transition-colors hover:text-[var(--glow-amber)]"
                   style={{ color: "var(--text-hi)" }}
                 >
                   {category.name}
@@ -228,7 +238,7 @@ export default async function HomePage() {
               Featured products
             </h2>
             <Link href="/menu" className="text-sm font-semibold transition-colors hover:text-[var(--glow-amber)]" style={{ color: "var(--glow-cyan)" }}>
-              View all →
+              View all
             </Link>
           </div>
         </Reveal>
@@ -259,18 +269,18 @@ export default async function HomePage() {
         )}
       </section>
 
-      {/* ---------------------------------------------------------------- ABOUT / DELIVERY */}
+      {/* ---------------------------------------------------------------- ABOUT / EVENTS */}
       <section className="mx-auto max-w-6xl px-4 py-20 sm:px-6">
         <div className="grid gap-6 md:grid-cols-2">
           <Reveal>
-            <div className="glass h-full rounded-3xl p-8">
-              <span className="text-3xl">👨‍🍳</span>
+            <div className="glass h-full rounded-lg p-8">
+              <Icon name="chef" className="h-8 w-8" style={{ color: "var(--glow-amber)" }} />
               <h2 className="mt-4 font-display text-xl font-bold" style={{ color: "var(--text-hi)" }}>
                 About FudFactory
               </h2>
               <p className="mt-3 text-sm leading-relaxed" style={{ color: "var(--text-mid)" }}>
                 {business.aboutText ??
-                  "FudFactory bakes and prepares meat pies, doughnuts, cakes, snacks and full meals fresh every day. We serve walk-in customers, online orders and full-scale event planning &amp; catering — all made with quality ingredients and a lot of care."}
+                  "FudFactory bakes and prepares meat pies, doughnuts, cakes, snacks and full meals fresh every day. We serve walk-in customers, online orders and full-scale event planning & catering — all made with quality ingredients and a lot of care."}
               </p>
               <Link href="/about" className="mt-4 inline-block text-sm font-semibold transition-colors hover:text-[var(--glow-amber)]" style={{ color: "var(--glow-amber)" }}>
                 Learn more about us →
@@ -278,8 +288,8 @@ export default async function HomePage() {
             </div>
           </Reveal>
           <Reveal delay={0.1}>
-            <div className="glass h-full rounded-3xl p-8">
-              <span className="text-3xl">🎪</span>
+            <div className="glass h-full rounded-lg p-8">
+              <Icon name="event" className="h-8 w-8" style={{ color: "var(--glow-amber)" }} />
               <h2 className="mt-4 font-display text-xl font-bold" style={{ color: "var(--text-hi)" }}>
                 Events &amp; Catering
               </h2>
@@ -311,17 +321,17 @@ export default async function HomePage() {
               href={`https://instagram.com/${business.instagramHandle}`}
               target="_blank"
               rel="noreferrer"
-              className="btn-ghost rounded-full px-5 py-2.5 text-sm font-semibold"
+              className="btn-ghost rounded-md px-5 py-2.5 text-sm font-semibold"
             >
-              @{business.instagramHandle} ↗
+              @{business.instagramHandle}
             </a>
           </div>
         </Reveal>
         <div className="mt-8 grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-6">
           {galleryProducts.map((p, i) => (
             <Reveal key={p.id} delay={i * 0.04}>
-              <div className="glow-card aspect-square overflow-hidden rounded-2xl">
-                <ProductArt name={p.name} iconClassName="text-3xl" className="h-full w-full" />
+              <div className="glow-card aspect-square overflow-hidden rounded-lg">
+                <ProductArt name={p.name} iconClassName="h-8 w-8" className="h-full w-full" />
               </div>
             </Reveal>
           ))}
@@ -344,12 +354,9 @@ export default async function HomePage() {
           <div className="mt-10 grid gap-4 md:grid-cols-3">
             {reviews.map((review, i) => (
               <Reveal key={review.id} delay={i * 0.08}>
-                <div
-                  className="glass glow-card relative h-full rounded-2xl p-6"
-                  style={{ transform: i === 1 ? "rotate(0deg)" : i === 0 ? "rotate(-1.5deg)" : "rotate(1.5deg)" }}
-                >
+                <div className="glass glow-card relative h-full rounded-lg p-6">
                   <span
-                    className="font-display absolute -top-3 left-5 text-5xl leading-none opacity-40"
+                    className="font-display absolute -top-3 left-5 text-5xl leading-none opacity-30"
                     style={{ color: "var(--glow-amber)" }}
                     aria-hidden
                   >
@@ -368,8 +375,8 @@ export default async function HomePage() {
       {/* ---------------------------------------------------------------- FINAL CTA */}
       <section className="mx-auto max-w-6xl px-4 pb-24 sm:px-6">
         <Reveal>
-          <div className="glass-strong relative overflow-hidden rounded-3xl px-8 py-16 text-center">
-            <div className="aurora-bg opacity-60" />
+          <div className="glass-strong relative overflow-hidden rounded-lg px-8 py-16 text-center">
+            <div className="aurora-bg" />
             <div className="relative">
               <h2 className="font-display text-3xl font-bold sm:text-4xl" style={{ color: "var(--text-hi)" }}>
                 Hungry — or hosting?
@@ -378,11 +385,11 @@ export default async function HomePage() {
                 Place an order in under a minute, or tell us about your next event and let us plan the whole thing.
               </p>
               <div className="mt-6 flex flex-wrap items-center justify-center gap-3">
-                <Link href="/menu" className="btn-glow inline-block rounded-full px-8 py-3.5 text-sm font-semibold">
-                  Order Now →
+                <Link href="/menu" className="btn-glow inline-block rounded-md px-8 py-3.5 text-sm font-semibold">
+                  Order Now
                 </Link>
-                <Link href="/custom-orders" className="btn-ghost inline-block rounded-full px-8 py-3.5 text-sm font-semibold">
-                  Plan an Event ✦
+                <Link href="/custom-orders" className="btn-ghost inline-block rounded-md px-8 py-3.5 text-sm font-semibold">
+                  Plan an Event
                 </Link>
               </div>
             </div>
