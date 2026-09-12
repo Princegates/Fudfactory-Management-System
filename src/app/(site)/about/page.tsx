@@ -27,16 +27,14 @@ export default async function AboutPage() {
       <div className="aurora-bg opacity-30" />
       <div className="relative mx-auto max-w-3xl px-4 py-20 sm:px-6">
         <Reveal>
-          <span className="text-xs font-semibold uppercase tracking-widest" style={{ color: "var(--glow-amber)" }}>
-            Our Story
-          </span>
-          <h1 className="mt-2 font-display text-4xl font-bold" style={{ color: "var(--text-hi)" }}>
+          <span className="dept-label">Our Story</span>
+          <h1 className="mt-3 font-display text-4xl font-bold" style={{ color: "var(--text-hi)" }}>
             About <span className="italic" style={{ color: "var(--glow-amber)" }}>{business.businessName}</span>
           </h1>
         </Reveal>
 
         <Reveal delay={0.08}>
-          <p className="mt-6 leading-relaxed" style={{ color: "var(--text-mid)" }}>
+          <p className="dropcap mt-6 leading-loose" style={{ color: "var(--text-mid)" }}>
             {business.tagline} — FudFactory started as a small home kitchen serving neighbours fresh
             meat pies and doughnuts, and has grown into a full food, pastry and catering business
             trusted for birthdays, weddings, corporate events and everyday cravings.
@@ -49,15 +47,13 @@ export default async function AboutPage() {
         </Reveal>
 
         <Reveal delay={0.16}>
-          <h2 className="mt-14 font-display text-2xl font-bold" style={{ color: "var(--text-hi)" }}>
-            What we offer
-          </h2>
-          <ul className="mt-5 grid gap-3 sm:grid-cols-2">
-            {OFFERINGS.map((item) => (
+          <span className="dept-label mt-14">What we offer</span>
+          <ul className="mt-2 grid sm:grid-cols-2 sm:gap-x-8">
+            {OFFERINGS.map((item, i) => (
               <li
                 key={item.label}
-                className="glass glow-card flex items-center gap-3 rounded-lg px-4 py-3.5 text-sm font-medium"
-                style={{ color: "var(--text-hi)" }}
+                className="flex items-center gap-3 py-3.5 text-sm font-medium"
+                style={{ color: "var(--text-hi)", borderTop: i > 1 ? "1px solid var(--ink-border)" : undefined }}
               >
                 <Icon name={item.icon} className="h-5 w-5 shrink-0" style={{ color: "var(--glow-amber)" }} />
                 {item.label}
@@ -67,9 +63,7 @@ export default async function AboutPage() {
         </Reveal>
 
         <Reveal delay={0.24}>
-          <h2 className="mt-14 font-display text-2xl font-bold" style={{ color: "var(--text-hi)" }}>
-            Find us
-          </h2>
+          <span className="dept-label mt-14">Find Us</span>
           <p className="mt-3" style={{ color: "var(--text-mid)" }}>
             {business.address} · Follow us on Instagram at{" "}
             <a

@@ -5,7 +5,7 @@ import { ProductArt } from "@/components/site/ProductArt";
 import { Reveal } from "@/components/site/Reveal";
 import { StatCounter } from "@/components/site/StatCounter";
 import { Icon } from "@/components/site/Icon";
-import { Logo } from "@/components/Logo";
+import { HeroVisual } from "@/components/site/HeroVisual";
 import { getBusinessProfile } from "@/lib/business";
 
 const FEATURES: { title: string; body: string }[] = [
@@ -121,9 +121,11 @@ export default async function HomePage() {
             </Reveal>
           </div>
 
-          {/* Big animated brand mark */}
-          <div className="relative mx-auto flex aspect-square w-full max-w-md flex-col items-center justify-center">
-            <Logo className="animate-float h-40 sm:h-52 lg:h-64" />
+          {/* 3D brand centerpiece (falls back to the flat animated logo if WebGL isn't available) */}
+          <div className="relative mx-auto flex w-full max-w-md flex-col items-center justify-center">
+            <div className="flex h-40 w-40 items-center justify-center sm:h-52 sm:w-52 lg:h-64 lg:w-64">
+              <HeroVisual />
+            </div>
             <p className="mt-4 text-xs italic tracking-wide" style={{ color: "var(--text-lo)" }}>
               — from the FudFactory kitchen, Accra
             </p>
