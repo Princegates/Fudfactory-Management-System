@@ -66,5 +66,5 @@ export function PortalShell({
 }
 
 function SidebarHeader() {
-  return <Logo className="h-7" />;
+  return <Logo className="h-7" themed={false} />;
 }
