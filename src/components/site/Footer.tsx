@@ -44,7 +44,9 @@ export async function Footer() {
             <li><Link href="/account" className="transition-colors hover:text-white">My Account</Link></li>
             <li><Link href="/track" className="transition-colors hover:text-white">Track an Order</Link></li>
             <li><Link href="/contact" className="transition-colors hover:text-white">Contact Us</Link></li>
-            <li><Link href="/portal/login" className="transition-colors hover:text-white">Staff Login</Link></li>
+            {process.env.NEXT_PUBLIC_HIDE_STAFF_PORTAL !== "true" && (
+              <li><Link href="/portal/login" className="transition-colors hover:text-white">Staff Login</Link></li>
+            )}
           </ul>
         </div>
 

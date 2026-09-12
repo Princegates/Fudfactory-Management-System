@@ -26,14 +26,14 @@ npm run dev
 
 `DATABASE_URL` needs a real Postgres connection string — a free [Supabase](https://supabase.com) project's connection string works well for this (Project Settings → Database → Connection string). `db:migrate` (Prisma's `migrate dev`) already runs the seed script itself the first time it creates the tables, so running `db:seed` right after is often a no-op re-run — that's expected and safe. `npm run db:seed` clears and reloads all demo data every time it runs, so re-run it any time you want to reset the database back to the demo dataset below.
 
-### Deploying (e.g. to Netlify)
-
-This repo includes a `netlify.toml` with the `@netlify/plugin-nextjs` build plugin already configured. To deploy:
+### Deploying (Vercel or Netlify)
 
 1. Create a Postgres database (e.g. a free [Supabase](https://supabase.com) project) and copy its connection string.
-2. In Netlify, import this repository/branch as a new site.
-3. Add `DATABASE_URL` (your Postgres connection string) and `JWT_SECRET` (a long random value — `openssl rand -base64 48`) as site environment variables.
-4. Before or after the first deploy, run `npx prisma migrate deploy` and `npm run db:seed` against that `DATABASE_URL` (from your machine, or a Netlify build hook) to create the tables and load demo data.
+2. Import this repository/branch as a new project — **Vercel** detects Next.js automatically with no extra config; **Netlify** picks up the `netlify.toml` in this repo (with `@netlify/plugin-nextjs` already configured).
+3. Add `DATABASE_URL` (your Postgres connection string) and `JWT_SECRET` (a long random value — `openssl rand -base64 48`) as project/site environment variables.
+4. Before or after the first deploy, run `npx prisma migrate deploy` and `npm run db:seed` against that `DATABASE_URL` (from your machine, or a build hook) to create the tables and load demo data.
+
+To show only the public ordering site on a deployment — e.g. a link for a client to preview, with the internal staff portal completely unreachable — also set `NEXT_PUBLIC_HIDE_STAFF_PORTAL=true` as a site environment variable. This hides every "Staff Login" link and makes `/portal/*` redirect to the homepage instead of loading the portal.
 
 Visit `http://localhost:3000` for the public site and `http://localhost:3000/portal/login` for the staff portal.
 
