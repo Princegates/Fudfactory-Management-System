@@ -17,8 +17,6 @@ const NAV_LINKS = [
   { href: "/contact", label: "Contact" },
 ];
 
-const HIDE_STAFF_PORTAL = process.env.NEXT_PUBLIC_HIDE_STAFF_PORTAL === "true";
-
 export function Header({ mode }: { mode: "dark" | "light" }) {
   const [open, setOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
@@ -67,15 +65,13 @@ export function Header({ mode }: { mode: "dark" | "light" }) {
 
         <div className="flex items-center gap-2.5">
           <ModeToggle mode={mode} />
-          {!HIDE_STAFF_PORTAL && (
-            <Link
-              href="/portal/login"
-              className="hidden rounded-md px-3.5 py-2 text-sm font-medium transition-colors hover:text-[var(--glow-amber)] lg:block"
-              style={{ color: "var(--text-lo)" }}
-            >
-              Staff Login
-            </Link>
-          )}
+          <Link
+            href="/portal/login"
+            className="hidden rounded-md px-3.5 py-2 text-sm font-medium transition-colors hover:text-[var(--glow-amber)] lg:block"
+            style={{ color: "var(--text-lo)" }}
+          >
+            Staff Login
+          </Link>
           <Link
             href="/account"
             className="hidden rounded-md px-3.5 py-2 text-sm font-medium transition-colors hover:text-[var(--glow-amber)] sm:block"
@@ -129,18 +125,16 @@ export function Header({ mode }: { mode: "dark" | "light" }) {
                 Account
               </Link>
             </li>
-            {!HIDE_STAFF_PORTAL && (
-              <li>
-                <Link
-                  href="/portal/login"
-                  onClick={() => setOpen(false)}
-                  className="block rounded-lg px-3 py-2.5 text-sm font-medium transition hover:bg-white/5"
-                  style={{ color: "var(--text-mid)" }}
-                >
-                  Staff Login
-                </Link>
-              </li>
-            )}
+            <li>
+              <Link
+                href="/portal/login"
+                onClick={() => setOpen(false)}
+                className="block rounded-lg px-3 py-2.5 text-sm font-medium transition hover:bg-white/5"
+                style={{ color: "var(--text-mid)" }}
+              >
+                Staff Login
+              </Link>
+            </li>
           </ul>
         </nav>
       )}
