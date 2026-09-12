@@ -123,7 +123,7 @@ export default async function HomePage() {
 
           {/* 3D brand centerpiece (falls back to the flat animated logo if WebGL isn't available) */}
           <div className="relative mx-auto flex w-full max-w-md flex-col items-center justify-center">
-            <div className="flex h-40 w-40 items-center justify-center sm:h-52 sm:w-52 lg:h-64 lg:w-64">
+            <div className="flex h-28 w-64 items-center justify-center sm:h-36 sm:w-80 lg:h-44 lg:w-96">
               <HeroVisual />
             </div>
             <p className="mt-4 text-xs italic tracking-wide" style={{ color: "var(--text-lo)" }}>

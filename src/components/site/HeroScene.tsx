@@ -1,48 +1,67 @@
 "use client";
 
 import { useEffect, useMemo, useRef, useState } from "react";
-import { Canvas, useFrame, useThree } from "@react-three/fiber";
-import { RoundedBox, useTexture } from "@react-three/drei";
+import { Canvas, useFrame, useLoader, useThree } from "@react-three/fiber";
 import * as THREE from "three";
+import { SVGLoader } from "three/examples/jsm/loaders/SVGLoader.js";
+import { mergeGeometries } from "three/examples/jsm/utils/BufferGeometryUtils.js";
 
-/** Reads the theme's ink/accent CSS custom properties off the nearest
- * .site-theme ancestor, so the medallion recolors whenever the visitor
- * switches theme or day/night mode — matching the flat <Logo>'s CSS-mask
- * recolor, just driven from JS since this is a WebGL material, not CSS. */
-function useThemeColors() {
-  const [colors, setColors] = useState({ accent: "#c1440e", ink: "#241a11" });
+/** Reads the theme's accent CSS custom property off the nearest .site-theme
+ * ancestor, so the logo recolors whenever the visitor switches theme or
+ * day/night mode — matching the flat <Logo>'s CSS-mask recolor, just driven
+ * from JS since this is a WebGL material, not CSS. */
+function useThemeAccent() {
+  const [accent, setAccent] = useState("#c1440e");
 
   useEffect(() => {
     const root = document.querySelector(".site-theme") ?? document.documentElement;
-    const read = () => {
-      const style = getComputedStyle(root);
-      const pick = (name: string, fallback: string) => style.getPropertyValue(name).trim() || fallback;
-      setColors({ accent: pick("--glow-amber", "#c1440e"), ink: pick("--ink-900", "#241a11") });
-    };
+    const read = () => setAccent(getComputedStyle(root).getPropertyValue("--glow-amber").trim() || "#c1440e");
     read();
     const observer = new MutationObserver(read);
     observer.observe(root, { attributes: true, attributeFilter: ["data-mode", "data-site-theme"] });
     return () => observer.disconnect();
   }, []);
 
-  return colors;
+  return accent;
 }
 
-function LogoMedallion({ reduceMotion }: { reduceMotion: boolean }) {
+/** The full FudFactory lockup (wordmark + icon + tagline), traced from the
+ * real artwork's silhouette and extruded into real 3D geometry — actual
+ * dimensional letterforms, not a flat image on a plane or backing card. */
+function ExtrudedLogo({ reduceMotion }: { reduceMotion: boolean }) {
   const group = useRef<THREE.Group>(null);
   const pointer = useRef({ x: 0, y: 0 });
   const { size } = useThree();
-  const { accent, ink } = useThemeColors();
-  // Just the badge's illustration line-art as a white-on-transparent mask —
-  // tinted per-theme via the material's own color, same two-tone split as
-  // the flat <LogoMark>. The frame mesh behind (tinted with `ink`) shows
-  // through this plane's transparent margin, so the "field" tone never
-  // needs to be drawn into the texture at all.
-  const texture = useTexture("/logo-icon-mask-illustration.png", (tex) => {
-    const t = tex as THREE.Texture;
-    t.colorSpace = THREE.SRGBColorSpace;
-    t.needsUpdate = true;
-  });
+  const accent = useThemeAccent();
+  const svgData = useLoader(SVGLoader, "/logo-full.svg");
+
+  const geometry = useMemo(() => {
+    const geometries: THREE.BufferGeometry[] = [];
+    for (const path of svgData.paths) {
+      for (const shape of path.toShapes()) {
+        geometries.push(
+          new THREE.ExtrudeGeometry(shape, {
+            depth: 90,
+            bevelEnabled: true,
+            bevelThickness: 10,
+            bevelSize: 6,
+            bevelSegments: 3,
+            curveSegments: 8,
+          }),
+        );
+      }
+    }
+    const merged = mergeGeometries(geometries, false);
+    // SVG coordinates are Y-down in raw pixel units. Flipping Y via a
+    // negative scale would mirror the geometry (odd number of negated
+    // axes), which inverts winding order and leaves normals facing the
+    // wrong way — the whole front reads as unlit/black. A 180° rotation
+    // around X achieves the same flip without breaking normals.
+    merged.scale(0.0026, 0.0026, 0.0026);
+    merged.rotateX(Math.PI);
+    merged.center();
+    return merged;
+  }, [svgData]);
 
   useEffect(() => {
     const onMove = (e: PointerEvent) => {
@@ -59,29 +78,20 @@ function LogoMedallion({ reduceMotion }: { reduceMotion: boolean }) {
     const g = group.current;
     if (!g) return;
     if (!reduceMotion) {
-      g.rotation.y += delta * 0.35;
+      g.rotation.y += delta * 0.3;
     }
-    const targetX = reduceMotion ? -0.1 : pointer.current.y * 0.22;
-    const targetZ = reduceMotion ? 0 : pointer.current.x * -0.12;
-    g.rotation.x += (targetX - 0.1 - g.rotation.x) * 0.04;
+    const targetX = reduceMotion ? -0.08 : pointer.current.y * 0.18;
+    const targetZ = reduceMotion ? 0 : pointer.current.x * -0.1;
+    g.rotation.x += (targetX - 0.08 - g.rotation.x) * 0.04;
     g.rotation.z += (targetZ - g.rotation.z) * 0.04;
   });
 
-  const scale = Math.min(1, size.width / 420);
+  const scale = Math.min(1, size.width / 520);
 
   return (
-    <group ref={group} scale={scale} rotation={[-0.1, 0.5, 0]}>
-      {/* Frame: a single-material rounded slab gives the medallion its
-          depth and sides. RoundedBox's geometry has no per-face groups, so
-          a multi-material array here would silently only ever show the
-          first material — this is also the badge's "field" tone. */}
-      <RoundedBox args={[1.9, 1.9, 0.32]} radius={0.32} smoothness={6} castShadow receiveShadow>
-        <meshStandardMaterial color={ink} roughness={0.4} metalness={0.15} />
-      </RoundedBox>
-      {/* Face: the badge illustration, inset slightly on the front. */}
-      <mesh position={[0, 0, 0.161]}>
-        <planeGeometry args={[1.55, 1.55]} />
-        <meshStandardMaterial map={texture} color={accent} roughness={0.45} metalness={0.1} alphaTest={0.5} />
+    <group ref={group} scale={scale} rotation={[-0.08, 0.35, 0]}>
+      <mesh geometry={geometry} castShadow receiveShadow>
+        <meshStandardMaterial color={accent} roughness={0.35} metalness={0.2} />
       </mesh>
     </group>
   );
@@ -108,13 +118,13 @@ export function HeroScene({ className }: { className?: string }) {
       className={className}
       shadows
       dpr={dpr}
-      camera={{ position: [2.2, 1.4, 3.4], fov: 36 }}
+      camera={{ position: [1.6, 1.1, 4.2], fov: 32 }}
       gl={{ alpha: true, antialias: true }}
     >
-      <ambientLight intensity={0.6} />
-      <directionalLight position={[3, 4, 2]} intensity={1.15} castShadow />
-      <pointLight position={[-2, 1, -2]} intensity={0.5} color="#ffffff" />
-      <LogoMedallion reduceMotion={reduceMotion} />
+      <ambientLight intensity={0.65} />
+      <directionalLight position={[3, 4, 3]} intensity={1.2} castShadow />
+      <pointLight position={[-2, 1, -2]} intensity={0.4} color="#ffffff" />
+      <ExtrudedLogo reduceMotion={reduceMotion} />
     </Canvas>
   );
 }
