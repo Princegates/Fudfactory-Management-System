@@ -51,12 +51,12 @@ export function ProductCard({
         >
           {name}
         </Link>
-        <div className="mt-auto flex items-center justify-between pt-2">
+        <div className="mt-auto flex flex-wrap items-center justify-between gap-2 pt-2">
           <span className="font-display font-bold" style={{ color: "var(--text-hi)" }}>
             {formatCurrency(price)}
           </span>
           {isAvailable ? (
-            <AddToCartButton productId={id} name={name} price={price} imageUrl={imageUrl} />
+            <AddToCartButton productId={id} name={name} price={price} imageUrl={imageUrl} className="!px-3 !py-1.5 text-xs" />
           ) : (
             <span className="chip rounded-full px-3 py-1 text-xs font-semibold">Sold out</span>
           )}
