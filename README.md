@@ -18,22 +18,20 @@ This matches the stack recommended in the SRS (§43): React/Next.js + Tailwind, 
 
 ```bash
 npm install
-cp .env.example .env          # set DATABASE_URL to your Postgres connection string, and JWT_SECRET
+cp .env.example .env          # set DATABASE_URL, DIRECT_URL and JWT_SECRET
 npm run db:migrate             # applies the Prisma schema
 npm run db:seed                # loads demo data (see accounts below)
 npm run dev
 ```
 
-`DATABASE_URL` needs a real Postgres connection string — a free [Supabase](https://supabase.com) project's connection string works well for this (Project Settings → Database → Connection string). `db:migrate` (Prisma's `migrate dev`) already runs the seed script itself the first time it creates the tables, so running `db:seed` right after is often a no-op re-run — that's expected and safe. `npm run db:seed` clears and reloads all demo data every time it runs, so re-run it any time you want to reset the database back to the demo dataset below.
+`DATABASE_URL` and `DIRECT_URL` need real Postgres connection strings — on a [Supabase](https://supabase.com) project, open **Connect → ORM → Prisma** from the project dashboard and it hands you both, ready to paste: `DATABASE_URL` is the pooled connection (port 6543, what the running app uses) and `DIRECT_URL` is the session/direct connection (port 5432, needed only for running migrations — Prisma can't run DDL through the pooler). `db:migrate` (Prisma's `migrate dev`) already runs the seed script itself the first time it creates the tables, so running `db:seed` right after is often a no-op re-run — that's expected and safe. `npm run db:seed` clears and reloads all demo data every time it runs, so re-run it any time you want to reset the database back to the demo dataset below.
 
-### Deploying (e.g. to Netlify)
+### Deploying (Vercel or Netlify)
 
-This repo includes a `netlify.toml` with the `@netlify/plugin-nextjs` build plugin already configured. To deploy:
-
-1. Create a Postgres database (e.g. a free [Supabase](https://supabase.com) project) and copy its connection string.
-2. In Netlify, import this repository/branch as a new site.
-3. Add `DATABASE_URL` (your Postgres connection string) and `JWT_SECRET` (a long random value — `openssl rand -base64 48`) as site environment variables.
-4. Before or after the first deploy, run `npx prisma migrate deploy` and `npm run db:seed` against that `DATABASE_URL` (from your machine, or a Netlify build hook) to create the tables and load demo data.
+1. Create a Postgres database (e.g. a free [Supabase](https://supabase.com) project) and get both connection strings from **Connect → ORM → Prisma**.
+2. Import this repository/branch as a new project — **Vercel** detects Next.js automatically with no extra config; **Netlify** picks up the `netlify.toml` in this repo (with `@netlify/plugin-nextjs` already configured).
+3. Add `DATABASE_URL`, `DIRECT_URL` and `JWT_SECRET` (a long random value — `openssl rand -base64 48`) as project/site environment variables.
+4. Before or after the first deploy, run `npx prisma migrate deploy` and `npm run db:seed` against those URLs (from your machine, or a build hook) to create the tables and load demo data.
 
 Visit `http://localhost:3000` for the public site and `http://localhost:3000/portal/login` for the staff portal.
 
