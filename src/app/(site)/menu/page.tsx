@@ -43,7 +43,8 @@ export default async function MenuPage({
         <Reveal>
           <div className="flex flex-wrap items-end justify-between gap-4">
             <div>
-              <h1 className="font-display text-4xl font-bold" style={{ color: "var(--text-hi)" }}>
+              <span className="dept-label">Fresh Today</span>
+              <h1 className="mt-3 font-display text-4xl font-bold" style={{ color: "var(--text-hi)" }}>
                 Our <span className="italic" style={{ color: "var(--glow-amber)" }}>Menu</span>
               </h1>
               <p className="mt-2" style={{ color: "var(--text-mid)" }}>

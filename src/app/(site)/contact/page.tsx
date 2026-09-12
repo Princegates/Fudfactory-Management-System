@@ -22,26 +22,27 @@ export default async function ContactPage() {
       <div className="aurora-bg opacity-30" />
       <div className="relative mx-auto max-w-4xl px-4 py-20 sm:px-6">
         <Reveal>
-          <h1 className="font-display text-4xl font-bold" style={{ color: "var(--text-hi)" }}>
-            Contact <span className="text-gradient">Us</span>
+          <span className="dept-label">Get In Touch</span>
+          <h1 className="mt-3 font-display text-4xl font-bold" style={{ color: "var(--text-hi)" }}>
+            Contact <span className="italic" style={{ color: "var(--glow-amber)" }}>Us</span>
           </h1>
           <p className="mt-2" style={{ color: "var(--text-mid)" }}>
             We&apos;d love to hear from you — reach out any time.
           </p>
         </Reveal>
 
-        <div className="mt-10 grid gap-6 md:grid-cols-2">
+        <div className="mt-10 grid gap-10 md:grid-cols-2 md:gap-6">
           <Reveal delay={0.06}>
-            <div className="glass h-full space-y-5 rounded-2xl p-6">
-              {items.map((item) => (
-                <div key={item.label}>
+            <div className="h-full">
+              {items.map((item, i) => (
+                <div key={item.label} className="py-4" style={i > 0 ? { borderTop: "1px solid var(--ink-border)" } : undefined}>
                   <h2 className="text-xs font-semibold uppercase tracking-widest" style={{ color: "var(--glow-amber)" }}>
                     {item.label}
                   </h2>
                   <p className="mt-1" style={{ color: "var(--text-hi)" }}>{item.value}</p>
                 </div>
               ))}
-              <div>
+              <div className="py-4" style={{ borderTop: "1px solid var(--ink-border)" }}>
                 <h2 className="text-xs font-semibold uppercase tracking-widest" style={{ color: "var(--glow-amber)" }}>
                   Instagram
                 </h2>
@@ -55,7 +56,7 @@ export default async function ContactPage() {
                   @{business.instagramHandle}
                 </a>
               </div>
-              <div>
+              <div className="py-4" style={{ borderTop: "1px solid var(--ink-border)" }}>
                 <h2 className="text-xs font-semibold uppercase tracking-widest" style={{ color: "var(--glow-amber)" }}>
                   Hours
                 </h2>

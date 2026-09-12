@@ -13,8 +13,9 @@ export default function CustomOrdersPage() {
       <div className="aurora-bg opacity-30" />
       <div className="relative mx-auto max-w-3xl px-4 py-20 sm:px-6">
         <Reveal>
-          <h1 className="font-display text-4xl font-bold" style={{ color: "var(--text-hi)" }}>
-            Custom Orders &amp; <span className="text-gradient">Event Planning</span>
+          <span className="dept-label">Events &amp; Catering</span>
+          <h1 className="mt-3 font-display text-4xl font-bold" style={{ color: "var(--text-hi)" }}>
+            Custom Orders &amp; <span className="italic" style={{ color: "var(--glow-amber)" }}>Event Planning</span>
           </h1>
           <p className="mt-3" style={{ color: "var(--text-mid)" }}>
             Planning a birthday, wedding, graduation or corporate event? Beyond cakes and catering,

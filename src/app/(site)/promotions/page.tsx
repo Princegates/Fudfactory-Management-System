@@ -31,8 +31,9 @@ export default async function PromotionsPage() {
       <div className="aurora-bg opacity-30" />
       <div className="relative mx-auto max-w-4xl px-4 py-20 sm:px-6">
         <Reveal>
-          <h1 className="font-display text-4xl font-bold" style={{ color: "var(--text-hi)" }}>
-            Promotions &amp; <span className="text-gradient">Offers</span>
+          <span className="dept-label">Deals</span>
+          <h1 className="mt-3 font-display text-4xl font-bold" style={{ color: "var(--text-hi)" }}>
+            Promotions &amp; <span className="italic" style={{ color: "var(--glow-amber)" }}>Offers</span>
           </h1>
           <p className="mt-2" style={{ color: "var(--text-mid)" }}>
             Apply a coupon code at checkout to enjoy these current offers.

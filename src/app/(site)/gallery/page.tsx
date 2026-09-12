@@ -20,8 +20,9 @@ export default async function GalleryPage() {
       <div className="aurora-bg opacity-30" />
       <div className="relative mx-auto max-w-6xl px-4 py-20 sm:px-6">
         <Reveal>
-          <h1 className="font-display text-4xl font-bold" style={{ color: "var(--text-hi)" }}>
-            The <span className="text-gradient">Gallery</span>
+          <span className="dept-label">Behind The Kitchen</span>
+          <h1 className="mt-3 font-display text-4xl font-bold" style={{ color: "var(--text-hi)" }}>
+            The <span className="italic" style={{ color: "var(--glow-amber)" }}>Gallery</span>
           </h1>
           <p className="mt-2 max-w-xl" style={{ color: "var(--text-mid)" }}>
             A taste of what comes out of our kitchen every day. Real photos land here as our team
