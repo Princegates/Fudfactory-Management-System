@@ -469,6 +469,72 @@ body {
   transform: translateX(26px);
 }
 
+/* ---------------------------------------------------------------------
+   Magazine/editorial primitives — print-inspired devices used in place
+   of generic icon-grid cards and uniform quote boxes: a numbered
+   contents-page list, a department-flag section label, a drop cap for
+   lead paragraphs, and one dominant pull-quote instead of three
+   identical testimonial cards.
+   --------------------------------------------------------------------- */
+
+.dept-label {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--glow-amber);
+  white-space: nowrap;
+}
+.dept-label::after {
+  content: "";
+  flex: 1;
+  height: 1px;
+  background: var(--ink-border-strong);
+}
+
+.index-row {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 1.1rem 1.5rem;
+  align-items: baseline;
+  padding: 1.5rem 0;
+  border-top: 1px solid var(--ink-border);
+}
+.index-row:last-child {
+  border-bottom: 1px solid var(--ink-border);
+}
+.index-number {
+  font-family: var(--font-display), serif;
+  font-size: 1.4rem;
+  font-style: italic;
+  color: var(--glow-amber);
+  min-width: 2.25rem;
+}
+
+.dropcap::first-letter {
+  font-family: var(--font-display), serif;
+  font-size: 3.6em;
+  font-weight: 700;
+  float: left;
+  line-height: 0.8;
+  padding-right: 0.1em;
+  padding-top: 0.04em;
+  color: var(--glow-amber);
+}
+
+.pull-quote {
+  border-left: 3px solid var(--glow-amber);
+  padding-left: 1.75rem;
+}
+.pull-quote blockquote {
+  font-family: var(--font-display), serif;
+  font-style: italic;
+  line-height: 1.3;
+}
+
 /* Real logo asset — the maroon "day" print shows everywhere by default
    (including the always-light staff portal); the flat cream "night"
    silhouette swaps in only where the public site is in dark mode, so

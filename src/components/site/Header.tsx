@@ -8,7 +8,6 @@ import { ModeToggle } from "./ModeToggle";
 import { Logo } from "@/components/Logo";
 
 const NAV_LINKS = [
-  { href: "/", label: "Home" },
   { href: "/menu", label: "Menu" },
   { href: "/about", label: "About" },
   { href: "/gallery", label: "Gallery" },
@@ -30,75 +29,98 @@ export function Header({ mode }: { mode: "dark" | "light" }) {
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
+  const utilityLinks = (
+    <div className="flex items-center gap-3">
+      <ModeToggle mode={mode} />
+      <Link href="/account" className="hidden text-xs font-medium tracking-wide transition-colors hover:text-[var(--glow-amber)] sm:block" style={{ color: "var(--text-mid)" }}>
+        Account
+      </Link>
+      <Link href="/portal/login" className="hidden text-xs font-medium tracking-wide transition-colors hover:text-[var(--glow-amber)] lg:block" style={{ color: "var(--text-lo)" }}>
+        Staff Login
+      </Link>
+      <Link href="/cart" className="relative inline-flex items-center gap-1.5 text-xs font-semibold uppercase tracking-widest transition-colors hover:text-[var(--glow-amber)]" style={{ color: "var(--text-hi)" }}>
+        Cart
+        {count > 0 && (
+          <span
+            className="grid h-4 w-4 place-items-center rounded-full text-[10px] font-bold"
+            style={{ background: "var(--glow-amber)", color: "#fdf8ef" }}
+          >
+            {count}
+          </span>
+        )}
+      </Link>
+      <button
+        type="button"
+        onClick={() => setOpen((v) => !v)}
+        className="grid h-9 w-9 place-items-center text-lg md:hidden"
+        style={{ color: "var(--text-hi)" }}
+        aria-label="Toggle menu"
+        aria-expanded={open}
+      >
+        {open ? "✕" : "☰"}
+      </button>
+    </div>
+  );
+
+  const navList = (
+    <ul className="flex flex-wrap items-center justify-center gap-x-6 gap-y-1 text-xs font-semibold uppercase tracking-[0.14em]">
+      {NAV_LINKS.map((link, i) => {
+        const active = pathname === link.href;
+        return (
+          <li key={link.href} className="flex items-center gap-6">
+            <Link
+              href={link.href}
+              className="transition-colors hover:text-[var(--glow-amber)]"
+              style={{ color: active ? "var(--glow-amber)" : "var(--text-mid)" }}
+            >
+              {link.label}
+            </Link>
+            {i < NAV_LINKS.length - 1 && (
+              <span aria-hidden className="hidden md:inline" style={{ color: "var(--ink-border-strong)" }}>
+                /
+              </span>
+            )}
+          </li>
+        );
+      })}
+    </ul>
+  );
+
   return (
     <header
       className={`sticky top-0 z-40 transition-all duration-300 ${
-        scrolled ? "glass-strong shadow-[0_8px_32px_-16px_rgba(0,0,0,0.5)]" : "bg-transparent"
+        scrolled ? "glass-strong shadow-[0_8px_32px_-16px_rgba(0,0,0,0.5)]" : "border-b"
       }`}
+      style={!scrolled ? { borderColor: "var(--ink-border)" } : undefined}
     >
-      <div className="mx-auto flex max-w-6xl items-center justify-between gap-4 px-4 py-3.5 sm:px-6">
-        <Link href="/" className="group flex shrink-0 items-center">
-          <Logo className="h-8" />
+      {/* Compact bar: always this on mobile, and on desktop once scrolled */}
+      <div className={`mx-auto flex max-w-6xl items-center justify-between gap-4 px-4 sm:px-6 ${scrolled ? "py-3" : "py-3 md:hidden"}`}>
+        <Link href="/" className="flex shrink-0 items-center">
+          <Logo className="h-7" />
         </Link>
-
-        <nav className="hidden items-center gap-1 text-sm font-medium md:flex">
-          {NAV_LINKS.map((link) => {
-            const active = pathname === link.href;
-            return (
-              <Link
-                key={link.href}
-                href={link.href}
-                className="relative rounded-full px-3.5 py-2 transition-colors hover:text-[var(--glow-amber)]"
-                style={{ color: active ? "var(--glow-amber)" : "var(--text-mid)" }}
-              >
-                {link.label}
-                {active && (
-                  <span
-                    className="absolute inset-x-3 -bottom-0.5 h-0.5"
-                    style={{ background: "var(--glow-amber)" }}
-                  />
-                )}
-              </Link>
-            );
-          })}
-        </nav>
-
-        <div className="flex items-center gap-2.5">
-          <ModeToggle mode={mode} />
-          <Link
-            href="/portal/login"
-            className="hidden rounded-md px-3.5 py-2 text-sm font-medium transition-colors hover:text-[var(--glow-amber)] lg:block"
-            style={{ color: "var(--text-lo)" }}
-          >
-            Staff Login
-          </Link>
-          <Link
-            href="/account"
-            className="hidden rounded-md px-3.5 py-2 text-sm font-medium transition-colors hover:text-[var(--glow-amber)] sm:block"
-            style={{ color: "var(--text-mid)" }}
-          >
-            Account
-          </Link>
-          <Link href="/cart" className="btn-glow relative inline-flex items-center gap-2 rounded-md px-4 py-2 text-sm font-semibold">
-            Cart
-            {count > 0 && (
-              <span className="grid h-5 w-5 place-items-center rounded-full bg-ink-950 text-xs font-bold text-glow-amber">
-                {count}
-              </span>
-            )}
-          </Link>
-          <button
-            type="button"
-            onClick={() => setOpen((v) => !v)}
-            className="glass grid h-10 w-10 place-items-center rounded-xl text-lg md:hidden"
-            style={{ color: "var(--text-hi)" }}
-            aria-label="Toggle menu"
-            aria-expanded={open}
-          >
-            {open ? "✕" : "☰"}
-          </button>
-        </div>
+        <nav className="hidden md:block">{navList}</nav>
+        {utilityLinks}
       </div>
+
+      {/* Full masthead: desktop only, only at the top of the page */}
+      {!scrolled && (
+        <div className="hidden md:block">
+          <div className="mx-auto flex max-w-6xl items-center justify-between px-6 pt-3 text-xs">
+            <span className="tracking-[0.14em]" style={{ color: "var(--text-lo)" }}>
+              Fresh Bakes, Delivered Daily
+            </span>
+            {utilityLinks}
+          </div>
+          <div className="mx-auto max-w-6xl px-6 py-5 text-center">
+            <Link href="/" className="inline-flex items-center">
+              <Logo className="h-11" />
+            </Link>
+          </div>
+          <div className="border-t" style={{ borderColor: "var(--ink-border)" }}>
+            <div className="mx-auto max-w-6xl px-6 py-3">{navList}</div>
+          </div>
+        </div>
+      )}
 
       {open && (
         <nav className="glass-strong border-t px-4 py-3 md:hidden" style={{ borderColor: "var(--ink-border)" }}>
