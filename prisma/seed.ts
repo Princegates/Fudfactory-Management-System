@@ -129,18 +129,120 @@ async function main() {
   }
 
   // --- Products --------------------------------------------------------------
-  const productDefs = [
+  // Real breakfast packages and lunch menu, transcribed from FudFactory's own
+  // Instagram menu flyers — replaces the earlier placeholder Breakfast/Lunch
+  // demo items with the business's actual offerings and prices.
+  const productDefs: { name: string; category: string; price: number; featured: boolean; description?: string }[] = [
     { name: "Family Food Hamper", category: "Food Hampers", price: 250, featured: true },
-    { name: "Tea & Bread Breakfast Pack", category: "Breakfast", price: 12, featured: false },
     { name: "Meat Pie", category: "Starters & Finger Foods", price: 8, featured: true },
     { name: "Chicken Pie", category: "Starters & Finger Foods", price: 9, featured: true },
     { name: "Groundnut Soup with Fufu", category: "Soups & Stews", price: 45, featured: false },
-    { name: "Jollof Rice & Chicken", category: "Lunch", price: 35, featured: true },
-    { name: "Waakye Special", category: "Lunch", price: 30, featured: false },
     { name: "Doughnut", category: "Pastries", price: 4, featured: true },
     { name: "Chocolate Cake (Slice)", category: "Pastries", price: 15, featured: true },
     { name: "Vanilla Birthday Cake", category: "Events", price: 180, featured: false },
     { name: "Sobolo (Hibiscus Drink)", category: "Drinks", price: 6, featured: false },
+
+    // Breakfast Surprise Packages
+    {
+      name: "Uno Package",
+      category: "Breakfast",
+      price: 300,
+      featured: false,
+      description: "English pancakes, mini pies, waffles, fruit, sausage, baked beans, scrambled eggs and juice.",
+    },
+    {
+      name: "Simple Package",
+      category: "Breakfast",
+      price: 450,
+      featured: false,
+      description: "English pancakes, waffles, scrambled eggs, sausage, fruits, juice, baked beans and crispy chicken breast.",
+    },
+    {
+      name: "Sweet Sunrise",
+      category: "Breakfast",
+      price: 500,
+      featured: true,
+      description: "English pancakes, waffles, scrambled eggs, sausage, yoghurt with healthy toppings, baked beans, juice and crispy chicken breast.",
+    },
+    {
+      name: "Family Bite",
+      category: "Breakfast",
+      price: 900,
+      featured: false,
+      description: "English pancakes, waffles, scrambled eggs, sausage, yoghurt with healthy toppings, juices, baked beans, crispy chicken breast and sandwich.",
+    },
+
+    // Lunch Price List — Jollof
+    { name: "Jollof & Classic Beef Steak", category: "Lunch", price: 300, featured: false },
+    { name: "Jollof & Lamb Chops", category: "Lunch", price: 320, featured: false },
+    { name: "Jollof & Goat", category: "Lunch", price: 160, featured: false },
+    { name: "Jollof & Prawns", category: "Lunch", price: 300, featured: false },
+    { name: "Jollof & Chicken", category: "Lunch", price: 110, featured: true },
+    { name: "Jollof & Chicken Lollipop", category: "Lunch", price: 150, featured: false },
+    { name: "Jollof & Fish Fillet", category: "Lunch", price: 250, featured: false },
+    { name: "Jollof & Red Fish", category: "Lunch", price: 130, featured: false },
+    { name: "Jollof & Turkey", category: "Lunch", price: 140, featured: false },
+    { name: "Jollof & Grilled Tilapia", category: "Lunch", price: 150, featured: false },
+    { name: "Jollof & Gizzard", category: "Lunch", price: 100, featured: false },
+    { name: "Jollof & Peppered Snails", category: "Lunch", price: 250, featured: false },
+    { name: "Assorted Jollof", category: "Lunch", price: 150, featured: false },
+    { name: "Assorted Jollof & Shrimps", category: "Lunch", price: 200, featured: false },
+    { name: "Seafood Jollof", category: "Lunch", price: 250, featured: false },
+    { name: "Local Jollof", category: "Lunch", price: 120, featured: false },
+
+    // Lunch Price List — Fried Rice
+    { name: "Fried Rice & Peppered Goat", category: "Lunch", price: 160, featured: false },
+    { name: "Fried Rice & Chicken Lollipop", category: "Lunch", price: 150, featured: false },
+    { name: "Fried Rice & Grilled/Fried Chicken", category: "Lunch", price: 110, featured: false },
+    { name: "Fried Rice & Shrimps", category: "Lunch", price: 160, featured: false },
+    { name: "Fried Rice & Turkey", category: "Lunch", price: 140, featured: false },
+    { name: "Assorted Fried Rice", category: "Lunch", price: 150, featured: false },
+    { name: "Assorted Fried Rice & Shrimps", category: "Lunch", price: 200, featured: false },
+
+    // Lunch Price List — Check Check
+    { name: "Check Check & Chicken", category: "Lunch", price: 100, featured: false },
+    { name: "Check Check & Goat", category: "Lunch", price: 160, featured: false },
+    { name: "Check Check & Pork", category: "Lunch", price: 140, featured: false },
+    { name: "Check Check & Turkey", category: "Lunch", price: 140, featured: false },
+    { name: "Check Check & Fish", category: "Lunch", price: 140, featured: false },
+    { name: "Check Check & Shrimps", category: "Lunch", price: 160, featured: false },
+
+    // Lunch Price List — Spaghetti
+    { name: "Meat Veg. Spaghetti", category: "Lunch", price: 130, featured: false },
+    { name: "Chicken Veg. Spaghetti", category: "Lunch", price: 130, featured: false },
+    { name: "Assorted Spaghetti", category: "Lunch", price: 150, featured: false },
+    { name: "Seafood Spaghetti", category: "Lunch", price: 250, featured: false },
+    { name: "FudFactory Shrimp Spaghetti", category: "Lunch", price: 200, featured: false },
+    { name: "Shrimp Creamy Pasta", category: "Lunch", price: 300, featured: false },
+
+    // Lunch Price List — Plain Rice
+    { name: "Plain Rice & Kontomire Stew", category: "Lunch", price: 130, featured: false },
+    { name: "Plain Rice, Coleslaw & Goat Stew", category: "Lunch", price: 160, featured: false },
+    { name: "Plain Rice & Chicken Stew", category: "Lunch", price: 110, featured: false },
+    { name: "Peppered Rice with Chicken", category: "Lunch", price: 110, featured: false },
+    { name: "Plain Rice & Vegetable Stew", category: "Lunch", price: 150, featured: false },
+    { name: "Plain Rice & Egg Stew", category: "Lunch", price: 140, featured: false },
+
+    // Lunch Price List — Locals
+    { name: "Yam/Plantain & Palava Sauce", category: "Lunch", price: 130, featured: false },
+    { name: "Yam & Egg Stew", category: "Lunch", price: 140, featured: false },
+    { name: "Yam & Garden Eggs Stew", category: "Lunch", price: 150, featured: false },
+    { name: "Beans Stew & Riped Plantain", category: "Lunch", price: 100, featured: false },
+    { name: "Beans Stew, Rice & Plantain", category: "Lunch", price: 150, featured: false },
+    { name: "Fufu & Goat Light Soup", category: "Lunch", price: 160, featured: false },
+    { name: "Fufu & Chicken/Wings Light Soup", category: "Lunch", price: 150, featured: false },
+    { name: "Mpotompoto", category: "Lunch", price: 100, featured: false },
+    { name: "Etor", category: "Lunch", price: 100, featured: false },
+    { name: "Angwamu", category: "Lunch", price: 100, featured: false },
+    { name: "Waakye", category: "Lunch", price: 100, featured: true },
+    { name: "Banku & Grilled/Fried Tilapia", category: "Lunch", price: 150, featured: false },
+    { name: "Banku & Okro Stew", category: "Lunch", price: 130, featured: false },
+    { name: "Banku & Seafood Okro", category: "Lunch", price: 300, featured: false },
+    { name: "Garifoto", category: "Lunch", price: 100, featured: false },
+    { name: "Beach Yam", category: "Lunch", price: 100, featured: false },
+    { name: "Kenkey & Fish", category: "Lunch", price: 100, featured: false },
+    { name: "Acheke & Tilapia", category: "Lunch", price: 150, featured: false },
+    { name: "Native Rice", category: "Lunch", price: 150, featured: false },
   ];
   const productIds: Record<string, string> = {};
   for (const def of productDefs) {
@@ -151,7 +253,7 @@ async function main() {
         categoryId: categories[def.category],
         price: def.price,
         isFeatured: def.featured,
-        description: `Freshly made ${def.name.toLowerCase()} from the FudFactory kitchen.`,
+        description: def.description ?? `Freshly made ${def.name.toLowerCase()} from the FudFactory kitchen.`,
       },
     });
     productIds[def.name] = product.id;
@@ -299,11 +401,11 @@ async function main() {
       customerId: customer2.id,
       status: "PREPARING",
       fulfillmentType: "PICKUP",
-      subtotal: 35,
-      totalAmount: 35,
+      subtotal: 110,
+      totalAmount: 110,
       paymentStatus: "PENDING",
-      items: { create: [{ productId: productIds["Jollof Rice & Chicken"], productName: "Jollof Rice & Chicken", unitPrice: 35, quantity: 1, subtotal: 35 }] },
-      payments: { create: [{ amount: 35, method: "CASH", status: "PENDING", customerId: customer2.id }] },
+      items: { create: [{ productId: productIds["Jollof & Chicken"], productName: "Jollof & Chicken", unitPrice: 110, quantity: 1, subtotal: 110 }] },
+      payments: { create: [{ amount: 110, method: "CASH", status: "PENDING", customerId: customer2.id }] },
     },
   });
 
