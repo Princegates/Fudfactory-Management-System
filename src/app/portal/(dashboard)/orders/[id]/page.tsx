@@ -3,9 +3,10 @@ import { requireStaff } from "@/lib/session";
 import { prisma } from "@/lib/prisma";
 import { formatCurrency, formatDate } from "@/lib/format";
 import { OrderStatusUpdater } from "@/components/portal/OrderStatusUpdater";
+import { DeleteOrderButton } from "@/components/portal/DeleteOrderButton";
 
 export default async function PortalOrderDetailPage({ params }: { params: Promise<{ id: string }> }) {
-  await requireStaff(["SUPER_ADMIN", "OWNER_MANAGER", "CASHIER", "DELIVERY_OFFICER"]);
+  const session = await requireStaff(["SUPER_ADMIN", "OWNER_MANAGER", "CASHIER", "DELIVERY_OFFICER"]);
   const { id } = await params;
 
   const order = await prisma.order.findUnique({
@@ -18,7 +19,12 @@ export default async function PortalOrderDetailPage({ params }: { params: Promis
     <div className="mx-auto max-w-3xl">
       <div className="flex flex-wrap items-center justify-between gap-3">
         <h1 className="text-2xl font-bold text-cocoa-900">{order.orderNumber}</h1>
-        <OrderStatusUpdater orderId={order.id} currentStatus={order.status} />
+        <div className="flex items-center gap-2">
+          <OrderStatusUpdater orderId={order.id} currentStatus={order.status} />
+          {session.role === "SUPER_ADMIN" && (
+            <DeleteOrderButton orderId={order.id} orderNumber={order.orderNumber} />
+          )}
+        </div>
       </div>
 
       <div className="mt-6 grid gap-4 sm:grid-cols-2">

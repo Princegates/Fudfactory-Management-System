@@ -2,13 +2,15 @@ import Link from "next/link";
 import { requireStaff } from "@/lib/session";
 import { prisma } from "@/lib/prisma";
 import { formatCurrency, formatDate } from "@/lib/format";
+import { DeleteButton } from "@/components/portal/DeleteButton";
 
 export default async function PortalOrdersPage({
   searchParams,
 }: {
   searchParams: Promise<{ status?: string; q?: string }>;
 }) {
-  await requireStaff(["SUPER_ADMIN", "OWNER_MANAGER", "CASHIER", "DELIVERY_OFFICER"]);
+  const session = await requireStaff(["SUPER_ADMIN", "OWNER_MANAGER", "CASHIER", "DELIVERY_OFFICER"]);
+  const isSuperAdmin = session.role === "SUPER_ADMIN";
   const { status, q } = await searchParams;
 
   const orders = await prisma.order.findMany({
@@ -59,6 +61,7 @@ export default async function PortalOrdersPage({
               <th className="p-3">Status</th>
               <th className="p-3">Placed</th>
               <th className="p-3 text-right">Total</th>
+              {isSuperAdmin && <th className="p-3 text-right">Actions</th>}
             </tr>
           </thead>
           <tbody>
@@ -74,10 +77,18 @@ export default async function PortalOrdersPage({
                 <td className="p-3">{order.status.replace(/_/g, " ")}</td>
                 <td className="p-3">{formatDate(order.createdAt)}</td>
                 <td className="p-3 text-right">{formatCurrency(order.totalAmount)}</td>
+                {isSuperAdmin && (
+                  <td className="p-3 text-right">
+                    <DeleteButton
+                      action={`/api/orders/${order.id}`}
+                      confirmText={`Permanently delete order ${order.orderNumber}? This can't be undone.`}
+                    />
+                  </td>
+                )}
               </tr>
             ))}
             {orders.length === 0 && (
-              <tr><td colSpan={6} className="p-6 text-center text-cocoa-900/50">No orders found.</td></tr>
+              <tr><td colSpan={isSuperAdmin ? 7 : 6} className="p-6 text-center text-cocoa-900/50">No orders found.</td></tr>
             )}
           </tbody>
         </table>
