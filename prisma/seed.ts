@@ -44,18 +44,18 @@ async function resetDemoData() {
 }
 
 async function main() {
-  console.log("Seeding FudFactory demo data...");
+  console.log("Seeding demo data...");
   await resetDemoData();
 
   // --- Staff users (one per role) ---------------------------------------
   const staffPassword = await hash("Password123!");
   const staffAccounts = [
-    { name: "Ama Owusu", email: "admin@fudfactory.gh", role: "SUPER_ADMIN" as const, department: "Management" },
-    { name: "Kojo Mensah", email: "owner@fudfactory.gh", role: "OWNER_MANAGER" as const, department: "Management" },
-    { name: "Efua Boateng", email: "cashier@fudfactory.gh", role: "CASHIER" as const, department: "Sales" },
-    { name: "Yaw Asante", email: "inventory@fudfactory.gh", role: "INVENTORY_OFFICER" as const, department: "Inventory" },
-    { name: "Abena Darko", email: "production@fudfactory.gh", role: "PRODUCTION_OFFICER" as const, department: "Kitchen" },
-    { name: "Kwame Addo", email: "delivery@fudfactory.gh", role: "DELIVERY_OFFICER" as const, department: "Delivery" },
+    { name: "Ama Owusu", email: "admin@demo.local", role: "SUPER_ADMIN" as const, department: "Management" },
+    { name: "Kojo Mensah", email: "owner@demo.local", role: "OWNER_MANAGER" as const, department: "Management" },
+    { name: "Efua Boateng", email: "cashier@demo.local", role: "CASHIER" as const, department: "Sales" },
+    { name: "Yaw Asante", email: "inventory@demo.local", role: "INVENTORY_OFFICER" as const, department: "Inventory" },
+    { name: "Abena Darko", email: "production@demo.local", role: "PRODUCTION_OFFICER" as const, department: "Kitchen" },
+    { name: "Kwame Addo", email: "delivery@demo.local", role: "DELIVERY_OFFICER" as const, department: "Delivery" },
   ];
   for (const acct of staffAccounts) {
     await prisma.user.upsert({
@@ -129,9 +129,9 @@ async function main() {
   }
 
   // --- Products --------------------------------------------------------------
-  // Real breakfast packages and lunch menu, transcribed from FudFactory's own
-  // Instagram menu flyers — replaces the earlier placeholder Breakfast/Lunch
-  // demo items with the business's actual offerings and prices.
+  // Demo breakfast packages and lunch menu, representative of a West African
+  // food/catering vendor's typical offerings and prices — replace via the
+  // portal's Products page with a real vendor's actual menu.
   const productDefs: { name: string; category: string; price: number; featured: boolean; description?: string }[] = [
     { name: "Family Food Hamper", category: "Food Hampers", price: 250, featured: true },
     { name: "Meat Pie", category: "Starters & Finger Foods", price: 8, featured: true },
@@ -212,7 +212,7 @@ async function main() {
     { name: "Chicken Veg. Spaghetti", category: "Lunch", price: 130, featured: false },
     { name: "Assorted Spaghetti", category: "Lunch", price: 150, featured: false },
     { name: "Seafood Spaghetti", category: "Lunch", price: 250, featured: false },
-    { name: "FudFactory Shrimp Spaghetti", category: "Lunch", price: 200, featured: false },
+    { name: "Signature Shrimp Spaghetti", category: "Lunch", price: 200, featured: false },
     { name: "Shrimp Creamy Pasta", category: "Lunch", price: 300, featured: false },
 
     // Lunch Price List — Plain Rice
@@ -253,7 +253,7 @@ async function main() {
         categoryId: categories[def.category],
         price: def.price,
         isFeatured: def.featured,
-        description: def.description ?? `Freshly made ${def.name.toLowerCase()} from the FudFactory kitchen.`,
+        description: def.description ?? `Freshly made ${def.name.toLowerCase()}, prepared in-house.`,
       },
     });
     productIds[def.name] = product.id;

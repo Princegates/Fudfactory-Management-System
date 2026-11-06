@@ -1,73 +1,75 @@
 /**
- * FudFactory's real logo, cropped from the artwork the business supplied.
+ * Generic brand mark: renders the vendor's uploaded logo image if one is
+ * set in Settings → Website, otherwise falls back to a styled text
+ * wordmark built from their business name — so every new vendor gets a
+ * working logo with zero asset work, and can swap in their own art later.
  *
- * On the public site (`themed` — the default), the wordmark/icon recolor
- * per site theme and day/night mode via CSS masking: the artwork is a
- * single- or two-tone shape with a transparent background, so a plain
- * `background-color` div can be cut into that shape with `mask-image` —
- * an exact recolor to any theme's tokens, no extra assets or JS needed,
- * and no day/night image swap since the tokens themselves already adapt.
- *
- * The staff portal has no theme system, so it renders the original fixed
- * brand-color artwork instead — pass `themed={false}`.
+ * On the public site (`themed` — the default), the text wordmark recolors
+ * per site theme and day/night mode via CSS custom properties. The staff
+ * portal has no theme system, so it renders with a fixed brand color
+ * instead — pass `themed={false}`.
  */
-export function Logo({ className = "h-8", themed = true }: { className?: string; themed?: boolean }) {
-  if (!themed) {
+export function Logo({
+  className = "h-8",
+  themed = true,
+  name = "Your Business",
+  logoUrl,
+}: {
+  className?: string;
+  themed?: boolean;
+  name?: string;
+  logoUrl?: string | null;
+}) {
+  if (logoUrl) {
     return (
       <span className={`inline-flex items-center ${className}`}>
         {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img src="/logo-wordmark.png" alt="FudFactory" className="h-full w-auto" />
+        <img src={logoUrl} alt={name} className="h-full w-auto object-contain" />
       </span>
     );
   }
 
   return (
     <span
-      className={`inline-block ${className}`}
-      style={{
-        aspectRatio: "1719 / 515",
-        width: "auto",
-        backgroundColor: "var(--glow-amber)",
-        WebkitMaskImage: "url(/logo-wordmark.png)",
-        maskImage: "url(/logo-wordmark.png)",
-        WebkitMaskSize: "contain",
-        maskSize: "contain",
-        WebkitMaskRepeat: "no-repeat",
-        maskRepeat: "no-repeat",
-        WebkitMaskPosition: "center",
-        maskPosition: "center",
-      }}
-      role="img"
-      aria-label="FudFactory"
-    />
+      className={`inline-flex items-center font-display font-bold leading-none tracking-tight ${className}`}
+      style={{ color: themed ? "var(--glow-amber)" : "#c1440e", fontSize: "1em" }}
+    >
+      {name}
+    </span>
   );
 }
 
-/** Compact icon-only mark for tight spaces (mobile badges, avatars). Two
- * layers reconstruct the badge's field + illustration from separate alpha
- * masks, each tinted with its own theme token. */
-export function LogoMark({ className = "h-9 w-9" }: { className?: string }) {
-  const maskLayer = (mask: string): React.CSSProperties => ({
-    WebkitMaskImage: `url(${mask})`,
-    maskImage: `url(${mask})`,
-    WebkitMaskSize: "contain",
-    maskSize: "contain",
-    WebkitMaskRepeat: "no-repeat",
-    maskRepeat: "no-repeat",
-    WebkitMaskPosition: "center",
-    maskPosition: "center",
-  });
+/** Compact icon-only mark for tight spaces (mobile badges, avatars). Uses
+ * the uploaded logo image if set, otherwise a circular badge with the
+ * business name's initial. */
+export function LogoMark({
+  className = "h-9 w-9",
+  name = "Your Business",
+  logoUrl,
+}: {
+  className?: string;
+  name?: string;
+  logoUrl?: string | null;
+}) {
+  if (logoUrl) {
+    return (
+      <span className={`relative inline-block overflow-hidden rounded-lg ${className}`}>
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img src={logoUrl} alt={name} className="h-full w-full object-cover" />
+      </span>
+    );
+  }
+
+  const initial = name.trim().charAt(0).toUpperCase() || "?";
 
   return (
-    <span className={`relative inline-block rounded-lg ${className}`} role="img" aria-label="FudFactory">
-      <span
-        className="absolute inset-0"
-        style={{ backgroundColor: "var(--ink-900)", ...maskLayer("/logo-icon-mask-field.png") }}
-      />
-      <span
-        className="absolute inset-0"
-        style={{ backgroundColor: "var(--glow-amber)", ...maskLayer("/logo-icon-mask-illustration.png") }}
-      />
+    <span
+      className={`inline-flex items-center justify-center rounded-lg font-display font-bold ${className}`}
+      style={{ backgroundColor: "var(--ink-900)", color: "var(--glow-amber)" }}
+      role="img"
+      aria-label={name}
+    >
+      {initial}
     </span>
   );
 }

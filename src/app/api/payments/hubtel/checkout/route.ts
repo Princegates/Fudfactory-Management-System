@@ -38,7 +38,7 @@ export async function POST(request: NextRequest) {
       clientSecret: config.hubtel.clientSecret,
       merchantAccountNumber: config.hubtel.merchantAccountNumber,
       amountGHS: order.totalAmount,
-      description: `FudFactory order ${order.orderNumber}`,
+      description: `Order ${order.orderNumber}`,
       clientReference: order.orderNumber,
       callbackUrl: `${origin}/api/payments/hubtel/callback`,
       returnUrl: `${origin}/order/${order.orderNumber}?phone=${encodeURIComponent(phone)}`,

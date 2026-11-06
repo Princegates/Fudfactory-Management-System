@@ -10,7 +10,7 @@
   --background: #fffaf3;
   --foreground: #2b1a12;
 
-  /* FudFactory brand palette — warm bakery amber, used across both
+  /* Default brand palette — warm bakery amber, used across both
      the light portal and as the glow accent on the dark public site. */
   --brand-50: #fdf3e7;
   --brand-100: #fbe3c4;
@@ -122,7 +122,7 @@ body {
   --glow-amber: #8c1f3a; --glow-amber-strong: #6b1228; --glow-cyan: #c98a3d;
 }
 .site-theme[data-site-theme="amber-glow"][data-mode="light"] {
-  --ink-950: #f9f1f2; --ink-900: #f2e4e6; --ink-800: #e8d0d4; --ink-700: #dab7bd; --ink-600: #c99aa2;
+  --ink-950: #ffffff; --ink-900: #f2e4e6; --ink-800: #e8d0d4; --ink-700: #dab7bd; --ink-600: #c99aa2;
   --glow-amber: #5c1024; --glow-amber-strong: #430b1a;
 }
 
@@ -131,7 +131,7 @@ body {
   --glow-amber: #7c3a5d; --glow-amber-strong: #5c2a45; --glow-cyan: #c98a3d;
 }
 .site-theme[data-site-theme="neon-sunset"][data-mode="light"] {
-  --ink-950: #f8eef1; --ink-900: #f0dfe6; --ink-800: #e4cbd6; --ink-700: #d3b0c0; --ink-600: #bd93a7;
+  --ink-950: #ffffff; --ink-900: #f0dfe6; --ink-800: #e4cbd6; --ink-700: #d3b0c0; --ink-600: #bd93a7;
 }
 
 .site-theme[data-site-theme="cyber-lime"] {
@@ -139,7 +139,7 @@ body {
   --glow-amber: #5c6b2e; --glow-amber-strong: #444f20; --glow-cyan: #a6371f;
 }
 .site-theme[data-site-theme="cyber-lime"][data-mode="light"] {
-  --ink-950: #f3f4e8; --ink-900: #e9ecd6; --ink-800: #dbe0bd; --ink-700: #c8cf9e; --ink-600: #b1ba7d;
+  --ink-950: #ffffff; --ink-900: #e9ecd6; --ink-800: #dbe0bd; --ink-700: #c8cf9e; --ink-600: #b1ba7d;
 }
 
 .site-theme[data-site-theme="ocean-depths"] {
@@ -147,7 +147,7 @@ body {
   --glow-amber: #35597a; --glow-amber-strong: #244059; --glow-cyan: #c1440e;
 }
 .site-theme[data-site-theme="ocean-depths"][data-mode="light"] {
-  --ink-950: #eef3f6; --ink-900: #dde8ee; --ink-800: #c6dae3; --ink-700: #a9c7d3; --ink-600: #86adbe;
+  --ink-950: #ffffff; --ink-900: #dde8ee; --ink-800: #c6dae3; --ink-700: #a9c7d3; --ink-600: #86adbe;
 }
 
 .site-theme[data-site-theme="royal-violet"] {
@@ -155,7 +155,7 @@ body {
   --glow-amber: #5b3868; --glow-amber-strong: #402649; --glow-cyan: #c98a3d;
 }
 .site-theme[data-site-theme="royal-violet"][data-mode="light"] {
-  --ink-950: #f4eef6; --ink-900: #e9dfed; --ink-800: #dac9e0; --ink-700: #c5abcf; --ink-600: #ab89b8;
+  --ink-950: #ffffff; --ink-900: #e9dfed; --ink-800: #dac9e0; --ink-700: #c5abcf; --ink-600: #ab89b8;
 }
 
 .site-theme[data-site-theme="ruby-fire"] {
@@ -163,7 +163,7 @@ body {
   --glow-amber: #a6371f; --glow-amber-strong: #7c2916; --glow-cyan: #35597a;
 }
 .site-theme[data-site-theme="ruby-fire"][data-mode="light"] {
-  --ink-950: #f8ede6; --ink-900: #f2ddd0; --ink-800: #e8c5b0; --ink-700: #dba98c; --ink-600: #c98a67;
+  --ink-950: #ffffff; --ink-900: #f2ddd0; --ink-800: #e8c5b0; --ink-700: #dba98c; --ink-600: #c98a67;
 }
 
 .site-theme[data-site-theme="emerald-circuit"] {
@@ -171,7 +171,7 @@ body {
   --glow-amber: #3f6b45; --glow-amber-strong: #2d4e32; --glow-cyan: #a6371f;
 }
 .site-theme[data-site-theme="emerald-circuit"][data-mode="light"] {
-  --ink-950: #eef5ef; --ink-900: #dcece0; --ink-800: #c3dcc9; --ink-700: #a2c7ab; --ink-600: #7cae88;
+  --ink-950: #ffffff; --ink-900: #dcece0; --ink-800: #c3dcc9; --ink-700: #a2c7ab; --ink-600: #7cae88;
 }
 
 .site-theme[data-site-theme="electric-blue"] {
@@ -179,7 +179,7 @@ body {
   --glow-amber: #2c4f8c; --glow-amber-strong: #1f3a68; --glow-cyan: #c1440e;
 }
 .site-theme[data-site-theme="electric-blue"][data-mode="light"] {
-  --ink-950: #eef1f6; --ink-900: #dde4ee; --ink-800: #c4d0e2; --ink-700: #a3b6d0; --ink-600: #7c95b9;
+  --ink-950: #ffffff; --ink-900: #dde4ee; --ink-800: #c4d0e2; --ink-700: #a3b6d0; --ink-600: #7c95b9;
 }
 
 .site-theme[data-site-theme="rose-gold"] {
@@ -187,7 +187,7 @@ body {
   --glow-amber: #b5657a; --glow-amber-strong: #8c4a5c; --glow-cyan: #5c6b2e;
 }
 .site-theme[data-site-theme="rose-gold"][data-mode="light"] {
-  --ink-950: #f9edee; --ink-900: #f3dde0; --ink-800: #eac7cb; --ink-700: #dda7ac; --ink-600: #cb8288;
+  --ink-950: #ffffff; --ink-900: #f3dde0; --ink-800: #eac7cb; --ink-700: #dda7ac; --ink-600: #cb8288;
 }
 
 .site-theme[data-site-theme="solar-flare"] {
@@ -195,7 +195,7 @@ body {
   --glow-amber: #b9822c; --glow-amber-strong: #8c611e; --glow-cyan: #7c3a5d;
 }
 .site-theme[data-site-theme="solar-flare"][data-mode="light"] {
-  --ink-950: #f9f2e2; --ink-900: #f2e6c9; --ink-800: #e9d6a5; --ink-700: #dbc07a; --ink-600: #c7a54f;
+  --ink-950: #ffffff; --ink-900: #f2e6c9; --ink-800: #e9d6a5; --ink-700: #dbc07a; --ink-600: #c7a54f;
 }
 
 .site-theme[data-site-theme="arctic-frost"] {
@@ -203,7 +203,7 @@ body {
   --glow-amber: #3c6e6b; --glow-amber-strong: #2a4e4c; --glow-cyan: #a6371f;
 }
 .site-theme[data-site-theme="arctic-frost"][data-mode="light"] {
-  --ink-950: #edf4f4; --ink-900: #dbe9e9; --ink-800: #c1d9d9; --ink-700: #a0c3c3; --ink-600: #79a7a7;
+  --ink-950: #ffffff; --ink-900: #dbe9e9; --ink-800: #c1d9d9; --ink-700: #a0c3c3; --ink-600: #79a7a7;
 }
 
 .site-theme[data-site-theme="midnight-mint"] {
@@ -211,7 +211,7 @@ body {
   --glow-amber: #4f7a5e; --glow-amber-strong: #395a45; --glow-cyan: #7c3a5d;
 }
 .site-theme[data-site-theme="midnight-mint"][data-mode="light"] {
-  --ink-950: #eef4ef; --ink-900: #dde9df; --ink-800: #c4dbc8; --ink-700: #a3c7a9; --ink-600: #7cae85;
+  --ink-950: #ffffff; --ink-900: #dde9df; --ink-800: #c4dbc8; --ink-700: #a3c7a9; --ink-600: #7cae85;
 }
 
 .site-theme h1,

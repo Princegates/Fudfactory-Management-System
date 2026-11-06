@@ -16,7 +16,17 @@ const NAV_LINKS = [
   { href: "/contact", label: "Contact" },
 ];
 
-export function Header({ mode }: { mode: "dark" | "light" }) {
+export function Header({
+  mode,
+  businessName,
+  tagline,
+  logoUrl,
+}: {
+  mode: "dark" | "light";
+  businessName: string;
+  tagline: string;
+  logoUrl?: string | null;
+}) {
   const [open, setOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const { count } = useCart();
@@ -96,7 +106,7 @@ export function Header({ mode }: { mode: "dark" | "light" }) {
       {/* Compact bar: always this on mobile, and on desktop once scrolled */}
       <div className={`mx-auto flex max-w-6xl items-center justify-between gap-4 px-4 sm:px-6 ${scrolled ? "py-3" : "py-3 md:hidden"}`}>
         <Link href="/" className="flex shrink-0 items-center">
-          <Logo className="h-7" />
+          <Logo className="h-7" name={businessName} logoUrl={logoUrl} />
         </Link>
         <nav className="hidden md:block">{navList}</nav>
         {utilityLinks}
@@ -107,13 +117,13 @@ export function Header({ mode }: { mode: "dark" | "light" }) {
         <div className="hidden md:block">
           <div className="mx-auto flex max-w-6xl items-center justify-between px-6 pt-3 text-xs">
             <span className="tracking-[0.14em]" style={{ color: "var(--text-lo)" }}>
-              Fresh Bakes, Delivered Daily
+              {tagline}
             </span>
             {utilityLinks}
           </div>
           <div className="mx-auto max-w-6xl px-6 py-5 text-center">
             <Link href="/" className="inline-flex items-center">
-              <Logo className="h-11" />
+              <Logo className="h-11" name={businessName} logoUrl={logoUrl} />
             </Link>
           </div>
           <div className="border-t" style={{ borderColor: "var(--ink-border)" }}>

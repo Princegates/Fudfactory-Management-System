@@ -4,10 +4,13 @@ import { ProductArt } from "@/components/site/ProductArt";
 import { Reveal } from "@/components/site/Reveal";
 import { getBusinessProfile } from "@/lib/business";
 
-export const metadata: Metadata = {
-  title: "Gallery",
-  description: "A look at what we bake and prepare at FudFactory.",
-};
+export async function generateMetadata(): Promise<Metadata> {
+  const business = await getBusinessProfile();
+  return {
+    title: "Gallery",
+    description: `A look at what we bake and prepare at ${business.businessName}.`,
+  };
+}
 
 export default async function GalleryPage() {
   const [products, business] = await Promise.all([

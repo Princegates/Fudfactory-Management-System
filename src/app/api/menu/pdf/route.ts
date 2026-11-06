@@ -75,10 +75,12 @@ export async function GET() {
   doc.end();
   const buffer = await finished;
 
+  const filenameSlug = business.businessName.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "") || "menu";
+
   return new NextResponse(new Uint8Array(buffer), {
     headers: {
       "Content-Type": "application/pdf",
-      "Content-Disposition": 'attachment; filename="fudfactory-menu.pdf"',
+      "Content-Disposition": `attachment; filename="${filenameSlug}-menu.pdf"`,
       "Cache-Control": "no-store",
     },
   });

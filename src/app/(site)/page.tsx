@@ -124,10 +124,10 @@ export default async function HomePage() {
           {/* 3D brand centerpiece (falls back to the flat animated logo if WebGL isn't available) */}
           <div className="relative mx-auto flex w-full max-w-md flex-col items-center justify-center">
             <div className="flex h-28 w-64 items-center justify-center sm:h-36 sm:w-80 lg:h-44 lg:w-96">
-              <HeroVisual />
+              <HeroVisual businessName={business.businessName} logoUrl={business.logoUrl} />
             </div>
             <p className="mt-4 text-xs italic tracking-wide" style={{ color: "var(--text-lo)" }}>
-              — from the FudFactory kitchen, Accra
+              — from the {business.businessName} kitchen
             </p>
           </div>
         </div>
@@ -262,11 +262,11 @@ export default async function HomePage() {
           <Reveal>
             <span className="dept-label">The Story</span>
             <h2 className="mt-3 font-display text-2xl font-bold sm:text-3xl" style={{ color: "var(--text-hi)" }}>
-              About FudFactory
+              About {business.businessName}
             </h2>
             <p className="dropcap mt-4 max-w-2xl text-[15px] leading-loose" style={{ color: "var(--text-mid)" }}>
               {business.aboutText ??
-                "FudFactory bakes and prepares meat pies, doughnuts, cakes, snacks and full meals fresh every day. We serve walk-in customers, online orders and full-scale event planning & catering — all made with quality ingredients and a lot of care."}
+                `${business.businessName} bakes and prepares fresh food every day — serving walk-in customers, online orders and full-scale event planning & catering, all made with quality ingredients and a lot of care.`}
             </p>
             <Link href="/about" className="mt-4 inline-block text-sm font-semibold transition-colors hover:text-[var(--glow-amber)]" style={{ color: "var(--glow-amber)" }}>
               Learn more about us →

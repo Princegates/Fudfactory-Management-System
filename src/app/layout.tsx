@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import { Inter, Dancing_Script } from "next/font/google";
 import "./globals.css";
+import { getBusinessProfile } from "@/lib/business";
+import { getSiteUrl } from "@/lib/site";
 
 const inter = Inter({
   variable: "--font-body",
@@ -12,22 +14,25 @@ const dancingScript = Dancing_Script({
   subsets: ["latin"],
 });
 
-export const metadata: Metadata = {
-  metadataBase: new URL("https://fudfactory.gh"),
-  title: {
-    default: "FudFactory | Your Favorite Chef, Delivered",
-    template: "%s | FudFactory",
-  },
-  description:
-    "FudFactory — Ghana's favorite chef, bringing you cakes, pastries, meals and catering. Order online for pickup or delivery, tracked in real time.",
-  openGraph: {
-    title: "FudFactory | Your Favorite Chef, Delivered",
-    description:
-      "Order cakes, pastries, snacks and meals online for pickup or delivery from FudFactory.",
-    siteName: "FudFactory",
-    type: "website",
-  },
-};
+export async function generateMetadata(): Promise<Metadata> {
+  const business = await getBusinessProfile();
+  const title = `${business.businessName} | ${business.tagline}`;
+  const description = `${business.businessName} — ${business.tagline}. Order online for pickup or delivery, tracked in real time.`;
+  return {
+    metadataBase: new URL(getSiteUrl()),
+    title: {
+      default: title,
+      template: `%s | ${business.businessName}`,
+    },
+    description,
+    openGraph: {
+      title,
+      description,
+      siteName: business.businessName,
+      type: "website",
+    },
+  };
+}
 
 export const viewport = {
   width: "device-width",

@@ -2,16 +2,15 @@
 
 import { useState } from "react";
 
-const BUSINESS_WHATSAPP = "233200000000"; // international format, no leading +
-
-export function WhatsAppContactForm() {
+export function WhatsAppContactForm({ businessName, whatsapp }: { businessName: string; whatsapp: string | null }) {
   const [name, setName] = useState("");
   const [message, setMessage] = useState("");
 
   const send = (e: React.FormEvent) => {
     e.preventDefault();
-    const text = encodeURIComponent(`Hi FudFactory, my name is ${name || "..."}. ${message}`);
-    window.open(`https://wa.me/${BUSINESS_WHATSAPP}?text=${text}`, "_blank");
+    const text = encodeURIComponent(`Hi ${businessName}, my name is ${name || "..."}. ${message}`);
+    const number = (whatsapp ?? "").replace(/[^\d]/g, "");
+    window.open(`https://wa.me/${number}?text=${text}`, "_blank");
   };
 
   return (

@@ -2,11 +2,15 @@ import type { Metadata } from "next";
 import { prisma } from "@/lib/prisma";
 import { formatCurrency, formatDate } from "@/lib/format";
 import { Reveal } from "@/components/site/Reveal";
+import { getBusinessProfile } from "@/lib/business";
 
-export const metadata: Metadata = {
-  title: "Promotions",
-  description: "Current discounts, coupon codes and seasonal offers from FudFactory.",
-};
+export async function generateMetadata(): Promise<Metadata> {
+  const business = await getBusinessProfile();
+  return {
+    title: "Promotions",
+    description: `Current discounts, coupon codes and seasonal offers from ${business.businessName}.`,
+  };
+}
 
 function describeValue(type: string, value: number) {
   if (type === "PERCENTAGE") return `${value}% off`;

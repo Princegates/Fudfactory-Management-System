@@ -60,7 +60,7 @@ export async function POST(request: NextRequest) {
       amountGHS: order.totalAmount,
       clientReference: order.orderNumber,
       callbackUrl: `${origin}/api/payments/hubtel/callback`,
-      description: `FudFactory order ${order.orderNumber}`,
+      description: `Order ${order.orderNumber}`,
     });
     return NextResponse.json({ orderNumber: order.orderNumber, totalAmount: order.totalAmount, hubtelStatus: charge.status });
   } catch (err) {

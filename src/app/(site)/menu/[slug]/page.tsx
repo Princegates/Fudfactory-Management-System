@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { prisma } from "@/lib/prisma";
 import { formatCurrency } from "@/lib/format";
+import { getBusinessProfile } from "@/lib/business";
 import { ProductDetailPurchase } from "@/components/site/ProductDetailPurchase";
 import { ProductCard } from "@/components/site/ProductCard";
 import { ProductArt } from "@/components/site/ProductArt";
@@ -20,11 +21,11 @@ export async function generateMetadata({
   params: Promise<{ slug: string }>;
 }): Promise<Metadata> {
   const { slug } = await params;
-  const product = await getProduct(slug);
+  const [product, business] = await Promise.all([getProduct(slug), getBusinessProfile()]);
   if (!product) return { title: "Product not found" };
   return {
     title: product.name,
-    description: product.description ?? `${product.name} — ${formatCurrency(product.price)} at FudFactory.`,
+    description: product.description ?? `${product.name} — ${formatCurrency(product.price)} at ${business.businessName}.`,
   };
 }
 

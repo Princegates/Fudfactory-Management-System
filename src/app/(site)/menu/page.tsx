@@ -5,11 +5,15 @@ import { MenuItemRow } from "@/components/site/MenuItemRow";
 import { CATEGORY_ICON } from "@/components/site/ProductArt";
 import { Icon } from "@/components/site/Icon";
 import { Reveal } from "@/components/site/Reveal";
+import { getBusinessProfile } from "@/lib/business";
 
-export const metadata: Metadata = {
-  title: "Menu",
-  description: "Browse cakes, pastries, snacks, meals and drinks from FudFactory.",
-};
+export async function generateMetadata(): Promise<Metadata> {
+  const business = await getBusinessProfile();
+  return {
+    title: "Menu",
+    description: `Browse cakes, pastries, snacks, meals and drinks from ${business.businessName}.`,
+  };
+}
 
 export default async function MenuPage({
   searchParams,

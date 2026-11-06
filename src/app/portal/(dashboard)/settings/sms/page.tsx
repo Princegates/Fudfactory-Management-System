@@ -27,7 +27,7 @@ export default async function SmsSettingsPage() {
                 { value: "other", label: "Other" },
               ],
             },
-            { key: SETTING_KEYS.smsSenderId, label: "Sender ID", defaultValue: s[SETTING_KEYS.smsSenderId] ?? "", placeholder: "FudFactory" },
+            { key: SETTING_KEYS.smsSenderId, label: "Sender ID", defaultValue: s[SETTING_KEYS.smsSenderId] ?? "", placeholder: "YourBrand" },
             {
               key: SETTING_KEYS.smsApiKey,
               label: "API key",

@@ -1,16 +1,17 @@
 import { prisma } from "./prisma";
 
 const DEFAULTS = {
-  businessName: "FudFactory",
-  tagline: "Fresh Bakes, Delivered Daily",
-  phone: "+233 20 000 0000",
-  whatsapp: "+233 20 000 0000",
-  email: "hello@fudfactory.gh",
-  address: "Accra, Ghana",
-  instagramHandle: "fudfactory.gh",
+  businessName: "Your Business Name",
+  tagline: "Add your tagline in Settings",
+  phone: "+1 000 000 0000",
+  whatsapp: "+1 000 000 0000",
+  email: "hello@yourbusiness.com",
+  address: "Add your address in Settings",
+  instagramHandle: "yourbusiness",
   facebookUrl: null as string | null,
   aboutText: null as string | null,
   heroImageUrl: null as string | null,
+  logoUrl: null as string | null,
   businessHours: "Mon – Sat: 8:00am – 8:00pm\nSunday: 12:00pm – 6:00pm",
 };
 
@@ -27,6 +28,7 @@ export async function getBusinessProfile() {
     facebookUrl: profile?.facebookUrl ?? DEFAULTS.facebookUrl,
     aboutText: profile?.aboutText ?? DEFAULTS.aboutText,
     heroImageUrl: profile?.heroImageUrl ?? DEFAULTS.heroImageUrl,
+    logoUrl: profile?.logoUrl ?? DEFAULTS.logoUrl,
     businessHours: profile?.businessHours ?? DEFAULTS.businessHours,
   };
 }

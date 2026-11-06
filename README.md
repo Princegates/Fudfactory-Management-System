@@ -1,6 +1,8 @@
-# FudFactory Management System
+# Food Vendor Management Platform
 
-A full-stack web platform for **FudFactory** (Instagram: [@fudfactory.gh](https://instagram.com/fudfactory.gh)) — a food, pastry, catering and event-planning business. It combines a public ordering website with an internal business management portal (POS, inventory, production, CRM, finance, marketing, payments and reporting), built from the project's Software Requirements Specification.
+A white-label, full-stack web platform for food, pastry, catering and event-planning businesses. It combines a public ordering website with an internal business management portal (POS, inventory, production, CRM, finance, marketing, payments and reporting), built from the project's Software Requirements Specification.
+
+Every vendor-specific detail — business name, tagline, logo, contact info, color theme — is configurable from **Settings → Website** in the portal (Super Admin only), so the same codebase can be deployed for multiple vendors without code changes. See "Rebranding for a new vendor" below.
 
 ## Tech stack
 
@@ -35,18 +37,29 @@ npm run dev
 
 Visit `http://localhost:3000` for the public site and `http://localhost:3000/portal/login` for the staff portal.
 
+### Rebranding for a new vendor
+
+This template carries no vendor-specific branding in code — everything is set at runtime:
+
+1. Deploy a fresh instance (its own Postgres database and hosting project) for the vendor, and set `NEXT_PUBLIC_SITE_URL` to their real domain.
+2. Log in as Super Admin and open **Settings → Website**: set the business name, tagline, logo image URL (or leave blank for an auto-generated text wordmark, including in the animated 3D hero), phone/WhatsApp/email/address, Instagram/Facebook, about text, hero image and business hours.
+3. Open **Settings → Themes** to pick one of the 12 built-in color palettes, or adjust day/night mode defaults.
+4. Replace the demo staff accounts and menu from `npm run db:seed` with the vendor's real staff and products via the portal (Staff, Products/Categories pages) — the seed script is a starting point for local development, not meant to ship to a real vendor's database as-is.
+
+No component reads a hardcoded business name, domain or logo file — they all read from the `BusinessProfile` settings above.
+
 ### Demo accounts (from `npm run db:seed`)
 
 All staff accounts share the password **`Password123!`**:
 
 | Role | Email |
 |---|---|
-| Super Administrator | admin@fudfactory.gh |
-| Owner / Manager | owner@fudfactory.gh |
-| Cashier | cashier@fudfactory.gh |
-| Inventory Officer | inventory@fudfactory.gh |
-| Production Officer | production@fudfactory.gh |
-| Delivery Officer | delivery@fudfactory.gh |
+| Super Administrator | admin@demo.local |
+| Owner / Manager | owner@demo.local |
+| Cashier | cashier@demo.local |
+| Inventory Officer | inventory@demo.local |
+| Production Officer | production@demo.local |
+| Delivery Officer | delivery@demo.local |
 
 Demo customer: phone `+233501234567`, password `Password123!`.
 

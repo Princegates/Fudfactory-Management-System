@@ -1,8 +1,9 @@
 import type { MetadataRoute } from "next";
 import { prisma } from "@/lib/prisma";
+import { getSiteUrl } from "@/lib/site";
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const base = "https://fudfactory.gh";
+  const base = getSiteUrl();
   const products = await prisma.product.findMany({ select: { slug: true, updatedAt: true } });
 
   const staticRoutes: MetadataRoute.Sitemap = [

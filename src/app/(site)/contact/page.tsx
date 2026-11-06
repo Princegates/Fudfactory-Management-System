@@ -3,10 +3,13 @@ import { WhatsAppContactForm } from "@/components/site/WhatsAppContactForm";
 import { getBusinessProfile } from "@/lib/business";
 import { Reveal } from "@/components/site/Reveal";
 
-export const metadata: Metadata = {
-  title: "Contact Us",
-  description: "Get in touch with FudFactory for orders, catering and enquiries.",
-};
+export async function generateMetadata(): Promise<Metadata> {
+  const business = await getBusinessProfile();
+  return {
+    title: "Contact Us",
+    description: `Get in touch with ${business.businessName} for orders, catering and enquiries.`,
+  };
+}
 
 export default async function ContactPage() {
   const business = await getBusinessProfile();
@@ -76,7 +79,7 @@ export default async function ContactPage() {
                 This opens WhatsApp with your message pre-filled.
               </p>
               <div className="mt-5">
-                <WhatsAppContactForm />
+                <WhatsAppContactForm businessName={business.businessName} whatsapp={business.whatsapp} />
               </div>
             </div>
           </Reveal>

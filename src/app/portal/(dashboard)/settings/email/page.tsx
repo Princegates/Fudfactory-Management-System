@@ -33,7 +33,7 @@ export default async function EmailSettingsPage() {
               label: "From address",
               type: "email",
               defaultValue: s[SETTING_KEYS.smtpFromAddress] ?? "",
-              placeholder: "orders@fudfactory.gh",
+              placeholder: "orders@yourbusiness.com",
             },
           ]}
         />

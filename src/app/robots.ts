@@ -1,10 +1,11 @@
 import type { MetadataRoute } from "next";
+import { getSiteUrl } from "@/lib/site";
 
 export default function robots(): MetadataRoute.Robots {
   return {
     rules: [
       { userAgent: "*", allow: "/", disallow: ["/portal", "/api"] },
     ],
-    sitemap: "https://fudfactory.gh/sitemap.xml",
+    sitemap: `${getSiteUrl()}/sitemap.xml`,
   };
 }

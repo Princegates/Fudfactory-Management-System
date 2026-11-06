@@ -1,10 +1,14 @@
 import { requireStaff } from "@/lib/session";
 import { getSettings, SETTING_KEYS } from "@/lib/settings";
 import { SettingsSimpleForm } from "@/components/portal/SettingsSimpleForm";
+import { getBusinessProfile } from "@/lib/business";
 
 export default async function ReceiptSettingsPage() {
   await requireStaff(["SUPER_ADMIN"]);
-  const s = await getSettings([SETTING_KEYS.receiptHeader, SETTING_KEYS.receiptFooter, SETTING_KEYS.thermalPaperWidth]);
+  const [s, business] = await Promise.all([
+    getSettings([SETTING_KEYS.receiptHeader, SETTING_KEYS.receiptFooter, SETTING_KEYS.thermalPaperWidth]),
+    getBusinessProfile(),
+  ]);
 
   return (
     <div>
@@ -17,13 +21,13 @@ export default async function ReceiptSettingsPage() {
               key: SETTING_KEYS.receiptHeader,
               label: "Receipt header",
               type: "textarea",
-              defaultValue: s[SETTING_KEYS.receiptHeader] ?? "FudFactory\nYour Favorite Chef",
+              defaultValue: s[SETTING_KEYS.receiptHeader] ?? `${business.businessName}\n${business.tagline}`,
             },
             {
               key: SETTING_KEYS.receiptFooter,
               label: "Receipt footer",
               type: "textarea",
-              defaultValue: s[SETTING_KEYS.receiptFooter] ?? "Thank you for your order!\nfudfactory.gh",
+              defaultValue: s[SETTING_KEYS.receiptFooter] ?? "Thank you for your order!",
             },
             {
               key: SETTING_KEYS.thermalPaperWidth,

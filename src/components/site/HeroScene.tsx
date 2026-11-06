@@ -3,13 +3,13 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { Canvas, useFrame, useLoader, useThree } from "@react-three/fiber";
 import * as THREE from "three";
-import { SVGLoader } from "three/examples/jsm/loaders/SVGLoader.js";
-import { mergeGeometries } from "three/examples/jsm/utils/BufferGeometryUtils.js";
+import { FontLoader } from "three/examples/jsm/loaders/FontLoader.js";
+import { TextGeometry } from "three/examples/jsm/geometries/TextGeometry.js";
 
 /** Reads the theme's accent CSS custom property off the nearest .site-theme
- * ancestor, so the logo recolors whenever the visitor switches theme or
- * day/night mode — matching the flat <Logo>'s CSS-mask recolor, just driven
- * from JS since this is a WebGL material, not CSS. */
+ * ancestor, so the hero recolors whenever the visitor switches theme or
+ * day/night mode — matching the flat <Logo>'s CSS-driven recolor, just
+ * driven from JS since this is a WebGL material, not CSS. */
 function useThemeAccent() {
   const [accent, setAccent] = useState("#c1440e");
 
@@ -25,43 +25,30 @@ function useThemeAccent() {
   return accent;
 }
 
-/** The full FudFactory lockup (wordmark + icon + tagline), traced from the
- * real artwork's silhouette and extruded into real 3D geometry — actual
- * dimensional letterforms, not a flat image on a plane or backing card. */
-function ExtrudedLogo({ reduceMotion }: { reduceMotion: boolean }) {
+/** The business's own name, extruded into real 3D geometry from a bundled
+ * typeface — generated automatically for any business name, no logo
+ * artwork or manual tracing required. */
+function ExtrudedWordmark({ text, reduceMotion }: { text: string; reduceMotion: boolean }) {
   const group = useRef<THREE.Group>(null);
   const pointer = useRef({ x: 0, y: 0 });
   const { size } = useThree();
   const accent = useThemeAccent();
-  const svgData = useLoader(SVGLoader, "/logo-full.svg");
+  const font = useLoader(FontLoader, "/fonts/helvetiker_bold.typeface.json");
 
   const geometry = useMemo(() => {
-    const geometries: THREE.BufferGeometry[] = [];
-    for (const path of svgData.paths) {
-      for (const shape of path.toShapes()) {
-        geometries.push(
-          new THREE.ExtrudeGeometry(shape, {
-            depth: 90,
-            bevelEnabled: true,
-            bevelThickness: 10,
-            bevelSize: 6,
-            bevelSegments: 3,
-            curveSegments: 8,
-          }),
-        );
-      }
-    }
-    const merged = mergeGeometries(geometries, false);
-    // SVG coordinates are Y-down in raw pixel units. Flipping Y via a
-    // negative scale would mirror the geometry (odd number of negated
-    // axes), which inverts winding order and leaves normals facing the
-    // wrong way — the whole front reads as unlit/black. A 180° rotation
-    // around X achieves the same flip without breaking normals.
-    merged.scale(0.0026, 0.0026, 0.0026);
-    merged.rotateX(Math.PI);
-    merged.center();
-    return merged;
-  }, [svgData]);
+    const geo = new TextGeometry(text || "Your Business", {
+      font,
+      size: 1,
+      depth: 0.22,
+      curveSegments: 6,
+      bevelEnabled: true,
+      bevelThickness: 0.025,
+      bevelSize: 0.015,
+      bevelSegments: 3,
+    });
+    geo.center();
+    return geo;
+  }, [font, text]);
 
   useEffect(() => {
     const onMove = (e: PointerEvent) => {
@@ -74,19 +61,26 @@ function ExtrudedLogo({ reduceMotion }: { reduceMotion: boolean }) {
     return () => window.removeEventListener("pointermove", onMove);
   }, []);
 
-  useFrame((_, delta) => {
+  useFrame((state) => {
     const g = group.current;
     if (!g) return;
-    if (!reduceMotion) {
-      g.rotation.y += delta * 0.3;
-    }
-    const targetX = reduceMotion ? -0.08 : pointer.current.y * 0.18;
-    const targetZ = reduceMotion ? 0 : pointer.current.x * -0.1;
-    g.rotation.x += (targetX - 0.08 - g.rotation.x) * 0.04;
+    // Unlike a logo silhouette, extruded text is only legible roughly
+    // face-on — a full continuous spin passes through unreadable edge-on
+    // angles. Oscillate gently within a readable range instead, nudged by
+    // pointer position, so it still feels alive without ever reading as a
+    // thin illegible sliver.
+    const targetY = reduceMotion ? 0.35 : 0.35 + Math.sin(state.clock.elapsedTime * 0.5) * 0.3;
+    const targetX = reduceMotion ? -0.08 : -0.08 + pointer.current.y * 0.12;
+    const targetZ = reduceMotion ? 0 : pointer.current.x * -0.08;
+    g.rotation.y += (targetY - g.rotation.y) * 0.04;
+    g.rotation.x += (targetX - g.rotation.x) * 0.04;
     g.rotation.z += (targetZ - g.rotation.z) * 0.04;
   });
 
-  const scale = Math.min(1, size.width / 520);
+  // Longer business names need to shrink more to stay inside the hero
+  // frame; width scales roughly linearly with character count for this font.
+  const widthScale = Math.min(1, 7 / Math.max(text.length, 1));
+  const scale = Math.min(1, size.width / 520) * widthScale;
 
   return (
     <group ref={group} scale={scale} rotation={[-0.08, 0.35, 0]}>
@@ -97,7 +91,7 @@ function ExtrudedLogo({ reduceMotion }: { reduceMotion: boolean }) {
   );
 }
 
-export function HeroScene({ className }: { className?: string }) {
+export function HeroScene({ businessName, className }: { businessName: string; className?: string }) {
   const [reduceMotion, setReduceMotion] = useState(false);
 
   useEffect(() => {
@@ -124,7 +118,7 @@ export function HeroScene({ className }: { className?: string }) {
       <ambientLight intensity={0.65} />
       <directionalLight position={[3, 4, 3]} intensity={1.2} castShadow />
       <pointLight position={[-2, 1, -2]} intensity={0.4} color="#ffffff" />
-      <ExtrudedLogo reduceMotion={reduceMotion} />
+      <ExtrudedWordmark text={businessName} reduceMotion={reduceMotion} />
     </Canvas>
   );
 }

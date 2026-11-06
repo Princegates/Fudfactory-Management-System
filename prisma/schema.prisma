@@ -1,4 +1,4 @@
-// FudFactory Management System — Prisma schema
+// Food Vendor Management Platform — Prisma schema
 // Covers the core data entities from the SRS (Section 32) needed to run
 // Phase 1-3 of the phased development plan (Section 47).
 
@@ -574,17 +574,18 @@ model Quotation {
 
 model BusinessProfile {
   id              String   @id @default("default")
-  businessName    String   @default("FudFactory")
-  tagline         String   @default("Fresh Bakes, Delivered Daily")
+  businessName    String   @default("Your Business Name")
+  tagline         String   @default("Add your tagline in Settings")
   phone           String?
   whatsapp        String?
   email           String?
   address         String?
-  instagramHandle String   @default("fudfactory.gh")
+  instagramHandle String   @default("yourbusiness")
   facebookUrl     String?
   businessHours   String? // JSON string
   aboutText       String?
   heroImageUrl    String?
+  logoUrl         String?
   updatedAt       DateTime @updatedAt
 }
 

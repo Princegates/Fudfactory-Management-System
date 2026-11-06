@@ -15,7 +15,7 @@ function hasWebGL() {
   }
 }
 
-export function HeroVisual() {
+export function HeroVisual({ businessName, logoUrl }: { businessName: string; logoUrl?: string | null }) {
   const [ready, setReady] = useState<boolean | null>(null);
 
   useEffect(() => {
@@ -28,11 +28,13 @@ export function HeroVisual() {
     setReady(hasWebGL() && window.innerWidth >= 640);
   }, []);
 
-  // Before we know (SSR + first paint), or if WebGL/viewport isn't a fit,
-  // show the flat animated logo instead — never block the hero on a 3D scene.
-  if (ready !== true) {
-    return <Logo className="animate-float h-full w-full" />;
+  // Before we know (SSR + first paint), if WebGL/viewport isn't a fit, or if
+  // the vendor uploaded their own logo (the 3D scene can only extrude their
+  // business name, not arbitrary artwork, so showing their real logo flat
+  // beats a text-only 3D stand-in), show the flat logo instead.
+  if (ready !== true || logoUrl) {
+    return <Logo className="animate-float h-full w-full" name={businessName} logoUrl={logoUrl} />;
   }
 
-  return <HeroScene className="h-full w-full" />;
+  return <HeroScene className="h-full w-full" businessName={businessName} />;
 }

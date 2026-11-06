@@ -30,7 +30,7 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: "Paystack is not enabled." }, { status: 400 });
   }
 
-  const email = order.customer?.email || `guest+${order.orderNumber}@fudfactory.gh`;
+  const email = order.customer?.email || `guest+${order.orderNumber}@guest.local`;
   const origin = request.nextUrl.origin;
 
   try {

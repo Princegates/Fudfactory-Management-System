@@ -10,11 +10,15 @@ export function PortalShell({
   items,
   staffName,
   staffRole,
+  businessName,
+  logoUrl,
   children,
 }: {
   items: NavItem[];
   staffName: string;
   staffRole: string;
+  businessName: string;
+  logoUrl?: string | null;
   children: ReactNode;
 }) {
   const [open, setOpen] = useState(false);
@@ -22,7 +26,7 @@ export function PortalShell({
   return (
     <div className="flex min-h-screen bg-brand-50/40">
       <aside className="hidden w-64 shrink-0 border-r border-brand-100 bg-white p-4 md:block">
-        <SidebarHeader />
+        <SidebarHeader businessName={businessName} logoUrl={logoUrl} />
         <div className="mt-6">
           <PortalNav items={items} />
         </div>
@@ -31,7 +35,7 @@ export function PortalShell({
       {open && (
         <div className="fixed inset-0 z-50 flex md:hidden">
           <div className="w-64 overflow-y-auto bg-white p-4 shadow-xl">
-            <SidebarHeader />
+            <SidebarHeader businessName={businessName} logoUrl={logoUrl} />
             <div className="mt-6">
               <PortalNav items={items} />
             </div>
@@ -65,6 +69,6 @@ export function PortalShell({
   );
 }
 
-function SidebarHeader() {
-  return <Logo className="h-7" themed={false} />;
+function SidebarHeader({ businessName, logoUrl }: { businessName: string; logoUrl?: string | null }) {
+  return <Logo className="h-7" themed={false} name={businessName} logoUrl={logoUrl} />;
 }

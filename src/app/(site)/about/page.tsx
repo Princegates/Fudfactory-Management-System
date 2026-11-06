@@ -3,10 +3,13 @@ import { getBusinessProfile } from "@/lib/business";
 import { Reveal } from "@/components/site/Reveal";
 import { Icon, type IconName } from "@/components/site/Icon";
 
-export const metadata: Metadata = {
-  title: "About Us",
-  description: "Learn about FudFactory — a Ghanaian food, pastry and catering business.",
-};
+export async function generateMetadata(): Promise<Metadata> {
+  const business = await getBusinessProfile();
+  return {
+    title: "About Us",
+    description: `Learn about ${business.businessName} — a food, pastry and catering business.`,
+  };
+}
 
 const OFFERINGS: { icon: IconName; label: string }[] = [
   { icon: "gift", label: "Food hampers" },
@@ -35,14 +38,13 @@ export default async function AboutPage() {
 
         <Reveal delay={0.08}>
           <p className="dropcap mt-6 leading-loose" style={{ color: "var(--text-mid)" }}>
-            {business.tagline} — FudFactory started as a small home kitchen serving neighbours fresh
-            meat pies and doughnuts, and has grown into a full food, pastry and catering business
-            trusted for birthdays, weddings, corporate events and everyday cravings.
+            {business.aboutText ??
+              `${business.tagline} — ${business.businessName} started as a small home kitchen and has grown into a full food, pastry and catering business trusted for birthdays, weddings, corporate events and everyday cravings.`}
           </p>
           <p className="mt-4 leading-relaxed" style={{ color: "var(--text-mid)" }}>
-            Everything we sell — from our signature meat pies to custom celebration cakes — is baked
-            and prepared fresh using quality ingredients. We run our own kitchen, production planning
-            and delivery so that what you order online is exactly what turns up at your door.
+            Everything we sell is baked and prepared fresh using quality ingredients. We run our own
+            kitchen, production planning and delivery so that what you order online is exactly what
+            turns up at your door.
           </p>
         </Reveal>
 

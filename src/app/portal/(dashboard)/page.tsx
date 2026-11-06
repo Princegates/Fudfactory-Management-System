@@ -6,6 +6,7 @@ import { StatCard } from "@/components/portal/StatCard";
 import { SalesTrendChart } from "@/components/portal/SalesTrendChart";
 import { getLowStockItems } from "@/lib/inventory";
 import { navFor } from "@/lib/permissions";
+import { getBusinessProfile } from "@/lib/business";
 
 export default async function PortalDashboardPage() {
   const session = await requireStaff();
@@ -38,7 +39,7 @@ export default async function PortalDashboardPage() {
   sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 6);
   sevenDaysAgo.setHours(0, 0, 0, 0);
 
-  const [todayOrders, totalCustomers, lowStock, pendingDeliveries, todayExpenses, recentOrders, weekOrders, bestSellers] =
+  const [todayOrders, totalCustomers, lowStock, pendingDeliveries, todayExpenses, recentOrders, weekOrders, bestSellers, business] =
     await Promise.all([
       prisma.order.findMany({ where: { createdAt: { gte: startOfToday }, status: { not: "CANCELLED" } } }),
       prisma.customer.count(),
@@ -56,6 +57,7 @@ export default async function PortalDashboardPage() {
         orderBy: { _sum: { quantity: "desc" } },
         take: 5,
       }),
+      getBusinessProfile(),
     ]);
 
   const todayRevenue = todayOrders.reduce((sum, o) => sum + o.totalAmount, 0);
@@ -64,10 +66,10 @@ export default async function PortalDashboardPage() {
   for (let i = 0; i < 7; i++) {
     const d = new Date(sevenDaysAgo);
     d.setDate(d.getDate() + i);
-    trendMap.set(d.toLocaleDateString("en-GH", { weekday: "short" }), 0);
+    trendMap.set(d.toLocaleDateString("en-US", { weekday: "short" }), 0);
   }
   for (const order of weekOrders) {
-    const key = order.createdAt.toLocaleDateString("en-GH", { weekday: "short" });
+    const key = order.createdAt.toLocaleDateString("en-US", { weekday: "short" });
     trendMap.set(key, (trendMap.get(key) ?? 0) + order.totalAmount);
   }
   const trendData = Array.from(trendMap.entries()).map(([date, revenue]) => ({ date, revenue }));
@@ -75,7 +77,7 @@ export default async function PortalDashboardPage() {
   return (
     <div>
       <h1 className="text-2xl font-bold text-cocoa-900">Welcome back, {session.name}</h1>
-      <p className="mt-1 text-cocoa-900/60">Here&apos;s how FudFactory is doing today.</p>
+      <p className="mt-1 text-cocoa-900/60">Here&apos;s how {business.businessName} is doing today.</p>
 
       <div className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
         <StatCard label="Today's Revenue" value={formatCurrency(todayRevenue)} hint={`${todayOrders.length} orders`} />

@@ -9,7 +9,7 @@ export const SITE_THEMES: SiteTheme[] = [
   {
     slug: "amber-glow",
     name: "Signature",
-    description: "The default — FudFactory's real brand maroon, with a gold accent.",
+    description: "The default — a rich brand maroon, with a gold accent.",
     swatch: { ink: "#221419", amber: "#8c1f3a", amberStrong: "#6b1228", cyan: "#c98a3d" },
   },
   {
